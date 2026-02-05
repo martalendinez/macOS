@@ -1,5 +1,6 @@
-﻿import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+﻿// src/App.jsx
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import moonIcon from "./imgs/moon.png";
 import gearIcon from "./imgs/gear.png";
@@ -12,20 +13,32 @@ import aboutIcon from "./imgs/me.png";
 import aiIcon from "./imgs/bot.png";
 import funIcon from "./imgs/games.png";
 
-// Import background images properly
+// Backgrounds
 import bgLight from "./imgs/Background.jpg";
 import bgDark from "./imgs/Background-dark.png";
+
+// Windows system (from the architecture we discussed)
+import MacWindow from "./components/windows/MacWindow";
+import useWindowManager from "./components/windows/useWindowManager";
+
+// Window contents
+import SettingsWindow from "./components/windows/SettingsWindow";
+import AboutWindow from "./components/windows/AboutWindow";
 
 export default function App() {
   const [mouseX, setMouseX] = useState(null);
   const [theme, setTheme] = useState("light");
 
-  // ✅ Page load animation trigger
+  // Page load animation trigger
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 40); // tiny delay = smoother mount
+    const t = setTimeout(() => setLoaded(true), 40);
     return () => clearTimeout(t);
   }, []);
+
+  // Window manager
+  const { openWindows, activeWindow, zMap, openWindow, closeWindow, focusWindow } =
+    useWindowManager();
 
   const currentTime = new Date().toLocaleString("en-GB", {
     weekday: "short",
@@ -37,10 +50,31 @@ export default function App() {
     timeZone: "Europe/Stockholm",
   });
 
+  // Window definitions (kept inside App for now; can move to /data/windows.js later)
+  const WINDOW_DEFS = useMemo(
+    () => ({
+      settings: {
+        title: "Settings",
+        Component: SettingsWindow,
+        width: 880,
+        height: 560,
+        initialPos: { x: 220, y: 90 },
+      },
+      about: {
+        title: "About me",
+        Component: AboutWindow,
+        width: 760,
+        height: 520,
+        initialPos: { x: 260, y: 120 },
+      },
+    }),
+    []
+  );
+
   const dockItems = [
-    { label: "About me", icon: aboutIcon },
-    { label: "AI assistant", icon: aiIcon },
-    { label: "Extras & Fun", icon: funIcon },
+    { label: "About me", icon: aboutIcon, windowId: "about" },
+    { label: "AI assistant", icon: aiIcon, windowId: null }, // later: "ai"
+    { label: "Extras & Fun", icon: funIcon, windowId: null }, // later: "fun"
   ];
 
   return (
@@ -49,7 +83,6 @@ export default function App() {
       style={{
         backgroundImage: `url(${theme === "light" ? bgLight : bgDark})`,
       }}
-      // ✅ Smooth fade + slight zoom + blur out
       initial={{ opacity: 0, scale: 0.99, filter: "blur(10px)" }}
       animate={loaded ? { opacity: 1, scale: 1, filter: "blur(0px)" } : {}}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -70,14 +103,19 @@ export default function App() {
             <img src={moonIcon} alt="Toggle theme" className="w-4 h-4" />
           </div>
 
-          {[gearIcon, notificationIcon].map((src, i) => (
-            <div
-              key={i}
-              className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 hover:-translate-y-[1px] hover:drop-shadow-sm"
-            >
-              <img src={src} alt={`icon-${i}`} className="w-4 h-4" />
-            </div>
-          ))}
+          {/* Gear = Settings window */}
+          <div
+            onClick={() => {             
+              openWindow("settings")}}
+            className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
+          >
+            <img src={gearIcon} alt="Settings" className="w-4 h-4" />
+          </div>
+
+          {/* Notifications (no action yet) */}
+          <div className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 hover:-translate-y-[1px] hover:drop-shadow-sm">
+            <img src={notificationIcon} alt="Notifications" className="w-4 h-4" />
+          </div>
 
           <span>{currentTime}</span>
         </div>
@@ -127,6 +165,33 @@ export default function App() {
         </div>
       </motion.div>
 
+      {/* WINDOWS LAYER */}
+      <AnimatePresence>
+        {openWindows.map((id) => {
+          const def = WINDOW_DEFS[id];
+          if (!def) return null;
+
+          const WindowComponent = def.Component;
+
+          return (
+            <MacWindow
+              key={id}
+              id={id}
+              title={def.title}
+              width={def.width}
+              height={def.height}
+              initialPos={def.initialPos}
+              isActive={activeWindow === id}
+              zIndex={zMap[id] ?? 200}
+              onFocus={focusWindow}
+              onClose={closeWindow}
+            >
+              <WindowComponent />
+            </MacWindow>
+          );
+        })}
+      </AnimatePresence>
+
       {/* Bottom Dock */}
       <motion.div
         className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl shadow-lg flex gap-6 z-50"
@@ -144,6 +209,7 @@ export default function App() {
             mouseX={mouseX}
             total={dockItems.length}
             loaded={loaded}
+            onOpenWindow={openWindow}
           />
         ))}
       </motion.div>
@@ -151,7 +217,7 @@ export default function App() {
   );
 }
 
-function DockItem({ item, index, mouseX, total, loaded }) {
+function DockItem({ item, index, mouseX, total, loaded, onOpenWindow }) {
   const distanceFactor = 180;
 
   const getCenter = (i) => {
@@ -163,15 +229,18 @@ function DockItem({ item, index, mouseX, total, loaded }) {
   const scale = mouseX
     ? Math.min(
         1.35,
-        1 +
-          Math.max(0, 1 - Math.abs(mouseX - getCenter(index)) / distanceFactor)
+        1 + Math.max(0, 1 - Math.abs(mouseX - getCenter(index)) / distanceFactor)
       )
     : 1;
+
+  const handleClick = () => {
+    if (item.windowId) onOpenWindow(item.windowId);
+  };
 
   return (
     <motion.div
       className="group relative flex flex-col items-center cursor-pointer"
-      // ✅ little stagger on first appearance
+      onClick={handleClick}
       initial={{ opacity: 0, y: 10 }}
       animate={loaded ? { opacity: 1, y: 0 } : {}}
       transition={{
