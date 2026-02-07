@@ -1,90 +1,354 @@
 // src/components/windows/AboutWindow.jsx
+import { useMemo, useState } from "react";
 import aboutIcon from "../../imgs/me.png";
 
 export default function AboutWindow() {
+  const tabs = useMemo(
+    () => ["Overview", "Experience", "Skills", "Contact"],
+    []
+  );
+  const [activeTab, setActiveTab] = useState("Overview");
+
   return (
-    <div className="h-full flex">
-      {/* Left profile column */}
-      <div className="w-72 border-r border-white/10 bg-white/5 p-6">
-        <div className="flex items-center gap-3">
-          <img
-            src={aboutIcon}
-            alt="About icon"
-            className="w-12 h-12 object-contain"
-          />
-          <div>
-            <div className="text-white text-lg font-semibold leading-tight">
-              Marta
+    <div className="h-full flex flex-col">
+      {/* Top tabs */}
+      <div className="px-6 pt-5 pb-3">
+        <div className="flex items-center gap-4 text-white/80 text-sm">
+          {tabs.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setActiveTab(t)}
+              className={`relative transition ${
+                activeTab === t ? "text-white" : "hover:text-white/95"
+              }`}
+            >
+              <span className="px-1">{t}</span>
+              {activeTab === t && (
+                <span className="absolute left-1 right-1 -bottom-2 h-[2px] bg-white/70 rounded-full" />
+              )}
+            </button>
+          ))}
+        </div>
+        <div className="mt-4 h-px bg-white/10" />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-auto px-6 pb-6">
+        {activeTab === "Overview" && <OverviewTab />}
+        {activeTab === "Experience" && <ExperienceTab />}
+        {activeTab === "Skills" && <SkillsTab />}
+        {activeTab === "Contact" && <ContactTab />}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------- TABS -------------------- */
+
+function OverviewTab() {
+  return (
+    <div className="space-y-5">
+      {/* Header block like screenshot: photo box + name/title + short lines */}
+      <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
+        <div className="flex gap-6">
+          {/* Photo placeholder */}
+          <div className="w-44 flex-shrink-0">
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+              <div className="aspect-square rounded-xl border border-dashed border-white/25 flex items-center justify-center">
+                <img
+                  src={aboutIcon}
+                  alt="Profile"
+                  className="w-16 h-16 object-contain opacity-90"
+                />
+              </div>
+              <div className="mt-3 text-white/70 text-xs">
+                [Profile Photo]
+              </div>
             </div>
+          </div>
+
+          {/* Right details */}
+          <div className="flex-1 min-w-0">
+            <div className="text-white text-lg font-semibold leading-tight">
+              Marta Lendínez
+            </div>
+            <div className="text-white/80 text-sm mt-1">
+              UX Engineer <span className="text-white/40">•</span> UI Designer
+            </div>
+
+            <div className="mt-4 text-white/70 text-sm leading-relaxed">
+              Master’s in Interactive Media Technology @{" "}
+              <span className="text-white/90">KTH</span>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3">
+              <MiniRow
+                icon="🟢"
+                title="Location"
+                value="Stockholm, Sweden"
+              />
+              <MiniRow
+                icon="🎓"
+                title="Education"
+                value="Master’s in Interactive Media Technology • KTH"
+              />
+              <MiniRow
+                icon="💼"
+                title="Experience"
+                value="UX/UI Designer • Frontend Developer • 2+ years"
+              />
+              <MiniRow
+                icon="🌍"
+                title="International background"
+                value="NL Netherlands • DE Germany • SE Sweden • CA Canada"
+              />
+              <MiniRow
+                icon="💡"
+                title="Design philosophy"
+                value="Empathy-driven, user-centered design with a focus on solving real problems through research, iteration, and collaboration."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom buttons like screenshot */}
+      <div className="flex gap-3">
+        <ActionButton icon="⬇️" label="Download Resume" />
+        <ActionButton icon="🗂️" label="View Projects" />
+      </div>
+    </div>
+  );
+}
+
+function ExperienceTab() {
+  const items = [
+    {
+      year: "2026",
+      title: (
+  <>
+    Master's Interactive Media Technology @{" "}
+    <a
+      href="https://www.kth.se/en/studies/master/interactive-media-technology/?mtm_source=google&mtm_medium=cpc&mtm_campaign=Europe,%20Africa%20and%20Middle%20East%20(SEM,%20most%20programmes%20and%20general)&mtm_content=Interactive%20Media%20Technology%20EECS&mtm_kwd=masters%20human%20computer%20interaction&gad_source=1&gad_campaignid=20945191593"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-white/90 hover:underline"
+    >
+      KTH
+    </a>
+  </>
+),
+      right: "Sep 2024 →",
+      bullets: [
+        "Interaction Design & Prototyping",
+        "Frontend Development",
+        "Usability Testing & Evaluation",
+      ],
+      link: "View Degree Project →",
+    },
+    {
+      year: "2024-25",
+      title: (
+  <>
+    Vice Project Manager @{" "}
+    <a
+      href="https://studieresan.se"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-white/90 hover:underline"
+    >
+      STUDS
+    </a>
+  </>
+),
+      right: "Sep 2024 - June 2025",
+      bullets: [
+        "Co‑led the STUDS project team as Vice Project Manager, coordinating operations and direction",
+        "Planned and executed networking events connecting Master’s students with Swedish IT companies",
+        "Facilitated stakeholder communication between students, partner companies, and the core team",
+        "Organized and led recurring team meetings to align goals, timelines, and responsibilities",
+        "Managed logistics, outreach, and event structure to ensure smooth execution",
+      ],
+    },
+    {
+      year: "2024",
+      title: (
+  <>
+    Full Stack Intern @{" "}
+    <a
+      href="https://www.pridecom.es"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-white/90 hover:underline"
+    >
+      PrideCom
+    </a>
+  </>
+),
+      right: "Feb - June 2024",
+      bullets: [
+        "Led end‑to‑end design and development of an employer‑branding platform for SMBs",
+        "Conducted user interviews and usability tests to validate needs and refine flows",
+        "Designed information architecture, wireframes, and high‑fidelity UI in Figma",
+        "Built full‑stack application using Python, Flask, PostgreSQL, and Bootstrap",
+        "Managed deployment, data structure, and backend logic",
+        "Collaborated closely with stakeholders at PrideCom to align product vision",
+      ],
+      link: "View Degree Project →",
+    },
+    {
+      year: "2023",
+       title: (
+  <>
+    Programmer Intern @{" "}
+    <a
+      href="https://www.extra-nice.net"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-white/90 hover:underline"
+    >
+      Extra Nice
+    </a>
+  </>
+),
+      right: "Feb - June 2023",
+      bullets: [
+        "Developed gameplay prototypes in Unity to explore and validate new mechanics",
+        "Designed and implemented interactive features using C# and Unity’s component system",
+        "Conducted user testing sessions to assess playability and gather actionable insights",
+        "Collaborated with the team using Plastic SCM for version control and workflow alignment",
+      ],
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {items.map((it) => (
+        <div key={it.year} className="rounded-2xl bg-white/6 border border-white/10 p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="text-white/70 text-sm font-medium">{it.year}</div>
+            <div className="text-white/60 text-sm">{it.right}</div>
+          </div>
+
+          <div className="mt-3 text-white text-base font-semibold">
+            {it.title}
+          </div>
+
+          <ul className="mt-3 space-y-2 text-white/75 text-sm">
+            {it.bullets.map((b) => (
+              <li key={b} className="flex gap-2">
+                <span className="text-white/40">•</span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+
+          {it.link && (
+            <button
+              type="button"
+              className="mt-4 text-sm text-white/85 hover:text-white transition"
+            >
+              {it.link}
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SkillsTab() {
+  return (
+    <div className="space-y-5">
+      <SkillGroup title="DESIGN TOOLS" icon="🎨">
+        <SkillRow name="Figma" level="Expert" years="5 years" />
+        <SkillRow name="Sketch" level="Advanced" years="3 years" />
+        <SkillRow name="Adobe XD" level="Proficient" years="2 years" />
+        <SkillRow name="Illustrator" level="Intermediate" years="" />
+        <SkillRow name="Photoshop" level="Working knowledge" years="" />
+      </SkillGroup>
+
+      <SkillGroup title="DEVELOPMENT" icon="💻">
+        <SkillRow name="React" level="Advanced" years="4 years" />
+        <SkillRow name="TypeScript" level="Advanced" years="3 years" />
+        <SkillRow name="HTML/CSS" level="Expert" years="6 years" />
+        <SkillRow name="JavaScript" level="Advanced" years="4 years" />
+        <SkillRow name="Tailwind CSS" level="Proficient" years="2 years" />
+      </SkillGroup>
+
+      <SkillGroup title="UX RESEARCH & METHODS" icon="🔬">
+        <SkillRow name="User Interviews" level="Expert" />
+        <SkillRow name="Usability Testing" level="Advanced" />
+        <SkillRow name="Survey Design" level="Advanced" />
+        <SkillRow name="Persona Creation" level="Advanced" />
+        <SkillRow name="Journey Mapping" level="Advanced" />
+        <SkillRow name="A/B Testing" level="Intermediate" />
+      </SkillGroup>
+    </div>
+  );
+}
+
+function ContactTab() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Left card (profile + links) */}
+      <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
+        <div className="flex items-center gap-3">
+          <img src={aboutIcon} alt="Profile" className="w-11 h-11 object-contain" />
+          <div>
+            <div className="text-white font-semibold">Marta Lendínez</div>
             <div className="text-white/70 text-sm">UX Engineer</div>
           </div>
         </div>
 
-        <div className="mt-6 space-y-2">
-          {[
-            "Profile",
-            "Skills",
-            "Experience",
-            "Education",
-            "Contact",
-          ].map((item) => (
-            <div
-              key={item}
-              className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition text-white/90 text-sm cursor-pointer"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 text-white/60 text-xs leading-relaxed">
-          Tip: you can reuse this layout for other windows (Projects, AI assistant)
-          by swapping the sidebar items + main content.
+        <div className="mt-5 space-y-2 text-white/80 text-sm">
+          <LinkRow icon="✉️" label="Email" value="your.email@domain.com" />
+          <LinkRow icon="🔗" label="LinkedIn" value="linkedin.com/in/you" />
+          <LinkRow icon="🐙" label="GitHub" value="github.com/username" />
+          <LinkRow icon="🎨" label="Behance" value="behance.net/you" />
+          <LinkRow icon="📄" label="Resume" value="resume.pdf" />
+          <LinkRow icon="🖼️" label="Portfolio" value="your-site.com" />
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 p-7 overflow-auto">
-        <div className="text-white text-2xl font-semibold mb-2">About me</div>
-        <div className="text-white/75 text-sm mb-6 max-w-2xl">
-          A macOS-inspired portfolio where each section opens as an app window.
-          This “About” window is a template: sidebar navigation + main content.
+      {/* Right card (let's connect + actions + form) */}
+      <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
+        <div className="text-white font-semibold mb-2">Let’s Connect!</div>
+        <div className="text-white/75 text-sm leading-relaxed">
+          I’d love to hear about opportunities, collaborations, or just chat about design!
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <InfoCard title="What I do">
-            UX engineering + UI design. I like building polished interfaces with
-            thoughtful interaction and motion.
-          </InfoCard>
-
-          <InfoCard title="Current focus">
-            Human–AI collaboration in design workflows (wireframing, IA, user flows),
-            and building portfolio pieces that feel like real products.
-          </InfoCard>
-
-          <InfoCard title="Toolbox">
-            Figma, React, Tailwind, Framer Motion, user research & usability testing.
-          </InfoCard>
-
-          <InfoCard title="Next sections">
-            Projects, AI Assistant, and Extras can become windows using the same
-            MacWindow wrapper.
-          </InfoCard>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <QuickBtn label="Copy email" />
+          <QuickBtn label="Send email" />
+          <QuickBtn label="Visit LinkedIn" />
+          <QuickBtn label="View code" />
         </div>
 
-        <div className="mt-6 rounded-2xl bg-white/6 border border-white/10 p-5">
-          <div className="text-white/90 text-sm font-medium mb-2">
-            Quick links
+        <div className="mt-5 rounded-xl bg-white/5 border border-white/10 p-4">
+          <div className="text-white/85 text-sm font-medium mb-3">Send a message</div>
+
+          <div className="grid grid-cols-1 gap-3">
+            <Input label="Name" placeholder="Your name" />
+            <Input label="Email" placeholder="you@email.com" />
+            <Input label="Subject" placeholder="Hello!" />
+            <Textarea label="Message" placeholder="Type your message here..." />
           </div>
-          <div className="flex flex-wrap gap-2">
-            {["CV", "LinkedIn", "GitHub", "Email"].map((x) => (
-              <button
-                key={x}
-                className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition text-white/90 text-sm"
-              >
-                {x}
-              </button>
-            ))}
+
+          <div className="mt-4 flex justify-between">
+            <button
+              type="button"
+              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-sm transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/20 border border-white/10 text-white text-sm transition"
+            >
+              Send message
+            </button>
           </div>
         </div>
       </div>
@@ -92,11 +356,120 @@ export default function AboutWindow() {
   );
 }
 
-function InfoCard({ title, children }) {
+/* -------------------- UI BITS -------------------- */
+
+function MiniRow({ icon, title, value }) {
   return (
-    <div className="rounded-2xl bg-white/6 border border-white/10 p-5 hover:bg-white/10 transition">
-      <div className="text-white/90 text-sm font-medium mb-2">{title}</div>
-      <div className="text-white/75 text-sm leading-relaxed">{children}</div>
+    <div className="rounded-xl bg-white/5 border border-white/10 p-4">
+      <div className="flex items-center gap-2 text-white/85 text-sm font-medium">
+        <span className="text-base">{icon}</span>
+        <span>{title}</span>
+      </div>
+      <div className="mt-1 text-white/70 text-sm leading-relaxed">{value}</div>
     </div>
+  );
+}
+
+function ActionButton({ icon, label }) {
+  return (
+    <button
+      type="button"
+      className="rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-4 py-3 text-white/90 text-sm transition flex items-center gap-2"
+    >
+      <span>{icon}</span>
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function SkillGroup({ title, icon, children }) {
+  return (
+    <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
+      <div className="flex items-center gap-2 text-white/90 text-sm font-semibold mb-4">
+        <span>{icon}</span>
+        <span className="tracking-wide">{title}</span>
+      </div>
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function SkillRow({ name, level, years }) {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="w-40 text-white/80 text-sm">{name}</div>
+
+      {/* “bar” (structure like screenshot) */}
+      <div className="flex-1">
+        <div className="h-3 rounded-full bg-white/10 overflow-hidden border border-white/10">
+          <div
+            className="h-full bg-white/40"
+            style={{ width: levelToPct(level) }}
+          />
+        </div>
+      </div>
+
+      <div className="w-28 text-white/70 text-sm">{level}</div>
+      <div className="w-20 text-white/60 text-sm text-right">{years}</div>
+    </div>
+  );
+}
+
+function levelToPct(level) {
+  const map = {
+    "Working knowledge": "25%",
+    Intermediate: "40%",
+    Proficient: "55%",
+    Advanced: "75%",
+    Expert: "92%",
+  };
+  return map[level] ?? "50%";
+}
+
+function LinkRow({ icon, label, value }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 px-4 py-3">
+      <div className="flex items-center gap-2 text-white/80">
+        <span>{icon}</span>
+        <span className="text-sm">{label}</span>
+      </div>
+      <div className="text-white/60 text-sm truncate">{value}</div>
+    </div>
+  );
+}
+
+function QuickBtn({ label }) {
+  return (
+    <button
+      type="button"
+      className="rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-2 text-white/85 text-sm transition"
+    >
+      {label}
+    </button>
+  );
+}
+
+function Input({ label, placeholder }) {
+  return (
+    <label className="block">
+      <div className="text-white/70 text-xs mb-1">{label}</div>
+      <input
+        placeholder={placeholder}
+        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-white/90 text-sm outline-none focus:border-white/20"
+      />
+    </label>
+  );
+}
+
+function Textarea({ label, placeholder }) {
+  return (
+    <label className="block">
+      <div className="text-white/70 text-xs mb-1">{label}</div>
+      <textarea
+        placeholder={placeholder}
+        rows={4}
+        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-white/90 text-sm outline-none focus:border-white/20 resize-none"
+      />
+    </label>
   );
 }
