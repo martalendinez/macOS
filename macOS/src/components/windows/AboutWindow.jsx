@@ -8,7 +8,7 @@ import overviewPhoto from "../../imgs/profile.jpeg";
 import contactAvatar from "../../imgs/Avatar1.png";
 
 /* -------------------- LINK ROW (CLICKABLE) -------------------- */
-function LinkRow({ icon, label, value }) {
+function LinkRow({ icon, label, value, styles }) {
   let href = value;
 
   const lowerLabel = (label ?? "").toLowerCase();
@@ -30,8 +30,10 @@ function LinkRow({ icon, label, value }) {
   const isEmail = href.startsWith("mailto:");
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 px-4 py-3">
-      <div className="flex items-center gap-2 text-white/80">
+    <div
+      className={`flex items-center justify-between gap-3 rounded-xl ${styles.cardBg} border ${styles.cardBorder} px-4 py-3`}
+    >
+      <div className={`flex items-center gap-2 ${styles.textSub}`}>
         <span>{icon}</span>
         <span className="text-sm">{label}</span>
       </div>
@@ -40,7 +42,7 @@ function LinkRow({ icon, label, value }) {
         href={href}
         target={isEmail ? undefined : "_blank"}
         rel={isEmail ? undefined : "noopener noreferrer"}
-        className="text-white/90 text-sm truncate max-w-[60%] hover:underline transition"
+        className={`${styles.textMain} text-sm truncate max-w-[60%] hover:underline transition`}
         title={value}
       >
         {value}
@@ -50,40 +52,78 @@ function LinkRow({ icon, label, value }) {
 }
 
 /* -------------------- MAIN COMPONENT -------------------- */
-export default function AboutWindow() {
+export default function AboutWindow({ uiTheme = "glass" }) {
+  const isMac = uiTheme === "macos";
+
+  // theme tokens (same idea as SettingsWindow)
+  const styles = useMemo(() => {
+    return {
+      // text
+      textMain: isMac ? "text-black/80" : "text-white/90",
+      textStrong: isMac ? "text-black" : "text-white",
+      textSub: isMac ? "text-black/60" : "text-white/70",
+      textSub2: isMac ? "text-black/50" : "text-white/60",
+
+      // surfaces
+      cardBg: isMac ? "bg-white" : "bg-white/6",
+      cardBgSoft: isMac ? "bg-black/5" : "bg-white/5",
+      cardHover: isMac ? "hover:bg-black/5" : "hover:bg-white/10",
+
+      // borders/dividers
+      cardBorder: isMac ? "border-black/10" : "border-white/10",
+      divider: isMac ? "bg-black/10" : "bg-white/10",
+
+      // buttons
+      btn: isMac
+        ? "bg-white border border-black/10 hover:bg-black/5 text-black/80"
+        : "bg-white/10 border border-white/10 hover:bg-white/15 text-white/90",
+
+      btnPrimary: isMac
+        ? "bg-black/10 border border-black/10 hover:bg-black/15 text-black/90"
+        : "bg-white/15 border border-white/10 hover:bg-white/20 text-white",
+
+      // tabs
+      tab: isMac ? "text-black/60 hover:text-black/90" : "text-white/80 hover:text-white/95",
+      tabActive: isMac ? "text-black" : "text-white",
+      tabUnderline: isMac ? "bg-black/40" : "bg-white/70",
+    };
+  }, [isMac]);
+
   const tabs = useMemo(() => ["Overview", "Experience", "Skills", "Contact"], []);
   const [activeTab, setActiveTab] = useState("Overview");
 
   return (
-    <div className="h-full flex flex-col">
+    <div className={`h-full flex flex-col ${styles.textMain}`}>
       {/* Top tabs */}
       <div className="px-6 pt-5 pb-3">
-        <div className="flex items-center gap-4 text-white/80 text-sm">
+        <div className={`flex items-center gap-4 text-sm`}>
           {tabs.map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setActiveTab(t)}
               className={`relative transition ${
-                activeTab === t ? "text-white" : "hover:text-white/95"
+                activeTab === t ? styles.tabActive : styles.tab
               }`}
             >
               <span className="px-1">{t}</span>
               {activeTab === t && (
-                <span className="absolute left-1 right-1 -bottom-2 h-[2px] bg-white/70 rounded-full" />
+                <span
+                  className={`absolute left-1 right-1 -bottom-2 h-[2px] rounded-full ${styles.tabUnderline}`}
+                />
               )}
             </button>
           ))}
         </div>
-        <div className="mt-4 h-px bg-white/10" />
+        <div className={`mt-4 h-px ${styles.divider}`} />
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-auto px-6 pb-6">
-        {activeTab === "Overview" && <OverviewTab />}
-        {activeTab === "Experience" && <ExperienceTab />}
-        {activeTab === "Skills" && <SkillsTab />}
-        {activeTab === "Contact" && <ContactTab />}
+        {activeTab === "Overview" && <OverviewTab styles={styles} />}
+        {activeTab === "Experience" && <ExperienceTab styles={styles} />}
+        {activeTab === "Skills" && <SkillsTab styles={styles} />}
+        {activeTab === "Contact" && <ContactTab styles={styles} />}
       </div>
     </div>
   );
@@ -91,14 +131,16 @@ export default function AboutWindow() {
 
 /* -------------------- TABS -------------------- */
 
-/** ✅ NEW OVERVIEW: 2 columns, big photo, info cards */
-function OverviewTab() {
+/** Overview: 2 columns, big photo, info blocks */
+function OverviewTab({ styles }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* LEFT — BIG PHOTO CARD */}
-        <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
-          <div className="aspect-[3/4] rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+        <div className={`rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
+          <div
+            className={`aspect-[3/4] rounded-2xl overflow-hidden border ${styles.cardBorder} ${styles.cardBgSoft}`}
+          >
             <img
               src={overviewPhoto}
               alt="Marta portrait"
@@ -107,43 +149,43 @@ function OverviewTab() {
           </div>
 
           <div className="mt-4">
-            <div className="text-white text-xl font-semibold leading-tight">
+            <div className={`${styles.textStrong} text-xl font-semibold leading-tight`}>
               Marta Lendínez
             </div>
-            <div className="text-white/75 text-sm mt-1">
-              UX Engineer <span className="text-white/40">•</span> UI Designer
+            <div className={`${styles.textSub} text-sm mt-1`}>
+              UX Engineer <span className={styles.textSub2}>•</span> UI Designer
             </div>
 
-            <div className="mt-3 text-white/70 text-sm leading-relaxed">
+            <div className={`${styles.textSub} mt-3 text-sm leading-relaxed`}>
               Master’s in Interactive Media Technology @{" "}
-              <span className="text-white/90">KTH</span>
+              <span className={`${styles.textStrong}`}>KTH</span>
             </div>
           </div>
         </div>
 
         {/* RIGHT — INFO BLOCKS */}
         <div className="space-y-4">
-          <InfoBlock icon="📍" title="Location" value="Stockholm, Sweden" />
-
+          <InfoBlock styles={styles} icon="📍" title="Location" value="Stockholm, Sweden" />
           <InfoBlock
+            styles={styles}
             icon="🎓"
             title="Education"
             value="Master’s in Interactive Media Technology • KTH"
           />
-
           <InfoBlock
+            styles={styles}
             icon="💼"
             title="Experience"
-            value="UX/UI Designer • Frontend Developer • 1 year"
+            value="UX/UI Designer • Frontend Developer • 1+ year"
           />
-
           <InfoBlock
+            styles={styles}
             icon="🌍"
             title="International background"
             value="NL Netherlands • DE Germany • SE Sweden • CA Canada"
           />
-
           <InfoBlock
+            styles={styles}
             icon="💡"
             title="Design philosophy"
             value="I approach design with the belief that software is ultimately built for humans, so empathy, curiosity, and diverse perspectives sit at the center of my process!"
@@ -151,16 +193,16 @@ function OverviewTab() {
         </div>
       </div>
 
-      {/* ACTIONS */}
+      {/* Actions */}
       <div className="flex gap-3">
-        <ActionButton icon="⬇️" label="Download Resume" />
-        <ActionButton icon="🗂️" label="View Projects" />
+        <ActionButton styles={styles} icon="⬇️" label="Download Resume" />
+        <ActionButton styles={styles} icon="🗂️" label="View Projects" />
       </div>
     </div>
   );
 }
 
-function ExperienceTab() {
+function ExperienceTab({ styles }) {
   const items = [
     {
       year: "2026",
@@ -171,18 +213,14 @@ function ExperienceTab() {
             href="https://www.kth.se/en/studies/master/interactive-media-technology"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/90 hover:underline"
+            className={`${styles.textStrong} hover:underline`}
           >
             KTH
           </a>
         </>
       ),
       right: "Sep 2024 →",
-      bullets: [
-        "Interaction Design & Prototyping",
-        "Frontend Development",
-        "Usability Testing & Evaluation",
-      ],
+      bullets: ["Interaction Design & Prototyping", "Frontend Development", "Usability Testing & Evaluation"],
     },
     {
       year: "2024-25",
@@ -193,7 +231,7 @@ function ExperienceTab() {
             href="https://studieresan.se"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/90 hover:underline"
+            className={`${styles.textStrong} hover:underline`}
           >
             STUDS
           </a>
@@ -217,7 +255,7 @@ function ExperienceTab() {
             href="https://www.pridecom.es"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/90 hover:underline"
+            className={`${styles.textStrong} hover:underline`}
           >
             PrideCom
           </a>
@@ -242,7 +280,7 @@ function ExperienceTab() {
             href="https://www.extra-nice.net"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/90 hover:underline"
+            className={`${styles.textStrong} hover:underline`}
           >
             Extra Nice
           </a>
@@ -265,7 +303,7 @@ function ExperienceTab() {
             href="https://www.hanze.nl/en"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/90 hover:underline"
+            className={`${styles.textStrong} hover:underline`}
           >
             Hanze
           </a>
@@ -286,21 +324,18 @@ function ExperienceTab() {
   return (
     <div className="space-y-6">
       {items.map((it) => (
-        <div
-          key={it.year}
-          className="rounded-2xl bg-white/6 border border-white/10 p-5"
-        >
+        <div key={it.year} className={`rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
           <div className="flex items-start justify-between gap-4">
-            <div className="text-white/70 text-sm font-medium">{it.year}</div>
-            <div className="text-white/60 text-sm">{it.right}</div>
+            <div className={`${styles.textSub} text-sm font-medium`}>{it.year}</div>
+            <div className={`${styles.textSub2} text-sm`}>{it.right}</div>
           </div>
 
-          <div className="mt-3 text-white text-base font-semibold">{it.title}</div>
+          <div className={`mt-3 ${styles.textStrong} text-base font-semibold`}>{it.title}</div>
 
-          <ul className="mt-3 space-y-2 text-white/75 text-sm">
+          <ul className={`mt-3 space-y-2 ${styles.textSub} text-sm`}>
             {it.bullets.map((b) => (
               <li key={b} className="flex gap-2">
-                <span className="text-white/40">•</span>
+                <span className={styles.textSub2}>•</span>
                 <span>{b}</span>
               </li>
             ))}
@@ -311,107 +346,98 @@ function ExperienceTab() {
   );
 }
 
-function SkillsTab() {
+function SkillsTab({ styles }) {
   return (
     <div className="space-y-5">
-      <SkillGroup title="DESIGN TOOLS" icon="🎨">
-        <SkillRow name="Figma" level="Advanced" />
-        <SkillRow name="Adobe XD" level="Advanced" />
-        <SkillRow name="Photoshop" level="Proficient" />
-        <SkillRow name="Illustrator" level="Intermediate" />
-        <SkillRow name="Framer" level="Basic" />
+      <SkillGroup styles={styles} title="DESIGN TOOLS" icon="🎨">
+        <SkillRow styles={styles} name="Figma" level="Advanced" />
+        <SkillRow styles={styles} name="Adobe XD" level="Advanced" />
+        <SkillRow styles={styles} name="Photoshop" level="Proficient" />
+        <SkillRow styles={styles} name="Illustrator" level="Intermediate" />
+        <SkillRow styles={styles} name="Framer" level="Basic" />
       </SkillGroup>
 
-      <SkillGroup title="DEVELOPMENT" icon="💻">
-        <SkillRow name="React" level="Advanced" />
-        <SkillRow name="TypeScript" level="Advanced" />
-        <SkillRow name="HTML/CSS" level="Expert" />
-        <SkillRow name="JavaScript" level="Advanced" />
-        <SkillRow name="Tailwind CSS" level="Proficient" />
-        <SkillRow name="Python" level="Advanced" />
-        <SkillRow name="SQL" level="Proficient" />
-        <SkillRow name="Docker" level="Basic" />
-        <SkillRow name="Git" level="Advanced" />
+      <SkillGroup styles={styles} title="DEVELOPMENT" icon="💻">
+        <SkillRow styles={styles} name="React" level="Advanced" />
+        <SkillRow styles={styles} name="TypeScript" level="Advanced" />
+        <SkillRow styles={styles} name="HTML/CSS" level="Expert" />
+        <SkillRow styles={styles} name="JavaScript" level="Advanced" />
+        <SkillRow styles={styles} name="Tailwind CSS" level="Proficient" />
+        <SkillRow styles={styles} name="Python" level="Advanced" />
+        <SkillRow styles={styles} name="SQL" level="Proficient" />
+        <SkillRow styles={styles} name="Docker" level="Basic" />
+        <SkillRow styles={styles} name="Git" level="Advanced" />
       </SkillGroup>
 
-      <SkillGroup title="UX RESEARCH & METHODS" icon="🔬">
-        <SkillRow name="User Interviews" level="Expert" />
-        <SkillRow name="Usability Testing" level="Expert" />
-        <SkillRow name="Survey Design" level="Advanced" />
-        <SkillRow name="Persona Creation" level="Advanced" />
-        <SkillRow name="Journey Mapping" level="Advanced" />
-        <SkillRow name="A/B Testing" level="Advanced" />
+      <SkillGroup styles={styles} title="UX RESEARCH & METHODS" icon="🔬">
+        <SkillRow styles={styles} name="User Interviews" level="Expert" />
+        <SkillRow styles={styles} name="Usability Testing" level="Expert" />
+        <SkillRow styles={styles} name="Survey Design" level="Advanced" />
+        <SkillRow styles={styles} name="Persona Creation" level="Advanced" />
+        <SkillRow styles={styles} name="Journey Mapping" level="Advanced" />
+        <SkillRow styles={styles} name="A/B Testing" level="Advanced" />
       </SkillGroup>
     </div>
   );
 }
 
-function ContactTab() {
+function ContactTab({ styles }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       {/* Left card */}
-      <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
+      <div className={`rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full overflow-hidden">
-            <img
-              src={contactAvatar}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+          <div className={`w-11 h-11 rounded-full overflow-hidden border ${styles.cardBorder}`}>
+            <img src={contactAvatar} alt="Profile" className="w-full h-full object-cover" />
           </div>
 
           <div>
-            <div className="text-white font-semibold">Marta Casandra Lendínez</div>
-            <div className="text-white/70 text-sm">UX Engineer</div>
+            <div className={`${styles.textStrong} font-semibold`}>Marta Casandra Lendínez</div>
+            <div className={`${styles.textSub} text-sm`}>UX Engineer</div>
           </div>
         </div>
 
-        <div className="mt-5 space-y-2 text-white/80 text-sm">
-          <LinkRow icon="✉️" label="Email" value="casandra.lendinez@outlook.com" />
+        <div className="mt-5 space-y-2 text-sm">
+          <LinkRow styles={styles} icon="✉️" label="Email" value="casandra.lendinez@outlook.com" />
           <LinkRow
+            styles={styles}
             icon="🔗"
             label="LinkedIn"
             value="www.linkedin.com/in/marta-casandra-lendínez-ibáñez-959259200"
           />
-          <LinkRow icon="🐙" label="GitHub" value="https://github.com/martalendinez" />
-          <LinkRow icon="📄" label="Resume" value="resume.pdf" />
-          <LinkRow icon="🖼️" label="Portfolio" value="marta.lendinez.portfolio.com" />
+          <LinkRow styles={styles} icon="🐙" label="GitHub" value="https://github.com/martalendinez" />
+          <LinkRow styles={styles} icon="📄" label="Resume" value="resume.pdf" />
+          <LinkRow styles={styles} icon="🖼️" label="Portfolio" value="marta.lendinez.portfolio.com" />
         </div>
       </div>
 
       {/* Right card */}
-      <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
-        <div className="text-white font-semibold mb-2">Let’s Connect!</div>
-        <div className="text-white/75 text-sm leading-relaxed">
+      <div className={`rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
+        <div className={`${styles.textStrong} font-semibold mb-2`}>Let’s Connect!</div>
+        <div className={`${styles.textSub} text-sm leading-relaxed`}>
           I’d love to hear about opportunities, collaborations, or just chat about design!
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <QuickBtn label="Send email" />
-          <QuickBtn label="View code" />
+          <QuickBtn styles={styles} label="Send email" />
+          <QuickBtn styles={styles} label="View code" />
         </div>
 
-        <div className="mt-5 rounded-xl bg-white/5 border border-white/10 p-4">
-          <div className="text-white/85 text-sm font-medium mb-3">Send a message</div>
+        <div className={`mt-5 rounded-xl ${styles.cardBgSoft} border ${styles.cardBorder} p-4`}>
+          <div className={`${styles.textMain} text-sm font-medium mb-3`}>Send a message</div>
 
           <div className="grid grid-cols-1 gap-3">
-            <Input label="Name" placeholder="Your name" />
-            <Input label="Email" placeholder="you@email.com" />
-            <Input label="Subject" placeholder="Hello!" />
-            <Textarea label="Message" placeholder="Type your message here..." />
+            <Input styles={styles} label="Name" placeholder="Your name" />
+            <Input styles={styles} label="Email" placeholder="you@email.com" />
+            <Input styles={styles} label="Subject" placeholder="Hello!" />
+            <Textarea styles={styles} label="Message" placeholder="Type your message here..." />
           </div>
 
           <div className="mt-4 flex justify-between">
-            <button
-              type="button"
-              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-sm transition"
-            >
+            <button type="button" className={`px-4 py-2 rounded-xl ${styles.btn} text-sm transition`}>
               Cancel
             </button>
-            <button
-              type="button"
-              className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/20 border border-white/10 text-white text-sm transition"
-            >
+            <button type="button" className={`px-4 py-2 rounded-xl ${styles.btnPrimary} text-sm transition`}>
               Send message
             </button>
           </div>
@@ -423,23 +449,23 @@ function ContactTab() {
 
 /* -------------------- UI BITS -------------------- */
 
-function InfoBlock({ icon, title, value }) {
+function InfoBlock({ styles, icon, title, value }) {
   return (
-    <div className="rounded-xl bg-white/6 border border-white/10 p-4">
-      <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
+    <div className={`rounded-xl ${styles.cardBg} border ${styles.cardBorder} p-4`}>
+      <div className={`flex items-center gap-2 ${styles.textMain} text-sm font-medium`}>
         <span className="text-base">{icon}</span>
         <span>{title}</span>
       </div>
-      <div className="mt-1 text-white/70 text-sm leading-relaxed">{value}</div>
+      <div className={`mt-1 ${styles.textSub} text-sm leading-relaxed`}>{value}</div>
     </div>
   );
 }
 
-function ActionButton({ icon, label }) {
+function ActionButton({ styles, icon, label }) {
   return (
     <button
       type="button"
-      className="rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-4 py-3 text-white/90 text-sm transition flex items-center gap-2"
+      className={`rounded-xl px-4 py-3 text-sm transition flex items-center gap-2 ${styles.btnPrimary}`}
     >
       <span>{icon}</span>
       <span>{label}</span>
@@ -447,10 +473,10 @@ function ActionButton({ icon, label }) {
   );
 }
 
-function SkillGroup({ title, icon, children }) {
+function SkillGroup({ styles, title, icon, children }) {
   return (
-    <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
-      <div className="flex items-center gap-2 text-white/90 text-sm font-semibold mb-4">
+    <div className={`rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
+      <div className={`flex items-center gap-2 ${styles.textMain} text-sm font-semibold mb-4`}>
         <span>{icon}</span>
         <span className="tracking-wide">{title}</span>
       </div>
@@ -459,18 +485,21 @@ function SkillGroup({ title, icon, children }) {
   );
 }
 
-function SkillRow({ name, level }) {
+function SkillRow({ styles, name, level }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="w-40 text-white/80 text-sm">{name}</div>
+      <div className={`w-40 ${styles.textMain} text-sm`}>{name}</div>
 
       <div className="flex-1">
-        <div className="h-3 rounded-full bg-white/10 overflow-hidden border border-white/10">
-          <div className="h-full bg-white/40" style={{ width: levelToPct(level) }} />
+        <div className={`h-3 rounded-full overflow-hidden border ${styles.cardBorder} ${styles.cardBgSoft}`}>
+          <div
+            className={styles.textSub2}
+            style={{ width: levelToPct(level), height: "100%", background: "currentColor" }}
+          />
         </div>
       </div>
 
-      <div className="w-28 text-white/70 text-sm">{level}</div>
+      <div className={`w-28 ${styles.textSub} text-sm`}>{level}</div>
     </div>
   );
 }
@@ -487,37 +516,34 @@ function levelToPct(level) {
   return map[level] ?? "50%";
 }
 
-function QuickBtn({ label }) {
+function QuickBtn({ styles, label }) {
   return (
-    <button
-      type="button"
-      className="rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-2 text-white/85 text-sm transition"
-    >
+    <button type="button" className={`rounded-xl px-3 py-2 text-sm transition ${styles.btn}`}>
       {label}
     </button>
   );
 }
 
-function Input({ label, placeholder }) {
+function Input({ styles, label, placeholder }) {
   return (
     <label className="block">
-      <div className="text-white/70 text-xs mb-1">{label}</div>
+      <div className={`${styles.textSub} text-xs mb-1`}>{label}</div>
       <input
         placeholder={placeholder}
-        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-white/90 text-sm outline-none focus:border-white/20"
+        className={`w-full rounded-xl px-3 py-2 text-sm outline-none border ${styles.cardBorder} ${styles.cardBgSoft} ${styles.textMain}`}
       />
     </label>
   );
 }
 
-function Textarea({ label, placeholder }) {
+function Textarea({ styles, label, placeholder }) {
   return (
     <label className="block">
-      <div className="text-white/70 text-xs mb-1">{label}</div>
+      <div className={`${styles.textSub} text-xs mb-1`}>{label}</div>
       <textarea
         placeholder={placeholder}
         rows={4}
-        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-white/90 text-sm outline-none focus:border-white/20 resize-none"
+        className={`w-full rounded-xl px-3 py-2 text-sm outline-none resize-none border ${styles.cardBorder} ${styles.cardBgSoft} ${styles.textMain}`}
       />
     </label>
   );
