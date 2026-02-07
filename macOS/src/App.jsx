@@ -10,10 +10,10 @@ import aboutIconGlass from "./imgs/me.png";
 import aiIconGlass from "./imgs/bot.png";
 import funIconGlass from "./imgs/games.png";
 
-import projectsIconGlass from "./imgs/folders.png";
-import videosIconGlass from "./imgs/videos.png";
-import timerIconGlass from "./imgs/timer.png";
-import docIconGlass from "./imgs/doc.png";
+import projectsIconGlass from "./imgs/FolderGlass.png";
+import videosIconGlass from "./imgs/MediaGlass.png";
+import timerIconGlass from "./imgs/ProfileGlass.png";
+import docIconGlass from "./imgs/MailGlass.png";
 
 // macos icon set
 import aboutIconMac from "./imgs/aboutMac.png";
