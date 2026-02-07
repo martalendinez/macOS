@@ -45,8 +45,10 @@ export default function MacWindow({
       <motion.div
         onMouseDown={() => onFocus(id)}
         className={`fixed rounded-2xl overflow-hidden shadow-2xl ${
-          windowClassByTheme[uiTheme]
-        } ${isActive ? ringClass : "opacity-95"}`}
+         windowClassByTheme[uiTheme]
+  } ${isActive ? ringClass : "opacity-95"} ${
+    uiTheme === "macos" ? "text-black" : "text-white"
+  }`}
         style={{
           width,
           height,

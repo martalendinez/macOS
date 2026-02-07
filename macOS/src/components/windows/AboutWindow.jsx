@@ -1,6 +1,11 @@
 // src/components/windows/AboutWindow.jsx
 import { useMemo, useState } from "react";
-import aboutIcon from "../../imgs/Avatar1.png";
+
+// BIG overview photo (use a different image than Contact)
+import overviewPhoto from "../../imgs/profile.jpeg";
+
+// Small avatar for contact card
+import contactAvatar from "../../imgs/Avatar1.png";
 
 /* -------------------- LINK ROW (CLICKABLE) -------------------- */
 function LinkRow({ icon, label, value }) {
@@ -86,69 +91,67 @@ export default function AboutWindow() {
 
 /* -------------------- TABS -------------------- */
 
+/** ✅ NEW OVERVIEW: 2 columns, big photo, info cards */
 function OverviewTab() {
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
-        <div className="flex gap-6">
-          <div className="w-44 flex-shrink-0">
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-              
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-  <div className="w-16 h-16 rounded-full overflow-hidden mx-auto">
-    <img
-      src={aboutIcon}
-      alt="Profile"
-      className="w-full h-full object-cover opacity-90"
-    />
-  </div>
-
-  <div className="mt-3 text-white/70 text-xs">[Profile Photo]</div>
-</div>
-
-            </div>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* LEFT — BIG PHOTO CARD */}
+        <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+            <img
+              src={overviewPhoto}
+              alt="Marta portrait"
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="text-white text-lg font-semibold leading-tight">
+          <div className="mt-4">
+            <div className="text-white text-xl font-semibold leading-tight">
               Marta Lendínez
             </div>
-            <div className="text-white/80 text-sm mt-1">
+            <div className="text-white/75 text-sm mt-1">
               UX Engineer <span className="text-white/40">•</span> UI Designer
             </div>
 
-            <div className="mt-4 text-white/70 text-sm leading-relaxed">
+            <div className="mt-3 text-white/70 text-sm leading-relaxed">
               Master’s in Interactive Media Technology @{" "}
               <span className="text-white/90">KTH</span>
             </div>
-
-            <div className="mt-5 grid grid-cols-1 gap-3">
-              <MiniRow icon="🟢" title="Location" value="Stockholm, Sweden" />
-              <MiniRow
-                icon="🎓"
-                title="Education"
-                value="Master’s in Interactive Media Technology • KTH"
-              />
-              <MiniRow
-                icon="💼"
-                title="Experience"
-                value="UX/UI Designer • Frontend Developer • 2+ years"
-              />
-              <MiniRow
-                icon="🌍"
-                title="International background"
-                value="NL Netherlands • DE Germany • SE Sweden • CA Canada"
-              />
-              <MiniRow
-                icon="💡"
-                title="Design philosophy"
-                value="Empathy-driven, user-centered design with a focus on solving real problems through research, iteration, and collaboration."
-              />
-            </div>
           </div>
+        </div>
+
+        {/* RIGHT — INFO BLOCKS */}
+        <div className="space-y-4">
+          <InfoBlock icon="📍" title="Location" value="Stockholm, Sweden" />
+
+          <InfoBlock
+            icon="🎓"
+            title="Education"
+            value="Master’s in Interactive Media Technology • KTH"
+          />
+
+          <InfoBlock
+            icon="💼"
+            title="Experience"
+            value="UX/UI Designer • Frontend Developer • 1 year"
+          />
+
+          <InfoBlock
+            icon="🌍"
+            title="International background"
+            value="NL Netherlands • DE Germany • SE Sweden • CA Canada"
+          />
+
+          <InfoBlock
+            icon="💡"
+            title="Design philosophy"
+            value="I approach design with the belief that software is ultimately built for humans, so empathy, curiosity, and diverse perspectives sit at the center of my process!"
+          />
         </div>
       </div>
 
+      {/* ACTIONS */}
       <div className="flex gap-3">
         <ActionButton icon="⬇️" label="Download Resume" />
         <ActionButton icon="🗂️" label="View Projects" />
@@ -312,11 +315,11 @@ function SkillsTab() {
   return (
     <div className="space-y-5">
       <SkillGroup title="DESIGN TOOLS" icon="🎨">
-        <SkillRow name="Figma" level="Advanced"  />
+        <SkillRow name="Figma" level="Advanced" />
         <SkillRow name="Adobe XD" level="Advanced" />
-        <SkillRow name="Photoshop" level="Proficient"  />
-        <SkillRow name="Illustrator" level="Intermediate"  />
-        <SkillRow name="Framer" level="Basic"  />
+        <SkillRow name="Photoshop" level="Proficient" />
+        <SkillRow name="Illustrator" level="Intermediate" />
+        <SkillRow name="Framer" level="Basic" />
       </SkillGroup>
 
       <SkillGroup title="DEVELOPMENT" icon="💻">
@@ -326,9 +329,9 @@ function SkillsTab() {
         <SkillRow name="JavaScript" level="Advanced" />
         <SkillRow name="Tailwind CSS" level="Proficient" />
         <SkillRow name="Python" level="Advanced" />
-         <SkillRow name="SQL" level="Proficient" />
-         <SkillRow name="Docker" level="Basic" />
-         <SkillRow name="Git" level="Advanced" />
+        <SkillRow name="SQL" level="Proficient" />
+        <SkillRow name="Docker" level="Basic" />
+        <SkillRow name="Git" level="Advanced" />
       </SkillGroup>
 
       <SkillGroup title="UX RESEARCH & METHODS" icon="🔬">
@@ -346,18 +349,18 @@ function SkillsTab() {
 function ContactTab() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Left card */}
       <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
         <div className="flex items-center gap-3">
-  <div className="w-11 h-11 rounded-full overflow-hidden">
-    <img
-      src={aboutIcon}
-      alt="Profile"
-      className="w-full h-full object-cover"
-    />
-  </div>
+          <div className="w-11 h-11 rounded-full overflow-hidden">
+            <img
+              src={contactAvatar}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-  <div>
-
+          <div>
             <div className="text-white font-semibold">Marta Casandra Lendínez</div>
             <div className="text-white/70 text-sm">UX Engineer</div>
           </div>
@@ -376,6 +379,7 @@ function ContactTab() {
         </div>
       </div>
 
+      {/* Right card */}
       <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
         <div className="text-white font-semibold mb-2">Let’s Connect!</div>
         <div className="text-white/75 text-sm leading-relaxed">
@@ -419,10 +423,10 @@ function ContactTab() {
 
 /* -------------------- UI BITS -------------------- */
 
-function MiniRow({ icon, title, value }) {
+function InfoBlock({ icon, title, value }) {
   return (
-    <div className="rounded-xl bg-white/5 border border-white/10 p-4">
-      <div className="flex items-center gap-2 text-white/85 text-sm font-medium">
+    <div className="rounded-xl bg-white/6 border border-white/10 p-4">
+      <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
         <span className="text-base">{icon}</span>
         <span>{title}</span>
       </div>
@@ -455,7 +459,7 @@ function SkillGroup({ title, icon, children }) {
   );
 }
 
-function SkillRow({ name, level, years }) {
+function SkillRow({ name, level }) {
   return (
     <div className="flex items-center gap-4">
       <div className="w-40 text-white/80 text-sm">{name}</div>
@@ -473,6 +477,7 @@ function SkillRow({ name, level, years }) {
 
 function levelToPct(level) {
   const map = {
+    Basic: "20%",
     "Working knowledge": "25%",
     Intermediate: "40%",
     Proficient: "55%",
