@@ -1,6 +1,6 @@
 // src/components/windows/AboutWindow.jsx
 import { useMemo, useState } from "react";
-import aboutIcon from "../../imgs/me.png";
+import aboutIcon from "../../imgs/Avatar1.png";
 
 /* -------------------- LINK ROW (CLICKABLE) -------------------- */
 function LinkRow({ icon, label, value }) {
@@ -93,14 +93,19 @@ function OverviewTab() {
         <div className="flex gap-6">
           <div className="w-44 flex-shrink-0">
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-              <div className="aspect-square rounded-xl border border-dashed border-white/25 flex items-center justify-center">
-                <img
-                  src={aboutIcon}
-                  alt="Profile"
-                  className="w-16 h-16 object-contain opacity-90"
-                />
-              </div>
-              <div className="mt-3 text-white/70 text-xs">[Profile Photo]</div>
+              
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+  <div className="w-16 h-16 rounded-full overflow-hidden mx-auto">
+    <img
+      src={aboutIcon}
+      alt="Profile"
+      className="w-full h-full object-cover opacity-90"
+    />
+  </div>
+
+  <div className="mt-3 text-white/70 text-xs">[Profile Photo]</div>
+</div>
+
             </div>
           </div>
 
@@ -307,28 +312,32 @@ function SkillsTab() {
   return (
     <div className="space-y-5">
       <SkillGroup title="DESIGN TOOLS" icon="🎨">
-        <SkillRow name="Figma" level="Expert" years="5 years" />
-        <SkillRow name="Sketch" level="Advanced" years="3 years" />
-        <SkillRow name="Adobe XD" level="Proficient" years="2 years" />
-        <SkillRow name="Illustrator" level="Intermediate" years="" />
-        <SkillRow name="Photoshop" level="Working knowledge" years="" />
+        <SkillRow name="Figma" level="Advanced"  />
+        <SkillRow name="Adobe XD" level="Advanced" />
+        <SkillRow name="Photoshop" level="Proficient"  />
+        <SkillRow name="Illustrator" level="Intermediate"  />
+        <SkillRow name="Framer" level="Basic"  />
       </SkillGroup>
 
       <SkillGroup title="DEVELOPMENT" icon="💻">
-        <SkillRow name="React" level="Advanced" years="4 years" />
-        <SkillRow name="TypeScript" level="Advanced" years="3 years" />
-        <SkillRow name="HTML/CSS" level="Expert" years="6 years" />
-        <SkillRow name="JavaScript" level="Advanced" years="4 years" />
-        <SkillRow name="Tailwind CSS" level="Proficient" years="2 years" />
+        <SkillRow name="React" level="Advanced" />
+        <SkillRow name="TypeScript" level="Advanced" />
+        <SkillRow name="HTML/CSS" level="Expert" />
+        <SkillRow name="JavaScript" level="Advanced" />
+        <SkillRow name="Tailwind CSS" level="Proficient" />
+        <SkillRow name="Python" level="Advanced" />
+         <SkillRow name="SQL" level="Proficient" />
+         <SkillRow name="Docker" level="Basic" />
+         <SkillRow name="Git" level="Advanced" />
       </SkillGroup>
 
       <SkillGroup title="UX RESEARCH & METHODS" icon="🔬">
         <SkillRow name="User Interviews" level="Expert" />
-        <SkillRow name="Usability Testing" level="Advanced" />
+        <SkillRow name="Usability Testing" level="Expert" />
         <SkillRow name="Survey Design" level="Advanced" />
         <SkillRow name="Persona Creation" level="Advanced" />
         <SkillRow name="Journey Mapping" level="Advanced" />
-        <SkillRow name="A/B Testing" level="Intermediate" />
+        <SkillRow name="A/B Testing" level="Advanced" />
       </SkillGroup>
     </div>
   );
@@ -339,8 +348,16 @@ function ContactTab() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <div className="rounded-2xl bg-white/6 border border-white/10 p-5">
         <div className="flex items-center gap-3">
-          <img src={aboutIcon} alt="Profile" className="w-11 h-11 object-contain" />
-          <div>
+  <div className="w-11 h-11 rounded-full overflow-hidden">
+    <img
+      src={aboutIcon}
+      alt="Profile"
+      className="w-full h-full object-cover"
+    />
+  </div>
+
+  <div>
+
             <div className="text-white font-semibold">Marta Casandra Lendínez</div>
             <div className="text-white/70 text-sm">UX Engineer</div>
           </div>
@@ -450,7 +467,6 @@ function SkillRow({ name, level, years }) {
       </div>
 
       <div className="w-28 text-white/70 text-sm">{level}</div>
-      <div className="w-20 text-white/60 text-sm text-right">{years}</div>
     </div>
   );
 }
