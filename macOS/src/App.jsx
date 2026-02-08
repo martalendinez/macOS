@@ -34,6 +34,8 @@ import useWindowManager from "./components/windows/useWindowManager";
 import SettingsWindow from "./components/windows/SettingsWindow";
 import AboutWindow from "./components/windows/AboutWindow";
 import ProjectsWindow from "./components/windows/ProjectsWindow";
+import VideosWindow from "./components/windows/VideosWindow";
+
 
 export default function App() {
   const [mouseX, setMouseX] = useState(null);
@@ -130,7 +132,12 @@ export default function App() {
         width: 920,
         height: 600,
         initialPos: { x: 200, y: 110 },
-      },
+      },videos:{title: "Videos",
+      Component: VideosWindow,
+      width: 860,
+      height: 520,
+      initialPos: { x: 240, y: 130 },},
+      
     }),
     []
   );
