@@ -28,7 +28,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
           Extras & Fun
         </div>
         <div className={`${styles.textSub} text-sm mt-1`}>
-          Little interactive apps inside the portfolio OS.
+         Welcome to the playground! This is where the fun little apps live 😊
         </div>
         <div className={`mt-4 h-px ${styles.divider}`} />
       </div>
@@ -40,7 +40,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
             styles={styles}
             emoji="🎵"
             title="Music"
-            desc="Playlists + “Now Playing”"
+            desc="Drop a track — the OS is listening!"
             cta="Open Music"
             onClick={() => onOpenWindow?.("music")}
           />
@@ -49,7 +49,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
             styles={styles}
             emoji="🗺️"
             title="Interactive Map"
-            desc="Where I’ve been (timeline + pins)"
+            desc="Explore my little life‑map — where I’ve lived and learned."
             cta="Open Map"
             onClick={() => onOpenWindow?.("map")}
           />
@@ -58,7 +58,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
             styles={styles}
             emoji="🧑‍💻"
             title="Terminal"
-            desc="Commands + ASCII mini-games"
+            desc="Enter the nerd zone. Play a few minigames."
             cta="Open Terminal"
             onClick={() => onOpenWindow?.("terminal")}
           />
@@ -66,10 +66,10 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
 
         {/* Optional: a second section */}
         <div className={`mt-6 rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
-          <div className={`${styles.textStrong} font-semibold`}>Tip</div>
+          <div className={`${styles.textStrong} font-semibold`}>💡✨ Tip</div>
           <div className={`${styles.textSub} text-sm mt-1 leading-relaxed`}>
             You can keep Music open while exploring other windows — it’s designed
-            to feel like a tiny OS.
+            to feel like a tiny OS!
           </div>
         </div>
       </div>
