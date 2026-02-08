@@ -8,6 +8,10 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 
+// Example import (add more as needed)
+import spain1 from "../../imgs/map/canada1.jpg";
+import spain2 from "../../imgs/map/canada2.jpg";
+
 // Default Leaflet marker icon
 const DefaultIcon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -35,7 +39,7 @@ const placeDetails = {
     ],
     year: "2002–2020",
     coords: [40.4168, -3.7038],
-    photos: ["/photos/spain1.jpg", "/photos/spain2.jpg"],
+    photos: [spain1, spain2, spain1],
   },
   nl: {
     title: "Netherlands",
@@ -47,7 +51,7 @@ const placeDetails = {
     ],
     year: "2020–2024",
     coords: [52.3676, 4.9041],
-    photos: ["/photos/nl1.jpg", "/photos/nl2.jpg"],
+    photos: [],
   },
   germany: {
     title: "Germany",
@@ -59,7 +63,7 @@ const placeDetails = {
     ],
     year: "2022–2023",
     coords: [52.52, 13.405],
-    photos: ["/photos/germany1.jpg", "/photos/germany2.jpg"],
+    photos: [],
   },
   stockholm: {
     title: "Stockholm, Sweden",
@@ -68,11 +72,11 @@ const placeDetails = {
       "The first place where everything truly clicked — life, friends, career…",
       "Found friends who felt like family and a rhythm that finally felt like me 🤍",
       "Fika is a lifestyle 🧘‍♀️",
-      "Where this OS was built!"
+      "Where this OS was built!",
     ],
     year: "2024 →",
     coords: [59.3293, 18.0686],
-    photos: ["/photos/stockholm1.jpg", "/photos/stockholm2.jpg"],
+    photos: [],
   },
   canada: {
     title: "Canada",
@@ -84,14 +88,19 @@ const placeDetails = {
     ],
     year: "2025",
     coords: [43.6532, -79.3832],
-    photos: ["/photos/canada1.jpg", "/photos/canada2.jpg"],
+    photos: [],
   },
 };
 
 export default function MapWindow({ uiTheme = "glass" }) {
   const isMac = uiTheme === "macos";
   const [selected, setSelected] = useState("stockholm");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [showPhotos, setShowPhotos] = useState(false);
+
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState(0);
+  const [zoomed, setZoomed] = useState(false);
 
   const styles = useMemo(() => {
     return {
@@ -101,7 +110,6 @@ export default function MapWindow({ uiTheme = "glass" }) {
       cardBg: isMac ? "bg-white" : "bg-white/6",
       cardBorder: isMac ? "border-black/10" : "border-white/10",
       divider: isMac ? "bg-black/10" : "bg-white/10",
-      chip: isMac ? "bg-black/5 border-black/10" : "bg-white/5 border-white/10",
     };
   }, [isMac]);
 
@@ -111,8 +119,31 @@ export default function MapWindow({ uiTheme = "glass" }) {
     { key: "germany", label: "Stuttgart, Germany 🇩🇪", year: placeDetails.germany.year },
     { key: "canada", label: "Hamilton, Canada 🇨🇦", year: placeDetails.canada.year },
     { key: "stockholm", label: "Stockholm, Sweden 🇸🇪", year: placeDetails.stockholm.year },
-    
   ];
+
+  const current = placeDetails[selected];
+  const photos = current.photos || [];
+
+  const openViewer = (i) => {
+    setViewerIndex(i);
+    setZoomed(false);
+    setViewerOpen(true);
+  };
+
+  const closeViewer = () => {
+    setViewerOpen(false);
+    setZoomed(false);
+  };
+
+  const next = () => {
+    setViewerIndex((i) => (i + 1) % photos.length);
+    setZoomed(false);
+  };
+
+  const prev = () => {
+    setViewerIndex((i) => (i - 1 + photos.length) % photos.length);
+    setZoomed(false);
+  };
 
   return (
     <div className={`h-full flex flex-col ${styles.textMain}`}>
@@ -129,21 +160,22 @@ export default function MapWindow({ uiTheme = "glass" }) {
 
       {/* Layout */}
       <div className="flex-1 overflow-auto px-6 pb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Left: Map + fun facts + photos */}
+        
+        {/* LEFT SIDE */}
         <div
           className={`lg:col-span-2 rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5 flex flex-col`}
         >
           <div className={`${styles.textSub} text-xs mb-3`}>Interactive map</div>
 
-          {/* Map */}
-          <div className="flex-1 rounded-xl overflow-hidden border relative">
+          {/* FIXED HEIGHT MAP — NO BORDER */}
+          <div className="h-[260px] lg:h-[280px] rounded-xl overflow-hidden relative">
             <MapContainer
-              center={placeDetails[selected].coords}
+              center={current.coords}
               zoom={5}
               scrollWheelZoom={false}
               className="w-full h-full"
             >
-              <Recenter coords={placeDetails[selected].coords} />
+              <Recenter coords={current.coords} />
 
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -165,10 +197,10 @@ export default function MapWindow({ uiTheme = "glass" }) {
           {/* Fun facts */}
           <div className="mt-5">
             <div className={`${styles.textStrong} text-sm mb-2`}>
-              Fun facts — {placeDetails[selected].title}
+              Fun facts — {current.title}
             </div>
             <ul className="list-disc ml-5 space-y-1 text-sm">
-              {placeDetails[selected].funFacts.map((fact, i) => (
+              {current.funFacts.map((fact, i) => (
                 <li key={i} className={styles.textSub}>
                   {fact}
                 </li>
@@ -176,40 +208,40 @@ export default function MapWindow({ uiTheme = "glass" }) {
             </ul>
           </div>
 
-          {/* Photo gallery */}
+          {/* SEE PHOTOS TOGGLE */}
           <div className="mt-5">
             <button
-              onClick={() => setDrawerOpen((prev) => !prev)}
+              onClick={() => setShowPhotos((prev) => !prev)}
               className="text-sm underline opacity-80 hover:opacity-100"
             >
-              {drawerOpen ? "Hide photos" : "View photos"}
+              {showPhotos ? "Hide photos" : "See photos"}
             </button>
 
-            {drawerOpen && (
-              <div className={`mt-3 rounded-xl border ${styles.chip} p-4`}>
-                <div className={`${styles.textStrong} text-sm mb-2`}>
-                  Photos — {placeDetails[selected].title}
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {(placeDetails[selected].photos || []).map((src, i) => (
-                    <div
-                      key={i}
-                      className="w-full h-28 bg-black/10 rounded-lg overflow-hidden"
-                    >
-                      <img
-                        src={src}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
+            {showPhotos && (
+              <div className="mt-4">
+                {photos.length === 0 ? (
+                  <div className={`${styles.textSub} text-xs opacity-70`}>
+                    No photos added yet.
+                  </div>
+                ) : (
+                  <div className="flex gap-3 overflow-x-auto pb-2">
+                    {photos.map((src, i) => (
+                      <button
+                        key={i}
+                        onClick={() => openViewer(i)}
+                        className="w-32 h-24 rounded-xl overflow-hidden border border-black/10 hover:scale-[1.02] transition"
+                      >
+                        <img src={src} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
 
-        {/* Right: Places list */}
+        {/* RIGHT SIDE */}
         <div
           className={`lg:col-span-1 rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5 flex flex-col`}
         >
@@ -222,10 +254,10 @@ export default function MapWindow({ uiTheme = "glass" }) {
             {places.map((p) => (
               <button
                 key={p.key}
-                type="button"
                 onClick={() => {
                   setSelected(p.key);
-                  setDrawerOpen(false);
+                  setShowPhotos(false);
+                  setViewerOpen(false);
                 }}
                 className={`w-full text-left rounded-xl px-3 py-3 border ${styles.cardBorder} transition ${
                   selected === p.key
@@ -242,7 +274,7 @@ export default function MapWindow({ uiTheme = "glass" }) {
                     {p.label}
                   </div>
                   {selected === p.key && (
-                    <span className="text-[10px] uppercase tracking-wide opacity-70">
+                    <span className="text-[10px] uppercase opacity-70">
                       Selected
                     </span>
                   )}
@@ -251,12 +283,76 @@ export default function MapWindow({ uiTheme = "glass" }) {
               </button>
             ))}
           </div>
-
-          <div className={`${styles.textSub} text-[11px] mt-4 opacity-70`}>
-            Tip 💡: Click a place to update the map, fun facts, and photos.
-          </div>
         </div>
       </div>
+
+      {/* FULLSCREEN VIEWER */}
+      {viewerOpen && photos.length > 0 && (
+        <div className="
+  fixed inset-0 z-[9999]
+  backdrop-blur-3xl 
+  supports-[backdrop-filter]:backdrop-saturate-150
+  bg-black/20
+  flex flex-col
+">
+
+          
+          {/* Close button */}
+          <div className="flex justify-end px-6 pt-6">
+            <button
+              onClick={closeViewer}
+              className="text-white text-2xl font-light hover:opacity-70 transition"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Image + arrows */}
+          <div className="flex-1 flex items-center justify-center px-6 pb-6">
+            <button
+              onClick={prev}
+              className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white mr-4"
+            >
+              ‹
+            </button>
+
+            <div
+              className="relative max-w-5xl max-h-[80vh] w-full flex items-center justify-center"
+              onClick={() => setZoomed((z) => !z)}
+            >
+              <img
+                src={photos[viewerIndex]}
+                className={`rounded-2xl shadow-2xl transition-transform duration-300 ${
+                  zoomed ? "scale-105" : "scale-100"
+                } max-h-[80vh] w-auto object-contain`}
+              />
+            </div>
+
+            <button
+              onClick={next}
+              className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white ml-4"
+            >
+              ›
+            </button>
+          </div>
+
+          {/* Dots */}
+          <div className="flex justify-center pb-6 gap-1">
+            {photos.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setViewerIndex(i);
+                  setZoomed(false);
+                }}
+                className={`w-2 h-2 rounded-full ${
+                  i === viewerIndex ? "bg-white" : "bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
