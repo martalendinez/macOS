@@ -39,7 +39,7 @@ const placeDetails = {
     ],
     year: "2002–2020",
     coords: [40.4168, -3.7038],
-    photos: [spain1, spain2, spain1],
+    photos: [spain1, spain2, spain1, spain2],
   },
   nl: {
     title: "Netherlands",
@@ -324,7 +324,8 @@ export default function MapWindow({ uiTheme = "glass" }) {
                 src={photos[viewerIndex]}
                 className={`rounded-2xl shadow-2xl transition-transform duration-300 ${
                   zoomed ? "scale-105" : "scale-100"
-                } max-h-[80vh] w-auto object-contain`}
+                } max-h-[65vh]
+ w-auto object-contain`}
               />
             </div>
 
