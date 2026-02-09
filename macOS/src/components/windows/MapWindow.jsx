@@ -23,6 +23,28 @@ import canada8 from "../../imgs/map/canada8.jpg";
 import canada9 from "../../imgs/map/canada9.jpg";
 import canada10 from "../../imgs/map/canada10.jpg";
 
+import sweden1 from "../../imgs/map/sweden1.jpg";
+import sweden2 from "../../imgs/map/sweden2.jpg";
+import sweden3 from "../../imgs/map/sweden3.jpg";
+import sweden4 from "../../imgs/map/sweden4.jpg";
+import sweden5 from "../../imgs/map/sweden5.jpg";
+import sweden6 from "../../imgs/map/sweden6.jpg";
+import sweden7 from "../../imgs/map/sweden7.jpg";
+import sweden8 from "../../imgs/map/sweden8.jpg";
+import sweden9 from "../../imgs/map/sweden9.jpg";
+
+import NL1 from "../../imgs/map/NL1.jpg";
+import NL2 from "../../imgs/map/NL2.jpg";
+import NL3 from "../../imgs/map/NL3.jpg";
+import NL4 from "../../imgs/map/NL4.jpg";
+import NL5 from "../../imgs/map/NL5.jpg";
+
+import germany1 from "../../imgs/map/germany1.jpg";
+import germany2 from "../../imgs/map/germany2.jpg";
+import germany3 from "../../imgs/map/germany3.jpg";
+import germany4 from "../../imgs/map/germany4.jpg";
+import germany5 from "../../imgs/map/germany5.jpg";
+
 // Default Leaflet marker icon
 const DefaultIcon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -62,7 +84,7 @@ const placeDetails = {
     ],
     year: "2020–2024",
     coords: [52.3676, 4.9041],
-    photos: [],
+    photos: [NL1, NL2, NL3, NL4, NL5],
   },
   germany: {
     title: "Germany",
@@ -74,7 +96,7 @@ const placeDetails = {
     ],
     year: "2022–2023",
     coords: [52.52, 13.405],
-    photos: [],
+    photos: [germany1, germany2, germany3, germany4, germany5],
   },
   stockholm: {
     title: "Stockholm, Sweden",
@@ -87,7 +109,7 @@ const placeDetails = {
     ],
     year: "2024 →",
     coords: [59.3293, 18.0686],
-    photos: [],
+    photos: [sweden1, sweden2, sweden3, sweden4, sweden5, sweden6, sweden7, sweden8, sweden9],
   },
   canada: {
     title: "Canada",
