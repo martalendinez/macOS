@@ -15,8 +15,10 @@ body {
 }
 
 /* GLASS SCROLLBAR */
+/* For Chrome / Safari */
 ::-webkit-scrollbar {
-  width: 8px;
+  height: 6px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -32,6 +34,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.35);
 }
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
 
 /* Prettier range slider */
 .slider::-webkit-slider-runnable-track {

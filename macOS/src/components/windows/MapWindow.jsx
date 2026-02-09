@@ -233,7 +233,9 @@ export default function MapWindow({ uiTheme = "glass" }) {
             pb-2 
             whitespace-nowrap 
             snap-x snap-mandatory 
-            scrollbar-none
+            scrollbar-thin 
+    scrollbar-thumb-white/30
+    scrollbar-track-transparent
           "
         >
           {photos.map((src, i) => (
