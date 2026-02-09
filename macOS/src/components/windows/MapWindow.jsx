@@ -88,7 +88,7 @@ const placeDetails = {
     ],
     year: "2025",
     coords: [43.6532, -79.3832],
-    photos: [],
+    photos: [spain1, ],
   },
 };
 
