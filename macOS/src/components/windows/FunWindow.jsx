@@ -58,7 +58,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
             styles={styles}
             emoji="🧑‍💻"
             title="Terminal"
-            desc="Enter the nerd zone. Play a few minigames."
+            desc="Enter the nerd zone. Code. Explore. Play."
             cta="Open Terminal"
             onClick={() => onOpenWindow?.("terminal")}
           />
