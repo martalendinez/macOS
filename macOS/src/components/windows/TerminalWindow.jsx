@@ -20,6 +20,24 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     []
   );
 
+function levelToBar(level) {
+  const map = {
+    Basic: 2,
+    Intermediate: 3,
+    Proficient: 4,
+    Advanced: 5,
+    Expert: 6,
+  };
+
+  const filled = map[level] ?? 3;
+  const total = 6;
+
+  return "●".repeat(filled) + "○".repeat(total - filled);
+}
+
+
+
+
   function buildWelcomeLines() {
     const lines = [
       "Last login: Thu Jan 22 19:30:45",
@@ -107,6 +125,39 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
   ]);
   return;
 }
+
+if (lower === "skills") {
+  appendLines([
+    "DESIGN TOOLS 🎨",
+    `Figma            ${levelToBar("Advanced")}  Advanced`,
+    `Adobe XD         ${levelToBar("Advanced")}  Advanced`,
+    `Photoshop        ${levelToBar("Proficient")}  Proficient`,
+    `Illustrator      ${levelToBar("Intermediate")}  Intermediate`,
+    `Framer           ${levelToBar("Basic")}  Basic`,
+    "",
+    "DEVELOPMENT 💻",
+    `React            ${levelToBar("Advanced")}  Advanced`,
+    `TypeScript       ${levelToBar("Advanced")}  Advanced`,
+    `HTML/CSS         ${levelToBar("Expert")}  Expert`,
+    `JavaScript       ${levelToBar("Advanced")}  Advanced`,
+    `Tailwind CSS     ${levelToBar("Proficient")}  Proficient`,
+    `Python           ${levelToBar("Advanced")}  Advanced`,
+    `SQL              ${levelToBar("Proficient")}  Proficient`,
+    `Docker           ${levelToBar("Basic")}  Basic`,
+    `Git              ${levelToBar("Advanced")}  Advanced`,
+    "",
+    "UX RESEARCH & METHODS 🔬",
+    `User Interviews  ${levelToBar("Expert")}  Expert`,
+    `Usability Testing${levelToBar("Expert")}  Expert`,
+    `Survey Design    ${levelToBar("Advanced")}  Advanced`,
+    `Persona Creation ${levelToBar("Advanced")}  Advanced`,
+    `Journey Mapping  ${levelToBar("Advanced")}  Advanced`,
+    `A/B Testing      ${levelToBar("Advanced")}  Advanced`,
+    "",
+  ]);
+  return;
+}
+
 
 
     if (lower === "whoami") {
