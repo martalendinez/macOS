@@ -40,7 +40,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
             styles={styles}
             emoji="🎵"
             title="Music"
-            desc="Explore my favorite tracks and play one."
+            desc="Explore my go‑to songs and hit play on one."
             cta="Open Music"
             onClick={() => onOpenWindow?.("music")}
           />
