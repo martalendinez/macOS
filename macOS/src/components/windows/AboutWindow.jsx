@@ -58,9 +58,9 @@ export default function AboutWindow({ uiTheme = "glass", onOpenWindow }) {
   // theme tokens
   const styles = useMemo(() => {
     return {
-      // accent
-      accentText: isMac ? "text-emerald-700" : "text-white",
-      accentUnderline: isMac ? "bg-emerald-600" : "bg-white/70",
+      // ✅ accent via CSS var (only “pops” in macOS mode)
+      accentText: isMac ? "text-[hsl(var(--accent))]" : "text-white",
+      accentUnderline: isMac ? "bg-[hsl(var(--accent))]" : "bg-white/70",
 
       // text
       textMain: isMac ? "text-black/80" : "text-white/90",
@@ -77,22 +77,23 @@ export default function AboutWindow({ uiTheme = "glass", onOpenWindow }) {
       cardBorder: isMac ? "border-black/10" : "border-white/10",
       divider: isMac ? "bg-black/10" : "bg-white/10",
 
-      // buttons (neutral, like your screenshot)
+      // ✅ buttons (neutral, hover uses accent via CSS var)
       btn: isMac
-        ? "bg-white border border-black/10 text-black/80 hover:bg-emerald-50 hover:border-emerald-200 transition"
+        ? "bg-white border border-black/10 text-black/80 hover:bg-[hsl(var(--accent)/0.10)] hover:border-[hsl(var(--accent)/0.35)] transition"
         : "bg-white/10 border border-white/10 hover:bg-white/15 text-white/90",
 
-      // primary action buttons should ALSO be neutral (not solid green)
       btnPrimary: isMac
-        ? "bg-white border border-black/10 text-black/80 hover:bg-emerald-50 hover:border-emerald-200 transition"
+        ? "bg-white border border-black/10 text-black/80 hover:bg-[hsl(var(--accent)/0.10)] hover:border-[hsl(var(--accent)/0.35)] transition"
         : "bg-white/15 border border-white/10 hover:bg-white/20 text-white",
 
-      // inputs focus ring
-      inputFocus: isMac ? "focus:ring-4 focus:ring-emerald-200" : "focus:ring-4 focus:ring-white/20",
+      // ✅ inputs focus ring uses accent
+      inputFocus: isMac
+        ? "focus:ring-4 focus:ring-[hsl(var(--accent)/0.25)] focus:border-[hsl(var(--accent)/0.35)]"
+        : "focus:ring-4 focus:ring-white/20",
 
-      // tabs
-      tab: isMac ? "text-black/60 hover:text-emerald-700" : "text-white/80 hover:text-white/95",
-      tabActive: isMac ? "text-emerald-700" : "text-white",
+      // ✅ tabs (hover + active use accent)
+      tab: isMac ? "text-black/60 hover:text-[hsl(var(--accent))]" : "text-white/80 hover:text-white/95",
+      tabActive: isMac ? "text-[hsl(var(--accent))]" : "text-white",
     };
   }, [isMac]);
 
@@ -245,8 +246,7 @@ function ExperienceTab({ styles }) {
       year: "2026",
       title: (
         <>
-          Master’s Interactive Media Technology{" "}
-          <span className={styles.accentText}>@</span>{" "}
+          Master’s Interactive Media Technology <span className={styles.accentText}>@</span>{" "}
           <a
             href="https://www.kth.se/en/studies/master/interactive-media-technology"
             target="_blank"
@@ -264,8 +264,7 @@ function ExperienceTab({ styles }) {
       year: "2024-25",
       title: (
         <>
-          Vice Project Manager{" "}
-          <span className={styles.accentText}>@</span>{" "}
+          Vice Project Manager <span className={styles.accentText}>@</span>{" "}
           <a
             href="https://studieresan.se"
             target="_blank"
@@ -289,8 +288,7 @@ function ExperienceTab({ styles }) {
       year: "2024",
       title: (
         <>
-          Full Stack Intern{" "}
-          <span className={styles.accentText}>@</span>{" "}
+          Full Stack Intern <span className={styles.accentText}>@</span>{" "}
           <a
             href="https://www.pridecom.es"
             target="_blank"
@@ -315,8 +313,7 @@ function ExperienceTab({ styles }) {
       year: "2023",
       title: (
         <>
-          Programmer Intern{" "}
-          <span className={styles.accentText}>@</span>{" "}
+          Programmer Intern <span className={styles.accentText}>@</span>{" "}
           <a
             href="https://www.extra-nice.net"
             target="_blank"
@@ -339,8 +336,7 @@ function ExperienceTab({ styles }) {
       year: "2020-24",
       title: (
         <>
-          BEng Communication & Multimedia Design{" "}
-          <span className={styles.accentText}>@</span>{" "}
+          BEng Communication & Multimedia Design <span className={styles.accentText}>@</span>{" "}
           <a
             href="https://www.hanze.nl/en"
             target="_blank"
@@ -541,15 +537,12 @@ function SkillRow({ styles, name, level, isMac }) {
       <div className={`w-40 ${styles.textMain} text-sm`}>{name}</div>
 
       <div className="flex-1">
-        <div className="h-1.5 rounded-full bg-black/10">
-  <div
-    className={`h-full rounded-full ${
-      isMac ? "bg-emerald-500" : "bg-white/70"
-    }`}
-    style={{ width: levelToPct(level) }}
-  />
-</div>
-
+        <div className={`h-1.5 rounded-full ${isMac ? "bg-black/10" : "bg-white/15"}`}>
+          <div
+            className={`h-full rounded-full ${isMac ? "bg-[hsl(var(--accent))]" : "bg-white/70"}`}
+            style={{ width: levelToPct(level) }}
+          />
+        </div>
       </div>
 
       <div className={`w-28 ${styles.textSub} text-sm`}>{level}</div>

@@ -47,6 +47,9 @@ import EmployerBrandingCaseStudyWindow from "./components/windows/EmployerBrandi
 export default function App() {
   const [mouseX, setMouseX] = useState(null);
 
+  // ✅ Accent (macOS accent color)
+  const [accent, setAccent] = useState("emerald"); // default
+
   // wallpaper theme (background)
   const [theme, setTheme] = useState("light");
   const [wallpaperUrl, setWallpaperUrl] = useState(null);
@@ -63,6 +66,20 @@ export default function App() {
     const t = setTimeout(() => setLoaded(true), 40);
     return () => clearTimeout(t);
   }, []);
+
+  // ✅ Write accent into CSS var so all components can use it
+  useEffect(() => {
+    const ACCENTS = {
+      emerald: "158 64% 42%",
+      sky: "199 89% 48%",
+      violet: "262 83% 58%",
+      rose: "346 77% 50%",
+      amber: "38 92% 50%",
+    };
+
+    const v = ACCENTS[accent] ?? ACCENTS.emerald;
+    document.documentElement.style.setProperty("--accent", v);
+  }, [accent]);
 
   const {
     openWindows,
@@ -212,7 +229,6 @@ export default function App() {
         style={{
           backgroundImage: `url(${wallpaperUrl ?? (theme === "light" ? bgLight : bgDark)})`,
         }}
-        // ✅ IMPORTANT: no scale here (scale adds transform -> breaks fixed windows)
         initial={{ opacity: 0, filter: "blur(10px)" }}
         animate={loaded ? { opacity: 1, filter: "blur(0px)" } : {}}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -328,6 +344,8 @@ export default function App() {
                   setWallpaperUrl={setWallpaperUrl}
                   fontScale={fontScale}
                   setFontScale={setFontScale}
+                  accent={accent}
+                  setAccent={setAccent}
                   onOpenWindow={openWindow}
                 />
               </MacWindow>
