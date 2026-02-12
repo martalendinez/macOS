@@ -92,17 +92,19 @@ export default function ProjectsWindow({ uiTheme = "glass", onOpenWindow }) {
 
 const chipClass =
   uiTheme === "macos"
-    ? "bg-white text-black/80 border border-black/10 hover:bg-emerald-50 hover:border-emerald-200 transition"
+    ? "bg-white text-black/80 border border-black/10 hover:bg-[hsl(var(--accent)/0.12)] hover:border-[hsl(var(--accent)/0.35)] transition"
     : "bg-white/10 text-white/90 border border-white/15";
+
 
 
   const textMain = uiTheme === "macos" ? "text-black/90" : "text-white/95";
   const textSub = uiTheme === "macos" ? "text-black/60" : "text-white/70";
 
-  const linkBtnClass =
+ const linkBtnClass =
   uiTheme === "macos"
-    ? "bg-white text-black/80 border border-black/10 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition"
+    ? "bg-white text-black/80 border border-black/10 hover:bg-[hsl(var(--accent)/0.12)] hover:border-[hsl(var(--accent)/0.35)] hover:text-[hsl(var(--accent))] transition"
     : "bg-white/10 hover:bg-white/15 text-white/90 border border-white/15";
+
 
 
   function handleLinkClick(link) {
@@ -139,12 +141,12 @@ const chipClass =
                   key={tag}
                   onClick={() => setActiveTag(tag)}
                   className={`px-3 py-1 rounded-full text-sm transition-all ${
-                    active
+                   active
   ? uiTheme === "macos"
-    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+    ? "bg-[hsl(var(--accent)/0.12)] text-[hsl(var(--accent))] border border-[hsl(var(--accent)/0.35)]"
+    : "bg-white/20 text-white"
+  : chipClass
 
-                        : "bg-white/20 text-white"
-                      : chipClass
                   }`}
                 >
                   {tag}
