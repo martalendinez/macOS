@@ -2,32 +2,15 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ✅ Add your images here (recommended folder: /src/imgs/case-study/)
-// Example imports:
-// import hero01 from "../../imgs/case-study/hero-dashboard.png";
-// import competitors01 from "../../imgs/case-study/competitors.png";
-// import interviews01 from "../../imgs/case-study/interviews.png";
-// import iaFlow01 from "../../imgs/case-study/ia-flow.png";
-// import designSystem01 from "../../imgs/case-study/design-system.png";
-// import lofi01 from "../../imgs/case-study/lofi.png";
-// import hifi01 from "../../imgs/case-study/hifi.png";
-// import architecture01 from "../../imgs/case-study/architecture.png";
-// import security01 from "../../imgs/case-study/security.png";
-// import dashboard01 from "../../imgs/case-study/dashboard.png";
-// import recos01 from "../../imgs/case-study/recommendations.png";
-// import testing01 from "../../imgs/case-study/testing.png";
-// import iterations01 from "../../imgs/case-study/iterations.png";
-// import final01 from "../../imgs/case-study/final-collage.png";
-
 export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
   const isMac = uiTheme === "macos";
 
   // -----------------------------
-  // Accent (green in macOS mode)
+  // ✅ Accent (macOS uses global --accent)
   // -----------------------------
-  const accentText = isMac ? "text-emerald-700" : "text-sky-300";
-  const accentSoftBg = isMac ? "bg-emerald-50" : "bg-white/10";
-  const accentBorder = isMac ? "border-emerald-200" : "border-white/15";
+  const accentText = isMac ? "text-[hsl(var(--accent))]" : "text-sky-300";
+  const accentSoftBg = isMac ? "bg-[hsl(var(--accent)/0.10)]" : "bg-white/10";
+  const accentBorder = isMac ? "border-[hsl(var(--accent)/0.35)]" : "border-white/15";
 
   // -----------------------------
   // Theme tokens
@@ -45,8 +28,9 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
     ? "bg-white border border-black/10"
     : "bg-white/6 border border-white/10";
 
+  // ✅ buttons: keep neutral, but hover/focus uses accent var
   const buttonClass = isMac
-    ? "bg-white hover:bg-emerald-50 text-black/75 border border-black/10 focus:outline-none focus:ring-4 focus:ring-emerald-200"
+    ? "bg-white text-black/75 border border-black/10 hover:bg-[hsl(var(--accent)/0.10)] hover:border-[hsl(var(--accent)/0.35)] focus:outline-none focus:ring-4 focus:ring-[hsl(var(--accent)/0.25)]"
     : "bg-white/10 hover:bg-white/15 text-white/90 border border-white/15";
 
   const pillClass = isMac
@@ -118,8 +102,15 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
   function IconChip() {
     if (!isMac) return null;
     return (
-      <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200">
-        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+      <span
+        className="
+          inline-flex items-center justify-center
+          w-8 h-8 rounded-xl
+          bg-[hsl(var(--accent)/0.10)]
+          border border-[hsl(var(--accent)/0.35)]
+        "
+      >
+        <span className="w-2 h-2 rounded-full bg-[hsl(var(--accent))]" />
       </span>
     );
   }
@@ -265,10 +256,20 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
 
             {/* CTA row */}
             <div className="mt-6 flex flex-wrap gap-2">
-              <a href="#" target="_blank" rel="noreferrer" className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${buttonClass}`}>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${buttonClass}`}
+              >
                 View on GitHub
               </a>
-              <a href="#" target="_blank" rel="noreferrer" className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${buttonClass}`}>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${buttonClass}`}
+              >
                 Download PDF
               </a>
             </div>
