@@ -116,33 +116,25 @@ function VisualTile({ styles, emoji, title, desc, cta, onClick }) {
       <div className="text-3xl">{emoji}</div>
 
       {/* Title */}
-      <div className="mt-4 font-semibold text-black">
-        {title}
-      </div>
+     <div className={`mt-4 font-semibold ${styles.textStrong}`}>
+  {title}
+</div>
 
-      {/* Description */}
-      <div className="mt-1 text-sm text-black/60 leading-relaxed">
-        {desc}
-      </div>
+<div className={`mt-1 text-sm leading-relaxed ${styles.textSub}`}>
+  {desc}
+</div>
+
 
       {/* Button */}
-      <div className="mt-6">
-        <span
-          className="
-            inline-flex items-center justify-center
-            rounded-xl 
-            px-4 py-2 
-            text-sm 
-            border border-black/10 
-            bg-white
-            hover:bg-emerald-50 
-            hover:border-emerald-200
-            transition
-          "
-        >
-          {cta}
-        </span>
-      </div>
+      {/* Button */}
+<div className="mt-6">
+  <span
+    className={`inline-flex w-fit items-center justify-center rounded-xl px-4 py-2 text-sm transition ${styles.pillBtn}`}
+  >
+    {cta} <span className="ml-2 opacity-60">↗</span>
+  </span>
+</div>
+
     </button>
   );
 
