@@ -353,7 +353,7 @@ const prev = () => {
              className={`w-full text-left rounded-xl px-3 py-3 border transition ${
   selected === p.key
     ? isMac
-      ? "bg-emerald-50 border-emerald-200"
+      ? "bg-[hsl(var(--accent)/0.12)] border-[hsl(var(--accent)/0.35)]"
       : `bg-white/15 ${styles.cardBorder}`
     : isMac
     ? `border-black/10 hover:bg-black/5`
@@ -366,9 +366,10 @@ const prev = () => {
                     {p.label}
                   </div>
                   {selected === p.key && (
-                    <span className="text-[10px] uppercase opacity-70">
-                      Selected
-                    </span>
+                    <span className="text-[10px] uppercase text-[hsl(var(--accent))] opacity-80">
+  Selected
+</span>
+
                   )}
                 </div>
                 <div className={`${styles.textSub} text-xs mt-1`}>{p.year}</div>
