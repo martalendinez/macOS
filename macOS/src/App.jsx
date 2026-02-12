@@ -1,4 +1,5 @@
-﻿import { useEffect, useMemo, useState } from "react";
+﻿// src/App.jsx
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import moonIcon from "./imgs/moon.png";
@@ -41,19 +42,19 @@ import MusicWindow from "./components/windows/MusicWindow";
 import MapWindow from "./components/windows/MapWindow";
 import TerminalWindow from "./components/windows/TerminalWindow";
 
-
+import EmployerBrandingCaseStudyWindow from "./components/windows/EmployerBrandingCaseStudyWIndow";
 
 export default function App() {
   const [mouseX, setMouseX] = useState(null);
 
   // wallpaper theme (background)
   const [theme, setTheme] = useState("light");
-  const [wallpaperUrl, setWallpaperUrl] = useState(null); // string | null
+  const [wallpaperUrl, setWallpaperUrl] = useState(null);
 
   // UI theme (window/icon style)
-  const [uiTheme, setUiTheme] = useState("glass"); // "glass" | "macos"
+  const [uiTheme, setUiTheme] = useState("glass");
 
-  // ✅ Font scale
+  // Font scale
   const [fontScale, setFontScale] = useState(1);
 
   // Page load animation trigger
@@ -67,14 +68,21 @@ export default function App() {
     openWindows,
     activeWindow,
     zMap,
-    maxMap, // ✅ from updated hook
+    maxMap,
     openWindow,
     closeWindow,
     focusWindow,
-    toggleMaximize, // ✅ from updated hook
+    toggleMaximize,
   } = useWindowManager();
 
-  const currentTime = new Date().toLocaleString("en-GB", {
+  // ✅ clock that actually updates
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const currentTime = now.toLocaleString("en-GB", {
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -138,40 +146,49 @@ export default function App() {
         width: 920,
         height: 600,
         initialPos: { x: 200, y: 110 },
-      },videos:{title: "Videos",
-      Component: VideosWindow,
-      width: 860,
-      height: 520,
-      initialPos: { x: 240, y: 130 },},
+      },
+      videos: {
+        title: "Videos",
+        Component: VideosWindow,
+        width: 860,
+        height: 520,
+        initialPos: { x: 240, y: 130 },
+      },
       fun: {
-  title: "Extras & Fun",
-  Component: FunWindow,
-  width: 920,
-  height: 600,
-  initialPos: { x: 240, y: 120 },
-},
-music: {
-  title: "Music",
-  Component: MusicWindow,
-  width: 760,
-  height: 520,
-  initialPos: { x: 260, y: 130 },
-},
-map: {
-  title: "Interactive Map",
-  Component: MapWindow,
-  width: 920,
-  height: 600,
-  initialPos: { x: 220, y: 110 },
-},
-terminal: {
-  title: "Terminal",
-  Component: TerminalWindow,
-  width: 860,
-  height: 560,
-  initialPos: { x: 240, y: 120 },
-}
-      
+        title: "Extras & Fun",
+        Component: FunWindow,
+        width: 920,
+        height: 600,
+        initialPos: { x: 240, y: 120 },
+      },
+      music: {
+        title: "Music",
+        Component: MusicWindow,
+        width: 760,
+        height: 520,
+        initialPos: { x: 260, y: 130 },
+      },
+      map: {
+        title: "Interactive Map",
+        Component: MapWindow,
+        width: 920,
+        height: 600,
+        initialPos: { x: 220, y: 110 },
+      },
+      terminal: {
+        title: "Terminal",
+        Component: TerminalWindow,
+        width: 860,
+        height: 560,
+        initialPos: { x: 240, y: 120 },
+      },
+      employerBrandingCaseStudy: {
+        title: "Employer Branding — Case Study",
+        Component: EmployerBrandingCaseStudyWindow,
+        width: 1180,
+        height: 760,
+        initialPos: { x: 140, y: 80 },
+      },
     }),
     []
   );
@@ -182,25 +199,22 @@ terminal: {
     { label: "Extras & Fun", icon: icons.fun, windowId: "fun" },
   ];
 
-  // Left rail items (now clickable -> opens windows)
   const leftRailItems = [
-    { icon: desktopIcons.timer, label: "30-Seconds Mode", windowId: "timer" }, // placeholder
+    { icon: desktopIcons.timer, label: "30-Seconds Mode", windowId: "timer" },
     { icon: desktopIcons.projects, label: "Projects", windowId: "projects" },
-    { icon: desktopIcons.videos, label: "Videos", windowId: "videos" }, // placeholder
+    { icon: desktopIcons.videos, label: "Videos", windowId: "videos" },
   ];
 
   return (
-    // ✅ global font scaling wrapper
     <div style={{ fontSize: `${(fontScale ?? 1) * 16}px` }}>
       <motion.div
         className="min-h-screen bg-cover bg-center font-sans text-white relative"
         style={{
-          backgroundImage: `url(${
-            wallpaperUrl ?? (theme === "light" ? bgLight : bgDark)
-          })`,
+          backgroundImage: `url(${wallpaperUrl ?? (theme === "light" ? bgLight : bgDark)})`,
         }}
-        initial={{ opacity: 0, scale: 0.99, filter: "blur(10px)" }}
-        animate={loaded ? { opacity: 1, scale: 1, filter: "blur(0px)" } : {}}
+        // ✅ IMPORTANT: no scale here (scale adds transform -> breaks fixed windows)
+        initial={{ opacity: 0, filter: "blur(10px)" }}
+        animate={loaded ? { opacity: 1, filter: "blur(0px)" } : {}}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* Top Menu Bar */}
@@ -211,7 +225,6 @@ terminal: {
           transition={{ delay: 0.15, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="flex items-center gap-3">
-            {/* Moon = wallpaper toggle */}
             <div
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
@@ -219,7 +232,6 @@ terminal: {
               <img src={moonIcon} alt="Toggle wallpaper" className="w-4 h-4" />
             </div>
 
-            {/* Gear = Settings window */}
             <div
               onClick={() => openWindow("settings")}
               className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
@@ -227,7 +239,6 @@ terminal: {
               <img src={gearIcon} alt="Settings" className="w-4 h-4" />
             </div>
 
-            {/* Notifications */}
             <div className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 hover:-translate-y-[1px] hover:drop-shadow-sm">
               <img src={notificationIcon} alt="Notifications" className="w-4 h-4" />
             </div>
@@ -273,19 +284,15 @@ terminal: {
           animate={loaded ? { opacity: 1, x: 0 } : {}}
           transition={{ delay: 0.28, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           onClick={() => {
-            // If you have a resume pdf route later, do it here.
-            // For now, do nothing.
+            const a = document.createElement("a");
+            a.href = "/resume.pdf";
+            a.download = "Marta_Lendinez_Resume.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
           }}
         >
-          <img src={docIcon} alt="Resume" className="w-15 h-15 object-contain" onClick={() => {
-  const a = document.createElement("a");
-  a.href = "/resume.pdf";
-  a.download = "Marta_Lendinez_Resume.pdf"; // filename the user gets
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}}
-/>
+          <img src={docIcon} alt="Resume" className="w-15 h-15 object-contain" />
           <div className="bg-white/20 px-2 py-[3px] rounded-[6px] backdrop-blur-sm text-white text-[13px] whitespace-nowrap shadow-sm">
             resume.pdf
           </div>
@@ -311,7 +318,6 @@ terminal: {
                 onFocus={focusWindow}
                 onClose={closeWindow}
                 uiTheme={uiTheme}
-                // ✅ maximize wiring
                 isMaximized={!!maxMap?.[id]}
                 onToggleMaximize={toggleMaximize}
               >
@@ -365,10 +371,7 @@ function DockItem({ item, index, mouseX, total, loaded, onOpenWindow }) {
   };
 
   const scale = mouseX
-    ? Math.min(
-        1.35,
-        1 + Math.max(0, 1 - Math.abs(mouseX - getCenter(index)) / distanceFactor)
-      )
+    ? Math.min(1.35, 1 + Math.max(0, 1 - Math.abs(mouseX - getCenter(index)) / distanceFactor))
     : 1;
 
   const handleClick = () => {
@@ -397,7 +400,6 @@ function DockItem({ item, index, mouseX, total, loaded, onOpenWindow }) {
         </div>
       </motion.div>
 
-      {/* Tooltip */}
       <div
         className="absolute -top-16 left-1/2 -translate-x-1/2 bg-white text-black text-[15px] px-3 py-[4px] rounded-[6px] shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap tracking-tight"
         style={{ fontFamily: "Lustria" }}
