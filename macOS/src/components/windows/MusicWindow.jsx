@@ -134,8 +134,9 @@ export default function MusicWindow({ uiTheme = "glass" }) {
       cardBorder: isMac ? "border-black/10" : "border-white/10",
       divider: isMac ? "bg-black/10" : "bg-white/10",
 
-      hover: isMac ? "hover:bg-black/5" : "hover:bg-white/10",
-      selected: isMac ? "bg-black/10" : "bg-white/15",
+      hover: isMac ? "hover:bg-emerald-50 hover:border-emerald-200" : "hover:bg-white/10",
+selected: isMac ? "bg-emerald-50 border-emerald-200" : "bg-white/15",
+
     };
   }, [isMac]);
 
@@ -163,9 +164,16 @@ export default function MusicWindow({ uiTheme = "glass" }) {
               <button
                 key={p.key}
                 onClick={() => setActivePick(p.key)}
-                className={`w-full text-left rounded-xl px-3 py-3 border ${styles.cardBorder} transition ${
-                  activePick === p.key ? styles.selected : styles.hover
-                }`}
+                className={`w-full text-left rounded-xl px-3 py-3 border transition ${
+  activePick === p.key
+    ? isMac
+      ? styles.selected
+      : `${styles.selected} ${styles.cardBorder}`
+    : isMac
+    ? `border-black/10 ${styles.hover}`
+    : `${styles.cardBorder} ${styles.hover}`
+}`}
+
               >
                 <div className={`${styles.textStrong} text-sm font-medium`}>{p.title}</div>
                 <div className={`${styles.textSub} text-xs mt-1`}>{p.subtitle}</div>

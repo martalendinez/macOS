@@ -1,3 +1,4 @@
+// src/components/windows/FunWindow.jsx
 import { useMemo } from "react";
 
 export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
@@ -5,71 +6,87 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
 
   const styles = useMemo(() => {
     return {
+      // text
       textMain: isMac ? "text-black/80" : "text-white/90",
       textStrong: isMac ? "text-black" : "text-white",
       textSub: isMac ? "text-black/60" : "text-white/70",
 
-      cardBg: isMac ? "bg-white" : "bg-white/6",
-      cardBgSoft: isMac ? "bg-black/5" : "bg-white/5",
-      cardBorder: isMac ? "border-black/10" : "border-white/10",
+      // surfaces
+      pageBg: isMac ? "bg-transparent" : "",
+      tileBg: isMac ? "bg-white" : "bg-white/8 backdrop-blur-xl",
+      tileBorder: isMac ? "border-black/10" : "border-white/12",
       divider: isMac ? "bg-black/10" : "bg-white/10",
 
-      btn: isMac
-        ? "bg-black/10 border border-black/10 hover:bg-black/15 text-black/90"
-        : "bg-white/15 border border-white/10 hover:bg-white/20 text-white",
+      // button (subtle, not chunky)
+      pillBtn: isMac
+        ? "bg-white border border-black/10 text-black/80 hover:bg-emerald-50 hover:border-emerald-200"
+        : "bg-white/10 border border-white/12 text-white/90 hover:bg-white/15",
+
+      // tip
+      tipBg: isMac ? "bg-white" : "bg-white/8 backdrop-blur-xl",
+      tipBorder: isMac ? "border-black/10" : "border-white/12",
     };
   }, [isMac]);
 
+  const apps = useMemo(
+    () => [
+      {
+        key: "music",
+        emoji: "🎵",
+        title: "Music",
+        desc: "Explore my go-to songs and hit play on one.",
+        cta: "Open Music",
+        onClick: () => onOpenWindow?.("music"),
+        // subtle blob (per-tile) — just for vibe
+        blob: isMac ? "bg-emerald-200/40" : "bg-white/20",
+      },
+      {
+        key: "map",
+        emoji: "🗺️",
+        title: "Interactive Map",
+        desc: "Explore my little life-map — where I’ve lived and learned.",
+        cta: "Open Map",
+        onClick: () => onOpenWindow?.("map"),
+        blob: isMac ? "bg-sky-200/45" : "bg-white/20",
+      },
+      {
+        key: "terminal",
+        emoji: "🧑‍💻",
+        title: "Terminal",
+        desc: "Enter the nerd zone. Code. Explore. Play.",
+        cta: "Open Terminal",
+        onClick: () => onOpenWindow?.("terminal"),
+        blob: isMac ? "bg-violet-200/45" : "bg-white/20",
+      },
+    ],
+    [onOpenWindow, isMac]
+  );
+
   return (
-    <div className={`h-full flex flex-col ${styles.textMain}`}>
+    <div className={`h-full flex flex-col ${styles.pageBg} ${styles.textMain}`}>
       {/* Header */}
       <div className="px-6 pt-5 pb-3">
-        <div className={`${styles.textStrong} text-lg font-semibold`}>
-          Extras & Fun
-        </div>
+        <div className={`${styles.textStrong} text-lg font-semibold`}>Extras & Fun</div>
         <div className={`${styles.textSub} text-sm mt-1`}>
-         Welcome to the playground! This is where the fun little apps live 😊
+          Welcome to the playground! This is where the fun little apps live 😊
         </div>
         <div className={`mt-4 h-px ${styles.divider}`} />
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-auto px-6 pb-6">
+        {/* Big visual tiles */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <AppCard
-            styles={styles}
-            emoji="🎵"
-            title="Music"
-            desc="Explore my go‑to songs and hit play on one."
-            cta="Open Music"
-            onClick={() => onOpenWindow?.("music")}
-          />
-
-          <AppCard
-            styles={styles}
-            emoji="🗺️"
-            title="Interactive Map"
-            desc="Explore my little life‑map — where I’ve lived and learned."
-            cta="Open Map"
-            onClick={() => onOpenWindow?.("map")}
-          />
-
-          <AppCard
-            styles={styles}
-            emoji="🧑‍💻"
-            title="Terminal"
-            desc="Enter the nerd zone. Code. Explore. Play."
-            cta="Open Terminal"
-            onClick={() => onOpenWindow?.("terminal")}
-          />
+          {apps.map((a) => (
+            <VisualTile key={a.key} styles={styles} {...a} />
+          ))}
         </div>
 
-        {/* Optional: a second section */}
-        <div className={`mt-6 rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5`}>
-          <div className={`${styles.textStrong} font-semibold`}>💡✨ Tip</div>
+        {/* Tip */}
+        <div className={`mt-6 rounded-2xl ${styles.tipBg} border ${styles.tipBorder} p-5`}>
+          <div className={`${styles.textStrong} font-semibold`}>💡 Tip</div>
           <div className={`${styles.textSub} text-sm mt-1 leading-relaxed`}>
-            You can keep Music open while exploring other windows — it’s designed
-            to feel like a tiny OS!
+            You can keep Music open while exploring other windows — it’s designed to feel like a tiny OS!
           </div>
         </div>
       </div>
@@ -78,24 +95,55 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
 }
 
 /* ---------------- UI bits ---------------- */
-
-function AppCard({ styles, emoji, title, desc, cta, onClick }) {
+function VisualTile({ styles, emoji, title, desc, cta, onClick }) {
   return (
-    <div className={`rounded-2xl ${styles.cardBg} border ${styles.cardBorder} p-5 flex flex-col`}>
-      <div className={`rounded-2xl ${styles.cardBgSoft} border ${styles.cardBorder} p-4`}>
-        <div className="text-2xl">{emoji}</div>
-        <div className={`${styles.textStrong} font-semibold mt-2`}>{title}</div>
-        <div className={`${styles.textSub} text-sm mt-1 leading-relaxed`}>{desc}</div>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`
+        text-left 
+        rounded-2xl 
+        border 
+        p-6 
+        transition-all
+        ${styles.tileBg} 
+        ${styles.tileBorder}
+        hover:-translate-y-[2px] 
+        hover:shadow-md
+      `}
+    >
+      {/* Top row */}
+      <div className="text-3xl">{emoji}</div>
+
+      {/* Title */}
+      <div className="mt-4 font-semibold text-black">
+        {title}
       </div>
 
-      <button
-        type="button"
-        onClick={onClick}
-        className={`mt-4 rounded-xl px-4 py-3 text-sm transition flex items-center justify-center gap-2 ${styles.btn}`}
-      >
-        <span>{cta}</span>
-        <span className="opacity-70">↗</span>
-      </button>
-    </div>
+      {/* Description */}
+      <div className="mt-1 text-sm text-black/60 leading-relaxed">
+        {desc}
+      </div>
+
+      {/* Button */}
+      <div className="mt-6">
+        <span
+          className="
+            inline-flex items-center justify-center
+            rounded-xl 
+            px-4 py-2 
+            text-sm 
+            border border-black/10 
+            bg-white
+            hover:bg-emerald-50 
+            hover:border-emerald-200
+            transition
+          "
+        >
+          {cta}
+        </span>
+      </div>
+    </button>
   );
+
 }

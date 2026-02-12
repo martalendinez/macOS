@@ -350,15 +350,16 @@ const prev = () => {
                   setShowPhotos(false);
                   setViewerOpen(false);
                 }}
-                className={`w-full text-left rounded-xl px-3 py-3 border ${styles.cardBorder} transition ${
-                  selected === p.key
-                    ? isMac
-                      ? "bg-black/10"
-                      : "bg-white/15"
-                    : isMac
-                    ? "hover:bg-black/5"
-                    : "hover:bg-white/10"
-                }`}
+             className={`w-full text-left rounded-xl px-3 py-3 border transition ${
+  selected === p.key
+    ? isMac
+      ? "bg-emerald-50 border-emerald-200"
+      : `bg-white/15 ${styles.cardBorder}`
+    : isMac
+    ? `border-black/10 hover:bg-black/5`
+    : `${styles.cardBorder} hover:bg-white/10`
+}`}
+
               >
                 <div className="flex items-center justify-between">
                   <div className={`${styles.textStrong} text-sm font-medium`}>
