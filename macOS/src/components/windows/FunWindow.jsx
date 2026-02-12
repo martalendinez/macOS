@@ -17,9 +17,9 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
       tileBorder: isMac ? "border-black/10" : "border-white/12",
       divider: isMac ? "bg-black/10" : "bg-white/10",
 
-      // button (subtle, not chunky)
+      // ✅ button uses global accent on hover (macOS)
       pillBtn: isMac
-        ? "bg-white border border-black/10 text-black/80 hover:bg-emerald-50 hover:border-emerald-200"
+        ? "bg-white border border-black/10 text-black/80 hover:bg-[hsl(var(--accent)/0.10)] hover:border-[hsl(var(--accent)/0.35)]"
         : "bg-white/10 border border-white/12 text-white/90 hover:bg-white/15",
 
       // tip
@@ -37,8 +37,8 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
         desc: "Explore my go-to songs and hit play on one.",
         cta: "Open Music",
         onClick: () => onOpenWindow?.("music"),
-        // subtle blob (per-tile) — just for vibe
-        blob: isMac ? "bg-emerald-200/40" : "bg-white/20",
+        // ✅ accent blob (macOS)
+       
       },
       {
         key: "map",
@@ -47,7 +47,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
         desc: "Explore my little life-map — where I’ve lived and learned.",
         cta: "Open Map",
         onClick: () => onOpenWindow?.("map"),
-        blob: isMac ? "bg-sky-200/45" : "bg-white/20",
+       
       },
       {
         key: "terminal",
@@ -56,7 +56,7 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
         desc: "Enter the nerd zone. Code. Explore. Play.",
         cta: "Open Terminal",
         onClick: () => onOpenWindow?.("terminal"),
-        blob: isMac ? "bg-violet-200/45" : "bg-white/20",
+       
       },
     ],
     [onOpenWindow, isMac]
@@ -75,14 +75,12 @@ export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
 
       {/* Content */}
       <div className="flex-1 overflow-auto px-6 pb-6">
-        {/* Big visual tiles */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {apps.map((a) => (
             <VisualTile key={a.key} styles={styles} {...a} />
           ))}
         </div>
 
-        {/* Tip */}
         <div className={`mt-6 rounded-2xl ${styles.tipBg} border ${styles.tipBorder} p-5`}>
           <div className={`${styles.textStrong} font-semibold`}>💡 Tip</div>
           <div className={`${styles.textSub} text-sm mt-1 leading-relaxed`}>
@@ -101,41 +99,37 @@ function VisualTile({ styles, emoji, title, desc, cta, onClick }) {
       type="button"
       onClick={onClick}
       className={`
-        text-left 
-        rounded-2xl 
-        border 
-        p-6 
+        text-left
+        rounded-2xl
+        border
+        p-6
         transition-all
-        ${styles.tileBg} 
+        ${styles.tileBg}
         ${styles.tileBorder}
-        hover:-translate-y-[2px] 
+        hover:-translate-y-[2px]
         hover:shadow-md
+        relative overflow-hidden
       `}
     >
+     
+
       {/* Top row */}
-      <div className="text-3xl">{emoji}</div>
+      <div className="relative text-3xl">{emoji}</div>
 
       {/* Title */}
-     <div className={`mt-4 font-semibold ${styles.textStrong}`}>
-  {title}
-</div>
+      <div className={`relative mt-4 font-semibold ${styles.textStrong}`}>{title}</div>
 
-<div className={`mt-1 text-sm leading-relaxed ${styles.textSub}`}>
-  {desc}
-</div>
-
+      {/* Description */}
+      <div className={`relative mt-1 text-sm leading-relaxed ${styles.textSub}`}>{desc}</div>
 
       {/* Button */}
-      {/* Button */}
-<div className="mt-6">
-  <span
-    className={`inline-flex w-fit items-center justify-center rounded-xl px-4 py-2 text-sm transition ${styles.pillBtn}`}
-  >
-    {cta} <span className="ml-2 opacity-60">↗</span>
-  </span>
-</div>
-
+      <div className="relative mt-6">
+        <span
+          className={`inline-flex w-fit items-center justify-center rounded-xl px-4 py-2 text-sm transition ${styles.pillBtn}`}
+        >
+          {cta} <span className="ml-2 opacity-60">↗</span>
+        </span>
+      </div>
     </button>
   );
-
 }
