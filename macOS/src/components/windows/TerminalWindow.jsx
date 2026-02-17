@@ -1,5 +1,6 @@
 // src/components/windows/TerminalWindow.jsx
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import GameHost from "./terminal/GameHost"; // adjust if your folder differs
 
 export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
   const isMac = uiTheme === "macos";
@@ -7,6 +8,8 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1); // -1 = not browsing history
   const [draftInput, setDraftInput] = useState(""); // what user typed before pressing ↑
+
+  const [activeGame, setActiveGame] = useState(null); // "snake" | "pong" | "tetris" | null
 
   const COMMANDS = useMemo(
     () => ({
@@ -20,6 +23,11 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
       resume: "Download resume",
       clear: "Clear terminal",
       cowsay: "ASCII cow says your message",
+      snake: "Play Snake (Esc to exit)",
+      pong: "Play Pong (Esc to exit)",
+      tetris: "Play Tetris (Esc to exit)",
+      play: "Alias: play snake | play pong | play tetris",
+      exit: "Exit the running game",
     }),
     []
   );
@@ -39,13 +47,13 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
 
   function buildWelcomeLines() {
     const lines = ["Last login: Thu Jan 22 19:30:45", "", "Available commands:"];
-
     Object.entries(COMMANDS).forEach(([cmd, desc]) => {
       lines.push(`  ${cmd.padEnd(10)} ${desc}`);
     });
-
     lines.push("");
-    lines.push("Tip: press Tab to autocomplete • ↑/↓ for history • Enter to run • Esc to clear input");
+    lines.push(
+      "Tip: press Tab to autocomplete • ↑/↓ for history • Enter to run • Esc to clear input"
+    );
     lines.push("");
     return lines;
   }
@@ -62,6 +70,27 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
       chip: isMac ? "bg-black/5" : "bg-white/5",
     };
   }, [isMac]);
+
+  const scrollRef = useRef(null);
+
+  // Prevent arrow keys (and space) from scrolling the terminal/page while a game is active
+  useEffect(() => {
+    const el = scrollRef.current;
+    const blockKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "];
+
+    function onKeyDownCapture(e) {
+      if (!activeGame) return;
+      if (blockKeys.includes(e.key)) e.preventDefault();
+    }
+
+    if (el) el.addEventListener("keydown", onKeyDownCapture, { capture: true });
+    window.addEventListener("keydown", onKeyDownCapture, { capture: true });
+
+    return () => {
+      if (el) el.removeEventListener("keydown", onKeyDownCapture, { capture: true });
+      window.removeEventListener("keydown", onKeyDownCapture, { capture: true });
+    };
+  }, [activeGame]);
 
   function appendLines(newLines) {
     setLines((prev) => [...prev, ...newLines]);
@@ -106,6 +135,16 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     appendLines([`(no matches for "${v}")`, ""]);
   }
 
+  function startGame(name) {
+    setActiveGame(name);
+    appendLines([`(launching ${name}... Esc to exit)`, ""]);
+  }
+
+  function exitGame() {
+    setActiveGame(null);
+    appendLines(["(exited game)", ""]);
+  }
+
   function runCommand(cmdRaw) {
     const raw = cmdRaw ?? "";
     const cmd = raw.trim();
@@ -134,6 +173,27 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     if (lower === "resume") {
       downloadResume();
       appendLines(["(downloading resume...)", ""]);
+      return;
+    }
+
+    // game control
+    if (activeGame && lower === "exit") {
+      exitGame();
+      return;
+    }
+
+    if (lower === "snake" || lower === "pong" || lower === "tetris") {
+      startGame(lower);
+      return;
+    }
+
+    if (lower.startsWith("play")) {
+      const target = lower.replace("play", "").trim();
+      if (target === "snake" || target === "pong" || target === "tetris") {
+        startGame(target);
+      } else {
+        appendLines(["usage: play snake | play pong | play tetris", ""]);
+      }
       return;
     }
 
@@ -261,7 +321,12 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
         <div className="text-sm font-semibold">terminal — zsh</div>
       </div>
 
-      <div className={`flex-1 overflow-auto p-4 font-mono text-[13px] ${styles.bg}`}>
+      <div
+        ref={scrollRef}
+        className={`flex-1 p-4 font-mono text-[13px] ${styles.bg} ${
+          activeGame ? "overflow-hidden" : "overflow-auto"
+        }`}
+      >
         <div className={`rounded-xl border ${styles.border} ${styles.chip} p-4`}>
           {lines.map((l, i) => (
             <div key={i} className={l.startsWith("Available commands:") ? "font-semibold" : ""}>
@@ -269,72 +334,84 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
             </div>
           ))}
 
-          <div className="flex items-center gap-2 mt-2">
-            <span className={styles.textDim}>marta@portfolio ~ %</span>
+          {activeGame ? (
+            <>
+              <div className={`mt-2 text-xs ${styles.textDim}`}>
+                Game controls are active. Press <span className="font-semibold">Esc</span> to exit.
+              </div>
 
-            <input
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                setHistoryIndex(-1);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowUp") {
-                  e.preventDefault();
-                  if (history.length === 0) return;
+              <GameHost game={activeGame} uiTheme={uiTheme} onExit={exitGame} />
+            </>
+          ) : (
+            <div className="flex items-center gap-2 mt-2">
+              <span className={styles.textDim}>marta@portfolio ~ %</span>
 
-                  if (historyIndex === -1) setDraftInput(input);
+              <input
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  setHistoryIndex(-1);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    if (history.length === 0) return;
 
-                  const nextIndex =
-                    historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1);
+                    if (historyIndex === -1) setDraftInput(input);
 
-                  setHistoryIndex(nextIndex);
-                  setInput(history[nextIndex]);
-                  return;
-                }
+                    const nextIndex =
+                      historyIndex === -1
+                        ? history.length - 1
+                        : Math.max(0, historyIndex - 1);
 
-                if (e.key === "ArrowDown") {
-                  e.preventDefault();
-                  if (history.length === 0) return;
-                  if (historyIndex === -1) return;
-
-                  const nextIndex = historyIndex + 1;
-
-                  if (nextIndex >= history.length) {
-                    setHistoryIndex(-1);
-                    setInput(draftInput);
-                  } else {
                     setHistoryIndex(nextIndex);
                     setInput(history[nextIndex]);
+                    return;
                   }
-                  return;
-                }
 
-                if (e.key === "Enter") {
-                  runCommand(input);
-                  setInput("");
-                  return;
-                }
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    if (history.length === 0) return;
+                    if (historyIndex === -1) return;
 
-                if (e.key === "Tab") {
-                  e.preventDefault();
-                  handleTabAutocomplete();
-                  return;
-                }
+                    const nextIndex = historyIndex + 1;
 
-                if (e.key === "Escape") {
-                  e.preventDefault();
-                  setInput("");
-                  return;
-                }
-              }}
-              className={`flex-1 bg-transparent outline-none ${styles.text}`}
-              placeholder="type a command… (Tab for autocomplete)"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-            />
-          </div>
+                    if (nextIndex >= history.length) {
+                      setHistoryIndex(-1);
+                      setInput(draftInput);
+                    } else {
+                      setHistoryIndex(nextIndex);
+                      setInput(history[nextIndex]);
+                    }
+                    return;
+                  }
+
+                  if (e.key === "Enter") {
+                    runCommand(input);
+                    setInput("");
+                    return;
+                  }
+
+                  if (e.key === "Tab") {
+                    e.preventDefault();
+                    handleTabAutocomplete();
+                    return;
+                  }
+
+                  if (e.key === "Escape") {
+                    e.preventDefault();
+                    setInput("");
+                    return;
+                  }
+                }}
+                className={`flex-1 bg-transparent outline-none ${styles.text}`}
+                placeholder="type a command… (Tab for autocomplete)"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
