@@ -1,13 +1,13 @@
 // src/components/windows/TerminalWindow.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
-import GameHost from "./terminal/GameHost"; // adjust if your folder differs
+import GameHost from "./terminal/GameHost";
 
 export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
   const isMac = uiTheme === "macos";
 
   const [history, setHistory] = useState([]);
-  const [historyIndex, setHistoryIndex] = useState(-1); // -1 = not browsing history
-  const [draftInput, setDraftInput] = useState(""); // what user typed before pressing ↑
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [draftInput, setDraftInput] = useState("");
 
   const [activeGame, setActiveGame] = useState(null); // "snake" | "pong" | "tetris" | null
 
@@ -45,17 +45,25 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     return "●".repeat(filled) + "○".repeat(total - filled);
   }
 
+  // "Rich line" = string OR {type:"cmd", cmd, desc} OR {type:"accent", text} etc.
   function buildWelcomeLines() {
-    const lines = ["Last login: Thu Jan 22 19:30:45", "", "Available commands:"];
+    const out = [
+      { type: "dim", text: "Last login: Thu Jan 22 19:30:45" },
+      "",
+      { type: "title", text: "Available commands:" },
+    ];
+
     Object.entries(COMMANDS).forEach(([cmd, desc]) => {
-      lines.push(`  ${cmd.padEnd(10)} ${desc}`);
+      out.push({ type: "cmd", cmd, desc });
     });
-    lines.push("");
-    lines.push(
-      "Tip: press Tab to autocomplete • ↑/↓ for history • Enter to run • Esc to clear input"
-    );
-    lines.push("");
-    return lines;
+
+    out.push("");
+    out.push({
+      type: "dim",
+      text: "Tip: press Tab to autocomplete • ↑/↓ for history • Enter to run • Esc to clear input",
+    });
+    out.push("");
+    return out;
   }
 
   const [lines, setLines] = useState(buildWelcomeLines);
@@ -68,6 +76,7 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
       bg: isMac ? "bg-white" : "bg-black/30",
       border: isMac ? "border-black/10" : "border-white/10",
       chip: isMac ? "bg-black/5" : "bg-white/5",
+      panel: isMac ? "bg-black/5" : "bg-white/5",
     };
   }, [isMac]);
 
@@ -93,14 +102,17 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
   }, [activeGame]);
 
   function appendLines(newLines) {
-    setLines((prev) => [...prev, ...newLines]);
+    const normalized = (newLines ?? []).map((x) => x);
+    setLines((prev) => [...prev, ...normalized]);
+  }
+
+  function promptText(raw) {
+    return `marta@portfolio ~ % ${raw}`;
   }
 
   function printHelp() {
-    const out = ["Available commands:"];
-    Object.entries(COMMANDS).forEach(([cmd, desc]) => {
-      out.push(`  ${cmd.padEnd(10)} ${desc}`);
-    });
+    const out = [{ type: "title", text: "Available commands:" }];
+    Object.entries(COMMANDS).forEach(([cmd, desc]) => out.push({ type: "cmd", cmd, desc }));
     out.push("");
     appendLines(out);
   }
@@ -128,21 +140,21 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     }
 
     if (matches.length > 1) {
-      appendLines([`marta@portfolio ~ % ${raw}`, matches.join("   "), ""]);
+      appendLines([{ type: "prompt", text: promptText(raw) }, { type: "dim", text: matches.join("   ") }, ""]);
       return;
     }
 
-    appendLines([`(no matches for "${v}")`, ""]);
+    appendLines([{ type: "warn", text: `(no matches for "${v}")` }, ""]);
   }
 
   function startGame(name) {
     setActiveGame(name);
-    appendLines([`(launching ${name}... Esc to exit)`, ""]);
+    appendLines([{ type: "accent", text: `(launching ${name}... Esc to exit)` }, ""]);
   }
 
   function exitGame() {
     setActiveGame(null);
-    appendLines(["(exited game)", ""]);
+    appendLines([{ type: "accent", text: "(exited game)" }, ""]);
   }
 
   function runCommand(cmdRaw) {
@@ -156,9 +168,8 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     setDraftInput("");
 
     const lower = cmd.toLowerCase();
-    const promptLine = `marta@portfolio ~ % ${raw}`;
 
-    appendLines([promptLine]);
+    appendLines([{ type: "prompt", text: promptText(raw) }]);
 
     if (lower === "clear") {
       setLines([]);
@@ -172,7 +183,7 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
 
     if (lower === "resume") {
       downloadResume();
-      appendLines(["(downloading resume...)", ""]);
+      appendLines([{ type: "dim", text: "(downloading resume...)" }, ""]);
       return;
     }
 
@@ -192,26 +203,26 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
       if (target === "snake" || target === "pong" || target === "tetris") {
         startGame(target);
       } else {
-        appendLines(["usage: play snake | play pong | play tetris", ""]);
+        appendLines([{ type: "warn", text: "usage: play snake | play pong | play tetris" }, ""]);
       }
       return;
     }
 
     if (lower === "ls") {
       appendLines([
-        "Desktop:",
+        { type: "title", text: "Desktop:" },
         "  30-seconds-mode/        (for recruiters)",
         "  projects/",
         "  videos/",
         "  ai-assistant/",
         "  extras-and-fun/",
         "",
-        "System:",
+        { type: "title", text: "System:" },
         "  notification-centre/",
         "  settings/",
         "  dark-mode/",
         "",
-        "Files:",
+        { type: "title", text: "Files:" },
         "  resume.pdf",
         "",
       ]);
@@ -235,14 +246,14 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
 
     if (lower === "skills") {
       appendLines([
-        "DESIGN TOOLS 🎨",
+        { type: "title", text: "DESIGN TOOLS 🎨" },
         `Figma            ${levelToBar("Advanced")}  Advanced`,
         `Adobe XD         ${levelToBar("Advanced")}  Advanced`,
         `Photoshop        ${levelToBar("Proficient")}  Proficient`,
         `Illustrator      ${levelToBar("Intermediate")}  Intermediate`,
         `Framer           ${levelToBar("Basic")}  Basic`,
         "",
-        "DEVELOPMENT 💻",
+        { type: "title", text: "DEVELOPMENT 💻" },
         `React            ${levelToBar("Advanced")}  Advanced`,
         `TypeScript       ${levelToBar("Advanced")}  Advanced`,
         `HTML/CSS         ${levelToBar("Expert")}  Expert`,
@@ -253,7 +264,7 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
         `Docker           ${levelToBar("Basic")}  Basic`,
         `Git              ${levelToBar("Advanced")}  Advanced`,
         "",
-        "UX RESEARCH & METHODS 🔬",
+        { type: "title", text: "UX RESEARCH & METHODS 🔬" },
         `User Interviews  ${levelToBar("Expert")}  Expert`,
         `Usability Testing${levelToBar("Expert")}  Expert`,
         `Survey Design    ${levelToBar("Advanced")}  Advanced`,
@@ -289,17 +300,17 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
     // open windows
     if (lower === "music") {
       onOpenWindow?.("music");
-      appendLines(["(opening music...)", ""]);
+      appendLines([{ type: "dim", text: "(opening music...)" }, ""]);
       return;
     }
     if (lower === "map") {
       onOpenWindow?.("map");
-      appendLines(["(opening map...)", ""]);
+      appendLines([{ type: "dim", text: "(opening map...)" }, ""]);
       return;
     }
     if (lower === "projects") {
       onOpenWindow?.("projects");
-      appendLines(["(opening projects...)", ""]);
+      appendLines([{ type: "dim", text: "(opening projects...)" }, ""]);
       return;
     }
 
@@ -309,10 +320,97 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
       .slice(0, 5);
 
     appendLines([
-      `command not implemented yet: ${lower}`,
-      suggestions.length ? `did you mean: ${suggestions.join(", ")} ?` : `try: ${all.join(", ")}`,
+      { type: "error", text: `command not implemented yet: ${lower}` },
+      suggestions.length
+        ? { type: "dim", text: `did you mean: ${suggestions.join(", ")} ?` }
+        : { type: "dim", text: `try: ${all.join(", ")}` },
       "",
     ]);
+  }
+
+  function renderLine(line, i) {
+    // plain string
+    if (typeof line === "string") {
+      return (
+        <div key={i} className={line === "" ? "select-none" : ""}>
+          {line === "" ? "\u00A0" : line}
+        </div>
+      );
+    }
+
+    // typed line
+    const t = line?.type;
+
+    if (t === "prompt") {
+      return (
+        <div key={i} className="break-words">
+          <span className="select-none" style={{ color: "hsl(var(--accent))" }}>
+            marta@portfolio ~ %
+          </span>
+          <span className="select-none"> </span>
+          <span>{line.text.replace("marta@portfolio ~ % ", "")}</span>
+        </div>
+      );
+    }
+
+    if (t === "cmd") {
+      return (
+        <div key={i} className="flex gap-3">
+          <span className="w-[92px]" style={{ color: "hsl(var(--accent))" }}>
+            {line.cmd}
+          </span>
+          <span className={styles.textDim}>{line.desc}</span>
+        </div>
+      );
+    }
+
+    if (t === "title") {
+      return (
+        <div key={i} className="font-semibold">
+          {line.text}
+        </div>
+      );
+    }
+
+    if (t === "accent") {
+      return (
+        <div key={i} style={{ color: "hsl(var(--accent))" }}>
+          {line.text}
+        </div>
+      );
+    }
+
+    if (t === "dim") {
+      return (
+        <div key={i} className={styles.textDim}>
+          {line.text}
+        </div>
+      );
+    }
+
+    if (t === "warn") {
+      return (
+        <div key={i} className={styles.textDim}>
+          <span style={{ color: "hsl(var(--accent))" }}>⚠ </span>
+          {line.text}
+        </div>
+      );
+    }
+
+    if (t === "error") {
+      return (
+        <div key={i} className={styles.textDim}>
+          <span style={{ color: "hsl(var(--accent))" }}>✕ </span>
+          {line.text}
+        </div>
+      );
+    }
+
+    return (
+      <div key={i} className={styles.textDim}>
+        {String(line?.text ?? "")}
+      </div>
+    );
   }
 
   return (
@@ -328,23 +426,25 @@ export default function TerminalWindow({ uiTheme = "glass", onOpenWindow }) {
         }`}
       >
         <div className={`rounded-xl border ${styles.border} ${styles.chip} p-4`}>
-          {lines.map((l, i) => (
-            <div key={i} className={l.startsWith("Available commands:") ? "font-semibold" : ""}>
-              {l === "" ? "\u00A0" : l}
-            </div>
-          ))}
+          {lines.map(renderLine)}
 
           {activeGame ? (
             <>
               <div className={`mt-2 text-xs ${styles.textDim}`}>
-                Game controls are active. Press <span className="font-semibold">Esc</span> to exit.
+                Game controls are active. Press{" "}
+                <span className="font-semibold" style={{ color: "hsl(var(--accent))" }}>
+                  Esc
+                </span>{" "}
+                to exit.
               </div>
 
               <GameHost game={activeGame} uiTheme={uiTheme} onExit={exitGame} />
             </>
           ) : (
             <div className="flex items-center gap-2 mt-2">
-              <span className={styles.textDim}>marta@portfolio ~ %</span>
+              <span className="select-none" style={{ color: "hsl(var(--accent))" }}>
+                marta@portfolio ~ %
+              </span>
 
               <input
                 value={input}
