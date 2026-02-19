@@ -2,45 +2,90 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
+export default function EmployerBrandingCaseStudyWindow({
+  uiTheme = "glass",
+  glassContrast = "light", // ✅ from App.jsx
+}) {
   const isMac = uiTheme === "macos";
+  const isGlass = uiTheme === "glass";
+  const isGlassDarkText = isGlass && glassContrast === "dark";
 
   // -----------------------------
-  // ✅ Accent (macOS uses global --accent)
+  // Accent
   // -----------------------------
-  const accentText = isMac ? "text-[hsl(var(--accent))]" : "text-sky-300";
-  const accentSoftBg = isMac ? "bg-[hsl(var(--accent)/0.10)]" : "bg-white/10";
-  const accentBorder = isMac ? "border-[hsl(var(--accent)/0.35)]" : "border-white/15";
+  // In glass mode, if we're using dark text, keep accent usable on light glass.
+  const accentText = isMac
+    ? "text-[hsl(var(--accent))]"
+    : isGlassDarkText
+    ? "text-[hsl(var(--accent))]"
+    : "text-sky-300";
+
+  const accentSoftBg = isMac
+    ? "bg-[hsl(var(--accent)/0.10)]"
+    : isGlassDarkText
+    ? "bg-[hsl(var(--accent)/0.10)]"
+    : "bg-white/10";
+
+  const accentBorder = isMac
+    ? "border-[hsl(var(--accent)/0.35)]"
+    : isGlassDarkText
+    ? "border-[hsl(var(--accent)/0.35)]"
+    : "border-white/15";
 
   // -----------------------------
-  // Theme tokens
+  // Theme tokens (adaptive)
   // -----------------------------
-  const textMain = isMac ? "text-black/85" : "text-white/95";
-  const textSub = isMac ? "text-black/55" : "text-white/70";
-  const textBody = isMac ? "text-black/70" : "text-white/85";
+  const textMain = isMac
+    ? "text-black/85"
+    : isGlassDarkText
+    ? "text-black/90"
+    : "text-white/95";
 
-  // Flat white macOS surfaces (no transparency)
+  const textSub = isMac
+    ? "text-black/55"
+    : isGlassDarkText
+    ? "text-black/60"
+    : "text-white/70";
+
+  const textBody = isMac
+    ? "text-black/70"
+    : isGlassDarkText
+    ? "text-black/80"
+    : "text-white/85";
+
+  // Surfaces: when glass switches to dark text, surfaces should become lighter
   const pageCard = isMac
     ? "bg-white border border-black/10"
+    : isGlassDarkText
+    ? "bg-white/35 border border-black/10 backdrop-blur-xl"
     : "bg-white/10 border border-white/15 backdrop-blur-xl";
 
   const softCard = isMac
     ? "bg-white border border-black/10"
+    : isGlassDarkText
+    ? "bg-white/25 border border-black/10"
     : "bg-white/6 border border-white/10";
 
-  // ✅ buttons: keep neutral, but hover/focus uses accent var
   const buttonClass = isMac
     ? "bg-white text-black/75 border border-black/10 hover:bg-[hsl(var(--accent)/0.10)] hover:border-[hsl(var(--accent)/0.35)] focus:outline-none focus:ring-4 focus:ring-[hsl(var(--accent)/0.25)]"
+    : isGlassDarkText
+    ? "bg-white/35 hover:bg-white/45 text-black/80 border border-black/10"
     : "bg-white/10 hover:bg-white/15 text-white/90 border border-white/15";
 
   const pillClass = isMac
     ? "bg-white text-black/70 border border-black/10"
+    : isGlassDarkText
+    ? "bg-white/30 text-black/80 border border-black/10"
     : "bg-white/10 text-white/90 border border-white/15";
 
-  const divider = isMac ? "border-black/10" : "border-white/10";
+  const divider = isMac
+    ? "border-black/10"
+    : isGlassDarkText
+    ? "border-black/10"
+    : "border-white/10";
 
   // -----------------------------
-  // Images (plug in)
+  // Images
   // -----------------------------
   const IMAGES = useMemo(
     () => ({
@@ -334,6 +379,8 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
 
                       const activeClass = isMac
                         ? `${accentSoftBg} ${accentBorder} ${accentText}`
+                        : isGlassDarkText
+                        ? `${accentSoftBg} ${accentBorder} ${accentText}`
                         : "bg-white/20 border-white/15 text-white";
 
                       return (
@@ -574,7 +621,11 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
               <div className="absolute inset-0 bg-black/60" />
               <motion.div
                 className={`relative max-w-[1200px] w-full rounded-3xl overflow-hidden border ${
-                  isMac ? "border-black/10 bg-white" : "border-white/15 bg-black/30 backdrop-blur-xl"
+                  isMac
+                    ? "border-black/10 bg-white"
+                    : isGlassDarkText
+                    ? "border-black/10 bg-white/55 backdrop-blur-xl"
+                    : "border-white/15 bg-black/30 backdrop-blur-xl"
                 }`}
                 initial={{ scale: 0.98, y: 10 }}
                 animate={{ scale: 1, y: 0 }}
@@ -583,7 +634,7 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass" }) {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className={`flex items-center justify-between px-5 py-4 border-b ${divider}`}>
-                  <div className={`text-sm font-semibold ${isMac ? "text-black/80" : "text-white/90"}`}>
+                  <div className={`text-sm font-semibold ${textMain}`}>
                     {lightbox.alt || "Screenshot"}
                   </div>
                   <button className={`px-4 py-2 rounded-2xl text-sm border ${buttonClass}`} onClick={closeLightbox}>

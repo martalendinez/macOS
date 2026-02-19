@@ -1,8 +1,10 @@
 // src/components/windows/FunWindow.jsx
 import { useMemo } from "react";
+import { getTokens } from "../../ui/themeTokens";
 
-export default function FunWindow({ uiTheme = "glass", onOpenWindow }) {
-  const isMac = uiTheme === "macos";
+export default function FunWindow({ uiTheme = "glass", glassContrast = "light", onOpenWindow }) {
+  const { isMac, textMain, textSub, textBody, pageCard, softCard, pillClass, buttonClass, divider } =
++    getTokens(uiTheme, glassContrast);
 
   const styles = useMemo(() => {
     return {

@@ -78,6 +78,88 @@ export default function App() {
     return () => clearTimeout(t);
   }, []);
 
+  // -----------------------------
+  // ✅ Adaptive glass contrast (Option 4)
+  // -----------------------------
+  const activeWallpaper = wallpaperUrl ?? (theme === "light" ? bgLight : bgDark);
+
+  const [glassContrast, setGlassContrast] = useState("light"); // "light" => white text, "dark" => black text
+
+  function computeImageLuminance(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      // For local imports this is fine. For remote images it helps avoid canvas issues.
+      img.crossOrigin = "anonymous";
+
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          if (!ctx) return reject(new Error("No canvas context"));
+
+          // Downscale = fast + stable
+          const w = 80;
+          const h = 80;
+          canvas.width = w;
+          canvas.height = h;
+
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const { data } = ctx.getImageData(0, 0, w, h);
+
+          let sum = 0;
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i] / 255;
+            const g = data[i + 1] / 255;
+            const b = data[i + 2] / 255;
+
+            // relative luminance (sRGB)
+            const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            sum += lum;
+          }
+
+          const avg = sum / (data.length / 4);
+          resolve(avg);
+        } catch (e) {
+          reject(e);
+        }
+      };
+
+      img.onerror = () => reject(new Error("Wallpaper image failed to load"));
+      img.src = src;
+    });
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    // Only needed for glass mode
+    if (uiTheme !== "glass") return;
+
+    (async () => {
+      try {
+        const lum = await computeImageLuminance(activeWallpaper);
+
+        // Tune this threshold if you want: higher = more likely to use white text
+        // lum: 0 = very dark, 1 = very bright
+        const next = lum > 0.62 ? "dark" : "light";
+
+        if (!cancelled) setGlassContrast(next);
+      } catch {
+        // fallback: white text
+        if (!cancelled) setGlassContrast("light");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeWallpaper, uiTheme]);
+
+  // ✅ base text class for glass mode (only affects root text defaults)
+  const baseTextClass = uiTheme === "glass" && glassContrast === "dark" ? "text-black" : "text-white";
+
   // ✅ Write accent into CSS var so all components can use it
   useEffect(() => {
     const ACCENTS = {
@@ -207,10 +289,7 @@ export default function App() {
     localStorage.setItem(storageKey, "1");
   }
 
-  const unreadCount = useMemo(
-    () => notifications.filter((n) => !n.read).length,
-    [notifications]
-  );
+  const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
   function dismissToast(id) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -257,7 +336,6 @@ export default function App() {
         initialPos: { x: 200, y: 110 },
       },
 
-      // Secret Projects (opened by typing "hacker" in terminal)
       secretProjects: {
         title: "Secret Projects",
         Component: SecretProjectsWindow,
@@ -360,7 +438,6 @@ export default function App() {
     sessionRef.current.distinctWindowsOpened.add(id);
     const distinctCount = sessionRef.current.distinctWindowsOpened.size;
 
-    // Explorer: open 3 distinct windows in this session
     if (distinctCount >= 3) {
       unlockAchievement(
         "portfolio_explorer",
@@ -369,7 +446,6 @@ export default function App() {
       );
     }
 
-    // Multitasker: have 4+ windows open at once
     if (openWindows.length >= 4) {
       unlockAchievement(
         "multitasker",
@@ -378,7 +454,6 @@ export default function App() {
       );
     }
 
-    // Terminal achievements + tip
     if (id === "terminal") {
       unlockAchievement(
         "terminal_explorer",
@@ -393,7 +468,6 @@ export default function App() {
       });
     }
 
-    // 30-sec mode
     if (id === "timer") {
       unlockAchievement(
         "speedrunner",
@@ -402,12 +476,10 @@ export default function App() {
       );
     }
 
-    // Secret finder
     if (id === "secretProjects") {
       unlockAchievement("secret_finder", "Secret Finder", "You unlocked the vault 👀");
     }
 
-    // Deep diver (any case study)
     if (id === "employerBrandingCaseStudy" || id === "stardewNotionCaseStudy") {
       unlockAchievement(
         "deep_diver",
@@ -415,7 +487,6 @@ export default function App() {
         "You opened a case study 🧠"
       );
 
-      // Collector: open both case studies (extend later if you add more)
       const opened = sessionRef.current.distinctWindowsOpened;
       if (opened.has("employerBrandingCaseStudy") && opened.has("stardewNotionCaseStudy")) {
         unlockAchievement(
@@ -427,7 +498,6 @@ export default function App() {
     }
   }
 
-  // Detect newly opened windows
   useEffect(() => {
     openWindows.forEach((id) => {
       if (openedOnceRef.current.has(id)) return;
@@ -437,7 +507,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openWindows]);
 
-  // Window maximize achievement
   useEffect(() => {
     const anyMax = Object.values(maxMap ?? {}).some(Boolean);
     if (anyMax && !sessionRef.current.usedMaximize) {
@@ -450,7 +519,6 @@ export default function App() {
     }
   }, [maxMap]);
 
-  // Optional helpers: can be triggered from TerminalWindow (if you wire it there)
   function trackTerminalCommand() {
     sessionRef.current.commandsRun += 1;
     if (sessionRef.current.commandsRun >= 5) {
@@ -465,11 +533,7 @@ export default function App() {
   function trackGameLaunch() {
     sessionRef.current.gamesLaunched += 1;
     if (sessionRef.current.gamesLaunched >= 1) {
-      unlockAchievement(
-        "gamer",
-        "Achievement unlocked: Gamer",
-        "You launched a terminal game 🎮"
-      );
+      unlockAchievement("gamer", "Achievement unlocked: Gamer", "You launched a terminal game 🎮");
     }
   }
 
@@ -488,9 +552,9 @@ export default function App() {
   return (
     <div style={{ fontSize: `${(fontScale ?? 1) * 16}px` }}>
       <motion.div
-        className="min-h-screen bg-cover bg-center font-sans text-white relative"
+        className={`min-h-screen bg-cover bg-center font-sans ${baseTextClass} relative`}
         style={{
-          backgroundImage: `url(${wallpaperUrl ?? (theme === "light" ? bgLight : bgDark)})`,
+          backgroundImage: `url(${activeWallpaper})`,
         }}
         initial={{ opacity: 0, filter: "blur(10px)" }}
         animate={loaded ? { opacity: 1, filter: "blur(0px)" } : {}}
@@ -518,7 +582,6 @@ export default function App() {
           transition={{ delay: 0.15, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="flex items-center gap-3">
-            {/* theme toggle (no notification) */}
             <div
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
@@ -599,11 +662,7 @@ export default function App() {
             a.click();
             a.remove();
 
-            unlockAchievement(
-              "prepared_recruiter",
-              "Achievement unlocked: Prepared Recruiter",
-              "Resume downloaded ✅"
-            );
+            unlockAchievement("prepared_recruiter", "Achievement unlocked: Prepared Recruiter", "Resume downloaded ✅");
           }}
         >
           <img src={docIcon} alt="Resume" className="w-15 h-15 object-contain" />
@@ -637,6 +696,7 @@ export default function App() {
               >
                 <WindowComponent
                   uiTheme={uiTheme}
+                  glassContrast={glassContrast} // ✅ IMPORTANT: pass to windows
                   setUiTheme={setUiTheme}
                   wallpaperUrl={wallpaperUrl}
                   setWallpaperUrl={setWallpaperUrl}
@@ -645,7 +705,6 @@ export default function App() {
                   accent={accent}
                   setAccent={setAccent}
                   onOpenWindow={openWindow}
-                  // optional: let inner windows trigger achievements/tips later
                   notify={notify}
                   notifyOnce={notifyOnce}
                   unlockAchievement={unlockAchievement}
