@@ -45,8 +45,11 @@ import TerminalWindow from "./components/windows/TerminalWindow";
 import EmployerBrandingCaseStudyWindow from "./components/windows/EmployerBrandingCaseStudyWIndow";
 import StardewNotionCaseStudyWindow from "./components/windows/StardewNotionCaseStudyWindow";
 
-// ✅ NEW: Secret Projects window (for "hacker" command)
+// ✅ Secret Projects overview vault
 import SecretProjectsWindow from "./components/windows/SecretProjectsWindow";
+
+// ✅ NEW: individual secret project window(s)
+import BehindTheButtonWindow from "./components/windows/BehindTheButtonWindow";
 
 export default function App() {
   const [mouseX, setMouseX] = useState(null);
@@ -169,13 +172,22 @@ export default function App() {
         initialPos: { x: 200, y: 110 },
       },
 
-      // ✅ NEW: Secret Projects (opened by typing "hacker" in terminal)
+      // ✅ Secret Projects (opened by typing "hacker" in terminal)
       secretProjects: {
         title: "Secret Projects",
         Component: SecretProjectsWindow,
         width: 920,
         height: 600,
         initialPos: { x: 210, y: 120 },
+      },
+
+      // ✅ NEW: individual secret project window
+      behindTheButton: {
+        title: "Behind the Button — WIP",
+        Component: BehindTheButtonWindow,
+        width: 1180,
+        height: 760,
+        initialPos: { x: 140, y: 80 },
       },
 
       videos: {
@@ -221,7 +233,6 @@ export default function App() {
         initialPos: { x: 140, y: 80 },
       },
 
-      // ✅ NEW: Stardew Notion case study window
       stardewNotionCaseStudy: {
         title: "Gamified Notion Template — Case Study",
         Component: StardewNotionCaseStudyWindow,
