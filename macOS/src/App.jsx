@@ -1,5 +1,5 @@
 ﻿// src/App.jsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import moonIcon from "./imgs/moon.png";
@@ -48,14 +48,18 @@ import StardewNotionCaseStudyWindow from "./components/windows/StardewNotionCase
 // ✅ Secret Projects overview vault
 import SecretProjectsWindow from "./components/windows/SecretProjectsWindow";
 
-// ✅ NEW: individual secret project window(s)
+// ✅ individual secret project window(s)
 import BehindTheButtonWindow from "./components/windows/BehindTheButtonWindow";
+
+// ✅ Notifications UI
+import NotificationCenter from "./components/notifications/NotificationCenter";
+import ToastStack from "./components/notifications/ToastStack";
 
 export default function App() {
   const [mouseX, setMouseX] = useState(null);
 
-  // ✅ Accent (macOS accent color)
-  const [accent, setAccent] = useState("emerald"); // default
+  // Accent
+  const [accent, setAccent] = useState("emerald");
 
   // wallpaper theme (background)
   const [theme, setTheme] = useState("light");
@@ -99,7 +103,7 @@ export default function App() {
     toggleMaximize,
   } = useWindowManager();
 
-  // ✅ clock that actually updates
+  // ✅ clock updates
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 30_000);
@@ -147,7 +151,88 @@ export default function App() {
   // Resume icon by UI theme
   const docIcon = uiTheme === "macos" ? docIconMac : docIconGlass;
 
+  // -----------------------------
+  // Notifications (toasts + center)
+  // -----------------------------
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [toasts, setToasts] = useState([]);
+
+  function makeTimeLabel(d = new Date()) {
+    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function notify({ title, message = "", toast = true } = {}) {
+    const id = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const item = {
+      id,
+      title: title || "Notification",
+      message,
+      createdAt: Date.now(),
+      timeLabel: makeTimeLabel(),
+      read: false,
+    };
+
+    setNotifications((prev) => [item, ...prev]);
+
+    if (toast) {
+      setToasts((prev) => [item, ...prev]);
+      window.setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, 3200);
+    }
+
+    return id;
+  }
+
+  // ✅ only-once helper (persists across reloads)
+  function notifyOnce(key, payload) {
+    const storageKey = `notif_once:${key}`;
+    if (localStorage.getItem(storageKey)) return;
+    notify(payload);
+    localStorage.setItem(storageKey, "1");
+  }
+
+  // ✅ achievements (also only-once)
+  function unlockAchievement(key, title, message = "") {
+    const storageKey = `ach:${key}`;
+    if (localStorage.getItem(storageKey)) return;
+
+    notify({
+      title: title || "Achievement unlocked",
+      message,
+      toast: true,
+    });
+
+    localStorage.setItem(storageKey, "1");
+  }
+
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.read).length,
+    [notifications]
+  );
+
+  function dismissToast(id) {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }
+
+  function clearAllNotifications() {
+    setNotifications([]);
+    setToasts([]);
+  }
+
+  function markAllRead() {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  }
+
+  function removeOneNotification(id) {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }
+
+  // -----------------------------
   // Window definitions
+  // -----------------------------
   const WINDOW_DEFS = useMemo(
     () => ({
       settings: {
@@ -172,7 +257,7 @@ export default function App() {
         initialPos: { x: 200, y: 110 },
       },
 
-      // ✅ Secret Projects (opened by typing "hacker" in terminal)
+      // Secret Projects (opened by typing "hacker" in terminal)
       secretProjects: {
         title: "Secret Projects",
         Component: SecretProjectsWindow,
@@ -181,7 +266,6 @@ export default function App() {
         initialPos: { x: 210, y: 120 },
       },
 
-      // ✅ NEW: individual secret project window
       behindTheButton: {
         title: "Behind the Button — WIP",
         Component: BehindTheButtonWindow,
@@ -232,7 +316,6 @@ export default function App() {
         height: 760,
         initialPos: { x: 140, y: 80 },
       },
-
       stardewNotionCaseStudy: {
         title: "Gamified Notion Template — Case Study",
         Component: StardewNotionCaseStudyWindow,
@@ -243,6 +326,152 @@ export default function App() {
     }),
     []
   );
+
+  // -----------------------------
+  // First-time tips (only once)
+  // -----------------------------
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      notifyOnce("tip_30sec", {
+        title: "Tip",
+        message: "Want the quick version? Open ⚡ 30-Seconds Mode on the left.",
+        toast: true,
+      });
+    }, 900);
+
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // -----------------------------
+  // Achievements (only-once)
+  // -----------------------------
+  const openedOnceRef = useRef(new Set());
+
+  // session-only counters (reset on refresh)
+  const sessionRef = useRef({
+    distinctWindowsOpened: new Set(),
+    commandsRun: 0,
+    gamesLaunched: 0,
+    usedMaximize: false,
+  });
+
+  function trackWindowOpened(id) {
+    sessionRef.current.distinctWindowsOpened.add(id);
+    const distinctCount = sessionRef.current.distinctWindowsOpened.size;
+
+    // Explorer: open 3 distinct windows in this session
+    if (distinctCount >= 3) {
+      unlockAchievement(
+        "portfolio_explorer",
+        "🏆 Achievement unlocked: Portfolio Explorer",
+        "You explored 3 apps. Nice 👀"
+      );
+    }
+
+    // Multitasker: have 4+ windows open at once
+    if (openWindows.length >= 4) {
+      unlockAchievement(
+        "multitasker",
+        "🏆 Achievement unlocked: Multitasker",
+        "Okayyy mission control energy ✨"
+      );
+    }
+
+    // Terminal achievements + tip
+    if (id === "terminal") {
+      unlockAchievement(
+        "terminal_explorer",
+        "🏆 Achievement unlocked: Terminal Explorer",
+        "Try typing “help” for commands."
+      );
+
+      notifyOnce("tip_terminal", {
+        title: "Tip",
+        message: "Terminal: Tab autocomplete • ↑/↓ history • Esc clears input.",
+        toast: true,
+      });
+    }
+
+    // 30-sec mode
+    if (id === "timer") {
+      unlockAchievement(
+        "speedrunner",
+        "🏆 Achievement unlocked: Speedrunner",
+        "30-Seconds Mode is recruiter-friendly ⚡"
+      );
+    }
+
+    // Secret finder
+    if (id === "secretProjects") {
+      unlockAchievement("secret_finder", "Secret Finder", "You unlocked the vault 👀");
+    }
+
+    // Deep diver (any case study)
+    if (id === "employerBrandingCaseStudy" || id === "stardewNotionCaseStudy") {
+      unlockAchievement(
+        "deep_diver",
+        "🏆 Achievement unlocked: Deep Diver",
+        "You opened a case study 🧠"
+      );
+
+      // Collector: open both case studies (extend later if you add more)
+      const opened = sessionRef.current.distinctWindowsOpened;
+      if (opened.has("employerBrandingCaseStudy") && opened.has("stardewNotionCaseStudy")) {
+        unlockAchievement(
+          "case_study_collector",
+          "🏆 Achievement unlocked: Case Study Collector",
+          "Two case studies opened. Respect."
+        );
+      }
+    }
+  }
+
+  // Detect newly opened windows
+  useEffect(() => {
+    openWindows.forEach((id) => {
+      if (openedOnceRef.current.has(id)) return;
+      openedOnceRef.current.add(id);
+      trackWindowOpened(id);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openWindows]);
+
+  // Window maximize achievement
+  useEffect(() => {
+    const anyMax = Object.values(maxMap ?? {}).some(Boolean);
+    if (anyMax && !sessionRef.current.usedMaximize) {
+      sessionRef.current.usedMaximize = true;
+      unlockAchievement(
+        "window_whisperer",
+        "Achievement unlocked: Window Whisperer",
+        "You discovered maximize."
+      );
+    }
+  }, [maxMap]);
+
+  // Optional helpers: can be triggered from TerminalWindow (if you wire it there)
+  function trackTerminalCommand() {
+    sessionRef.current.commandsRun += 1;
+    if (sessionRef.current.commandsRun >= 5) {
+      unlockAchievement(
+        "command_runner",
+        "Achievement unlocked: Command Runner",
+        "5 commands executed. Respect."
+      );
+    }
+  }
+
+  function trackGameLaunch() {
+    sessionRef.current.gamesLaunched += 1;
+    if (sessionRef.current.gamesLaunched >= 1) {
+      unlockAchievement(
+        "gamer",
+        "Achievement unlocked: Gamer",
+        "You launched a terminal game 🎮"
+      );
+    }
+  }
 
   const dockItems = [
     { label: "About me", icon: icons.about, windowId: "about" },
@@ -267,6 +496,20 @@ export default function App() {
         animate={loaded ? { opacity: 1, filter: "blur(0px)" } : {}}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
+        {/* Toasts */}
+        <ToastStack uiTheme={uiTheme} toasts={toasts} onDismiss={dismissToast} />
+
+        {/* Notification Center */}
+        <NotificationCenter
+          uiTheme={uiTheme}
+          isOpen={notifOpen}
+          onClose={() => setNotifOpen(false)}
+          items={notifications}
+          onClearAll={clearAllNotifications}
+          onMarkAllRead={markAllRead}
+          onRemoveOne={removeOneNotification}
+        />
+
         {/* Top Menu Bar */}
         <motion.div
           className="fixed top-0 left-0 right-0 z-50 h-10 bg-white/10 backdrop-blur-md flex items-center justify-end px-6 text-sm text-white shadow-sm"
@@ -275,9 +518,11 @@ export default function App() {
           transition={{ delay: 0.15, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="flex items-center gap-3">
+            {/* theme toggle (no notification) */}
             <div
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
+              title="Toggle wallpaper theme"
             >
               <img src={moonIcon} alt="Toggle wallpaper" className="w-4 h-4" />
             </div>
@@ -285,12 +530,25 @@ export default function App() {
             <div
               onClick={() => openWindow("settings")}
               className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
+              title="Settings"
             >
               <img src={gearIcon} alt="Settings" className="w-4 h-4" />
             </div>
 
-            <div className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 hover:-translate-y-[1px] hover:drop-shadow-sm">
+            <div
+              onClick={() => setNotifOpen((v) => !v)}
+              className="relative w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
+              title="Notifications"
+            >
               <img src={notificationIcon} alt="Notifications" className="w-4 h-4" />
+              {!!unreadCount && (
+                <div
+                  className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full text-[10px] flex items-center justify-center"
+                  style={{ backgroundColor: "hsl(var(--accent))", color: "white" }}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </div>
+              )}
             </div>
 
             <span>{currentTime}</span>
@@ -340,6 +598,12 @@ export default function App() {
             document.body.appendChild(a);
             a.click();
             a.remove();
+
+            unlockAchievement(
+              "prepared_recruiter",
+              "Achievement unlocked: Prepared Recruiter",
+              "Resume downloaded ✅"
+            );
           }}
         >
           <img src={docIcon} alt="Resume" className="w-15 h-15 object-contain" />
@@ -381,6 +645,12 @@ export default function App() {
                   accent={accent}
                   setAccent={setAccent}
                   onOpenWindow={openWindow}
+                  // optional: let inner windows trigger achievements/tips later
+                  notify={notify}
+                  notifyOnce={notifyOnce}
+                  unlockAchievement={unlockAchievement}
+                  trackTerminalCommand={trackTerminalCommand}
+                  trackGameLaunch={trackGameLaunch}
                 />
               </MacWindow>
             );
