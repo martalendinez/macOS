@@ -1,7 +1,7 @@
 // src/config/windowDefs.js
 import SettingsWindow from "../components/windows/Settings/SettingsWindow";
 import AboutWindow from "../components/windows/About/AboutWindow";
-import ProjectsWindow from "../components/windows/ProjectsWindow";
+import ProjectsWindow from "../components/windows/Projects/ProjectsWindow";
 import VideosWindow from "../components/windows/VideosWindow";
 
 import FunWindow from "../components/windows/FunWindow";
@@ -9,14 +9,14 @@ import MusicWindow from "../components/windows/MusicWindow";
 import MapWindow from "../components/windows/MapWindow";
 import TerminalWindow from "../components/windows/terminal/TerminalWindow";
 
-import EmployerBrandingCaseStudyWindow from "../components/windows/EmployerBrandingCaseStudyWIndow";
-import StardewNotionCaseStudyWindow from "../components/windows/StardewNotionCaseStudyWindow";
+import EmployerBrandingCaseStudyWindow from "../components/windows/Projects/EmployerBrandingCaseStudyWIndow";
+import StardewNotionCaseStudyWindow from "../components/windows/Projects/StardewNotionCaseStudyWindow";
 
 // ✅ Secret Projects overview vault
-import SecretProjectsWindow from "../components/windows/SecretProjectsWindow";
+import SecretProjectsWindow from "../components/windows/Projects/SecretProjectsWindow";
 
 // ✅ individual secret project window(s)
-import BehindTheButtonWindow from "../components/windows/BehindTheButtonWindow";
+import BehindTheButtonWindow from "../components/windows/Projects/BehindTheButtonWindow";
 
 export const WINDOW_DEFS = {
   settings: {
