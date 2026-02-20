@@ -1,4 +1,4 @@
-import SettingsWindow from "../components/windows/SettingsWindow";
+import SettingsWindow from "../components/windows/Settings/SettingsWindow";
 
 export const WINDOWS = {
   settings: {
