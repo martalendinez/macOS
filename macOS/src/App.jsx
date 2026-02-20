@@ -25,6 +25,7 @@ import videosIconMac from "./imgs/icons/mac/videosMac.png";
 import timerIconMac from "./imgs/icons/mac/timerMac.png";
 import docIconMac from "./imgs/icons/mac/docMac.png";
 
+// ✅ default wallpaper pair (glass2 light <-> glass2 dark)
 import bgLight from "./imgs/wallpapers/glass/glass2.jpeg";
 import bgDark from "./imgs/wallpapers/glass/glass2dark.jpeg";
 
@@ -50,19 +51,28 @@ import ResumeIcon from "./components/shell/ResumeIcon";
 import Dock from "./components/shell/Dock";
 import WindowsLayer from "./components/shell/WindowsLayer";
 
+// ✅ import wallpaper pairs from Settings so every wallpaper swaps correctly
+import { ALL_WALLPAPER_PAIRS } from "./components/windows/Settings/constants";
+
 /**
- * If wallpaperUrl is one of your known wallpapers, swap to its matching light/dark pair.
- * If it’s a custom upload (or unknown), keep it unchanged.
+ * Wallpaper pairing:
+ * - Use the pairs defined in Settings
+ * - Ensure your default pair (bgLight/bgDark) is included (in case Settings changes)
  */
-const WALLPAPER_PAIRS = [{ light: bgLight, dark: bgDark }];
+const WALLPAPER_PAIRS = [
+  { light: bgLight, dark: bgDark },
+  ...(ALL_WALLPAPER_PAIRS || []),
+];
 
 function swapToThemeWallpaper(current, nextTheme) {
   if (!current) return null; // null => use default activeWallpaper based on theme
   for (const pair of WALLPAPER_PAIRS) {
+    if (!pair?.light || !pair?.dark) continue;
     if (current === pair.light || current === pair.dark) {
       return nextTheme === "dark" ? pair.dark : pair.light;
     }
   }
+  // Unknown/custom wallpaper => do not change
   return current;
 }
 
@@ -81,14 +91,14 @@ export default function App() {
   const [accent, setAccent] = useState("emerald");
   useAccentVar(accent);
 
-  // ✅ default: glass icons + macos windows + glass2 wallpaper (bgLight)
-  const [theme, setTheme] = useState("light"); // controls light/dark mode
-  const [wallpaperUrl, setWallpaperUrl] = useState(null); // null => use bgLight/bgDark defaults
+  // ✅ default: glass icons + macos windows + glass2 wallpaper
+  const [theme, setTheme] = useState("light"); // light | dark
+  const [wallpaperUrl, setWallpaperUrl] = useState(null); // null => default pair
 
-  // ✅ uiTheme = WINDOW STYLE only (macos windows by default)
+  // ✅ uiTheme = WINDOW STYLE only
   const [uiTheme, setUiTheme] = useState("macos");
 
-  // ✅ iconTheme = ICON PACK only (glass icons by default)
+  // ✅ iconTheme = ICON PACK only
   const [iconTheme, setIconTheme] = useState("glass");
 
   // Font scale
@@ -101,17 +111,17 @@ export default function App() {
     return () => clearTimeout(t);
   }, []);
 
-  // active wallpaper (respects theme if wallpaperUrl is null)
+  // active wallpaper (default: glass2 light/dark pair)
   const activeWallpaper = wallpaperUrl ?? (theme === "light" ? bgLight : bgDark);
 
-  // ✅ adaptive glass contrast (based on WINDOW STYLE)
+  // adaptive glass contrast (based on WINDOW STYLE)
   const { glassContrast, baseTextClass } = useGlassContrast({ uiTheme, activeWallpaper });
 
-  // ✅ clock
+  // clock
   const timeZone = "Europe/Stockholm";
   const currentTime = useClock({ timeZone, intervalMs: 30_000 });
 
-  // ✅ window manager
+  // window manager
   const {
     openWindows,
     activeWindow,
@@ -123,10 +133,10 @@ export default function App() {
     toggleMaximize,
   } = useWindowManager();
 
-  // ✅ notifications
+  // notifications
   const notif = useNotifications();
 
-  // ✅ achievements
+  // achievements
   const ach = useAchievements({
     openWindows,
     maxMap,
@@ -134,9 +144,7 @@ export default function App() {
     notifyOnce: notif.notifyOnce,
   });
 
-  // -----------------------------
-  // First-time tips (only once)
-  // -----------------------------
+  // First-time tips
   useEffect(() => {
     const t = window.setTimeout(() => {
       notif.notifyOnce("tip_30sec", {
@@ -150,9 +158,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // -----------------------------
   // 🌙 Theme toggle (moon icon)
-  // -----------------------------
   function setThemeAndSyncWallpaper(nextTheme) {
     setTheme(nextTheme);
     setWallpaperUrl((curr) => swapToThemeWallpaper(curr, nextTheme));
@@ -166,12 +172,10 @@ export default function App() {
     });
   }
 
-  // -----------------------------
   // 🌅 Auto dark mode by hour
-  // -----------------------------
   useEffect(() => {
-    const AUTO_DARK_START_HOUR = 18; // 18:00 -> dark
-    const AUTO_LIGHT_START_HOUR = 6; // 06:00 -> light
+    const AUTO_DARK_START_HOUR = 18;
+    const AUTO_LIGHT_START_HOUR = 6;
 
     const applyAutoTheme = () => {
       const h = getHourInTimeZone(timeZone);
@@ -191,7 +195,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ✅ Dock icons by ICON THEME
+  // Dock icons by ICON THEME
   const icons = useMemo(() => {
     if (iconTheme === "macos") {
       return {
@@ -203,7 +207,7 @@ export default function App() {
     return { about: aboutIconGlass, ai: aiIconGlass, fun: funIconGlass };
   }, [iconTheme]);
 
-  // ✅ Desktop (left rail) icons by ICON THEME
+  // Desktop icons by ICON THEME
   const desktopIcons = useMemo(() => {
     if (iconTheme === "macos") {
       return {
@@ -219,7 +223,7 @@ export default function App() {
     };
   }, [iconTheme]);
 
-  // ✅ Resume icon by ICON THEME
+  // Resume icon by ICON THEME
   const docIcon = iconTheme === "macos" ? docIconMac : docIconGlass;
 
   const dockItems = useMemo(
@@ -240,7 +244,7 @@ export default function App() {
     [desktopIcons]
   );
 
-  // ✅ One prop-bundle for all windows
+  // One prop-bundle for all windows
   const appApi = useMemo(
     () => ({
       // window style
@@ -252,7 +256,7 @@ export default function App() {
       iconTheme,
       setIconTheme,
 
-      // light/dark wallpaper mode
+      // light/dark mode
       theme,
       setTheme: setThemeAndSyncWallpaper,
 
@@ -293,10 +297,8 @@ export default function App() {
       wallpaperUrl={activeWallpaper}
       loaded={loaded}
     >
-      {/* Toasts */}
       <ToastStack uiTheme={uiTheme} toasts={notif.toasts} onDismiss={notif.dismissToast} />
 
-      {/* Notification Center */}
       <NotificationCenter
         uiTheme={uiTheme}
         isOpen={notif.notifOpen}
@@ -307,7 +309,6 @@ export default function App() {
         onRemoveOne={notif.removeOneNotification}
       />
 
-      {/* Top Menu Bar */}
       <TopBar
         loaded={loaded}
         theme={theme}
@@ -323,13 +324,11 @@ export default function App() {
         notificationIcon={notificationIcon}
       />
 
-      {/* Left rail */}
       <LeftRail loaded={loaded} items={leftRailItems} onOpenWindow={openWindow} />
 
-      {/* Resume icon */}
       <ResumeIcon loaded={loaded} iconSrc={docIcon} unlockAchievement={notif.unlockAchievement} />
 
-      {/* Windows */}
+      {/* ✅ pass theme into WindowsLayer so windows can render dark chrome */}
       <WindowsLayer
         openWindows={openWindows}
         activeWindow={activeWindow}
@@ -339,11 +338,11 @@ export default function App() {
         closeWindow={closeWindow}
         toggleMaximize={toggleMaximize}
         uiTheme={uiTheme}
+        theme={theme}
         windowDefs={WINDOW_DEFS}
         appApi={appApi}
       />
 
-      {/* Dock */}
       <Dock loaded={loaded} items={dockItems} onOpenWindow={openWindow} />
     </Shell>
   );

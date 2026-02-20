@@ -14,32 +14,44 @@ export default function MacWindow({
   initialPos = { x: 220, y: 90 },
   children,
   uiTheme = "glass",
+  theme = "light", // ✅ used for dark mode
   isMaximized = false,
   onToggleMaximize,
 }) {
   const dragConstraintsRef = useRef(null);
   const dragControls = useDragControls();
+
   const isMac = uiTheme === "macos";
+  const isDark = theme === "dark";
 
   const windowClassByTheme = {
-    glass: "border border-white/15 bg-white/10 backdrop-blur-xl shadow-2xl",
-    // ✅ flat white window
-    macos: "border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.18)]",
+    glass: isDark
+      ? "border border-white/15 bg-black/25 backdrop-blur-xl shadow-2xl"
+      : "border border-white/15 bg-white/10 backdrop-blur-xl shadow-2xl",
+
+    macos: isDark
+      ? "border border-white/10 bg-[#1c1c1e] shadow-[0_18px_60px_rgba(0,0,0,0.55)]"
+      : "border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.18)]",
   };
 
   const titleBarClassByTheme = {
-    glass: "bg-white/10",
-    // ✅ flat white/very light gray title bar
-    macos: "bg-[#f6f6f6] border-b border-black/10",
+    glass: isDark ? "bg-black/20" : "bg-white/10",
+    macos: isDark
+      ? "bg-[#2c2c2e] border-b border-white/10"
+      : "bg-[#f6f6f6] border-b border-black/10",
   };
 
   const titleTextClassByTheme = {
     glass: "text-white/90",
-    macos: "text-black/70",
+    macos: isDark ? "text-white/85" : "text-black/70",
   };
 
   const ringClass =
-    uiTheme === "macos" ? "ring-1 ring-black/10" : "ring-1 ring-white/20";
+    uiTheme === "macos"
+      ? isDark
+        ? "ring-1 ring-white/10"
+        : "ring-1 ring-black/10"
+      : "ring-1 ring-white/20";
 
   const closeBtn = uiTheme === "macos" ? "bg-[#ff5f57]" : "bg-red-400";
   const MAX_MARGIN = 16;
@@ -64,9 +76,15 @@ export default function MacWindow({
 
       <motion.div
         onMouseDown={() => onFocus(id)}
-        className={`fixed rounded-2xl overflow-hidden ${windowClassByTheme[uiTheme]} ${
-          isActive ? ringClass : "opacity-95"
-        } ${isMac ? "text-black" : "text-white"}`}
+        className={[
+          "fixed rounded-2xl overflow-hidden",
+          windowClassByTheme[uiTheme],
+          isActive ? ringClass : "opacity-95",
+          // ✅ this class enables global dark overrides for content
+          isDark ? "darkwin" : "",
+          // base text default (content may override; our CSS will fix most cases)
+          isMac ? (isDark ? "text-white" : "text-black") : "text-white",
+        ].join(" ")}
         style={{ zIndex, ...computedStyle }}
         initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
