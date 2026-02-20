@@ -15,6 +15,8 @@ import QuickActionsSection from "./components/QuickActionsSection";
 export default function SettingsWindow({
   uiTheme,
   setUiTheme,
+  iconTheme,
+  setIconTheme,
   wallpaperUrl,
   setWallpaperUrl,
   fontScale,
@@ -22,7 +24,7 @@ export default function SettingsWindow({
   accent,
   setAccent,
 }) {
-  const isMac = uiTheme === "macos";
+  const isMac = uiTheme === "macos"; // window style controls settings styling
   const styles = useSettingsStyles(isMac);
 
   const [activeSection, setActiveSection] = useState("theme");
@@ -60,10 +62,7 @@ export default function SettingsWindow({
   const pickWallpaper = (src) => setWallpaperUrl?.(src);
   const clearCustom = () => setWallpaperUrl?.(null);
 
-  const handleUpload = useMemo(
-    () => makeUploadHandler(setWallpaperUrl),
-    [setWallpaperUrl]
-  );
+  const handleUpload = useMemo(() => makeUploadHandler(setWallpaperUrl), [setWallpaperUrl]);
 
   // font logic
   const safeFontScale = clampFontScale(fontScale ?? 1);
@@ -82,19 +81,42 @@ export default function SettingsWindow({
       <div className={`flex-1 p-6 ${styles.mainBg} overflow-auto space-y-10`}>
         {/* THEME */}
         <Section id="theme" title="Theme" titleClass={styles.textSub} refObj={themeRef}>
-          <div className="flex gap-2">
-            <button
-              className={`${styles.btnBase} ${uiTheme === "glass" ? styles.btnSelected : styles.btnUnselected}`}
-              onClick={() => setUiTheme?.("glass")}
-            >
-              Glass
-            </button>
-            <button
-              className={`${styles.btnBase} ${uiTheme === "macos" ? styles.btnSelected : styles.btnUnselected}`}
-              onClick={() => setUiTheme?.("macos")}
-            >
-              macOS
-            </button>
+          {/* Window style */}
+          <div className="space-y-3">
+            <div className={styles.textSub}>Window style</div>
+            <div className="flex gap-2">
+              <button
+                className={`${styles.btnBase} ${uiTheme === "glass" ? styles.btnSelected : styles.btnUnselected}`}
+                onClick={() => setUiTheme?.("glass")}
+              >
+                Glass
+              </button>
+              <button
+                className={`${styles.btnBase} ${uiTheme === "macos" ? styles.btnSelected : styles.btnUnselected}`}
+                onClick={() => setUiTheme?.("macos")}
+              >
+                macOS
+              </button>
+            </div>
+          </div>
+
+          {/* Icon style */}
+          <div className="mt-6 space-y-3">
+            <div className={styles.textSub}>Icon style</div>
+            <div className="flex gap-2">
+              <button
+                className={`${styles.btnBase} ${iconTheme === "glass" ? styles.btnSelected : styles.btnUnselected}`}
+                onClick={() => setIconTheme?.("glass")}
+              >
+                Glass icons
+              </button>
+              <button
+                className={`${styles.btnBase} ${iconTheme === "macos" ? styles.btnSelected : styles.btnUnselected}`}
+                onClick={() => setIconTheme?.("macos")}
+              >
+                macOS icons
+              </button>
+            </div>
           </div>
         </Section>
 
@@ -137,10 +159,7 @@ export default function SettingsWindow({
 
         {/* QUICK */}
         <Section id="quick" title="Quick actions" titleClass={styles.textSub} refObj={quickRef}>
-          <QuickActionsSection
-            uiTheme={uiTheme}
-            onDownloadResume={downloadResume}
-          />
+          <QuickActionsSection uiTheme={uiTheme} onDownloadResume={downloadResume} />
         </Section>
       </div>
     </div>

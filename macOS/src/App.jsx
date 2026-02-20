@@ -59,8 +59,12 @@ export default function App() {
   const [theme, setTheme] = useState("light");
   const [wallpaperUrl, setWallpaperUrl] = useState(null);
 
-  // UI theme (window/icon style)
-  const [uiTheme, setUiTheme] = useState("glass");
+  // ✅ uiTheme now ONLY controls WINDOW STYLE (white mac windows vs glass windows)
+  // If you want default mac windows, set this to "macos"
+  const [uiTheme, setUiTheme] = useState("macos");
+
+  // ✅ NEW: icon pack theme (glass icons vs mac icons)
+  const [iconTheme, setIconTheme] = useState("glass");
 
   // Font scale
   const [fontScale, setFontScale] = useState(1);
@@ -75,7 +79,7 @@ export default function App() {
   // active wallpaper
   const activeWallpaper = wallpaperUrl ?? (theme === "light" ? bgLight : bgDark);
 
-  // ✅ adaptive glass contrast
+  // ✅ adaptive glass contrast (based on WINDOW STYLE)
   const { glassContrast, baseTextClass } = useGlassContrast({ uiTheme, activeWallpaper });
 
   // ✅ clock
@@ -120,9 +124,9 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Dock icons by UI theme
+  // ✅ Dock icons by ICON THEME (not uiTheme anymore)
   const icons = useMemo(() => {
-    if (uiTheme === "macos") {
+    if (iconTheme === "macos") {
       return {
         about: aboutIconMac || aboutIconGlass,
         ai: aiIconMac || aiIconGlass,
@@ -130,11 +134,11 @@ export default function App() {
       };
     }
     return { about: aboutIconGlass, ai: aiIconGlass, fun: funIconGlass };
-  }, [uiTheme]);
+  }, [iconTheme]);
 
-  // Desktop (left rail) icons by UI theme
+  // ✅ Desktop (left rail) icons by ICON THEME
   const desktopIcons = useMemo(() => {
-    if (uiTheme === "macos") {
+    if (iconTheme === "macos") {
       return {
         timer: timerIconMac,
         projects: projectsIconMac,
@@ -146,10 +150,10 @@ export default function App() {
       projects: projectsIconGlass,
       videos: videosIconGlass,
     };
-  }, [uiTheme]);
+  }, [iconTheme]);
 
-  // Resume icon by UI theme
-  const docIcon = uiTheme === "macos" ? docIconMac : docIconGlass;
+  // ✅ Resume icon by ICON THEME
+  const docIcon = iconTheme === "macos" ? docIconMac : docIconGlass;
 
   const dockItems = useMemo(
     () => [
@@ -172,9 +176,15 @@ export default function App() {
   // ✅ One prop-bundle for all windows (same features, less prop churn)
   const appApi = useMemo(
     () => ({
+      // window style
       uiTheme,
-      glassContrast,
       setUiTheme,
+      glassContrast,
+
+      // icon style
+      iconTheme,
+      setIconTheme,
+
       wallpaperUrl,
       setWallpaperUrl,
       fontScale,
@@ -191,6 +201,7 @@ export default function App() {
     [
       uiTheme,
       glassContrast,
+      iconTheme,
       wallpaperUrl,
       fontScale,
       accent,
