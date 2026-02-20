@@ -1,6 +1,5 @@
 ﻿// src/App.jsx
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 
 import moonIcon from "./imgs/moon.png";
 import gearIcon from "./imgs/gear.png";
@@ -29,37 +28,32 @@ import docIconMac from "./imgs/docMac.png";
 import bgLight from "./imgs/Background.jpg";
 import bgDark from "./imgs/Background-dark.png";
 
-import MacWindow from "./components/windows/MacWindow";
 import useWindowManager from "./components/windows/useWindowManager";
-
-import SettingsWindow from "./components/windows/SettingsWindow";
-import AboutWindow from "./components/windows/AboutWindow";
-import ProjectsWindow from "./components/windows/ProjectsWindow";
-import VideosWindow from "./components/windows/VideosWindow";
-
-import FunWindow from "./components/windows/FunWindow";
-import MusicWindow from "./components/windows/MusicWindow";
-import MapWindow from "./components/windows/MapWindow";
-import TerminalWindow from "./components/windows/TerminalWindow";
-
-import EmployerBrandingCaseStudyWindow from "./components/windows/EmployerBrandingCaseStudyWIndow";
-import StardewNotionCaseStudyWindow from "./components/windows/StardewNotionCaseStudyWindow";
-
-// ✅ Secret Projects overview vault
-import SecretProjectsWindow from "./components/windows/SecretProjectsWindow";
-
-// ✅ individual secret project window(s)
-import BehindTheButtonWindow from "./components/windows/BehindTheButtonWindow";
 
 // ✅ Notifications UI
 import NotificationCenter from "./components/notifications/NotificationCenter";
 import ToastStack from "./components/notifications/ToastStack";
 
-export default function App() {
-  const [mouseX, setMouseX] = useState(null);
+// ✅ new config + hooks
+import { WINDOW_DEFS } from "./config/windowDefs";
+import useAccentVar from "./hooks/useAccentVar";
+import useClock from "./hooks/useClock";
+import useGlassContrast from "./hooks/useGlassContrast";
+import useNotifications from "./hooks/useNotifications";
+import useAchievements from "./hooks/useAchievements";
 
+// ✅ shell components
+import Shell from "./components/shell/Shell";
+import TopBar from "./components/shell/TopBar";
+import LeftRail from "./components/shell/LeftRail";
+import ResumeIcon from "./components/shell/ResumeIcon";
+import Dock from "./components/shell/Dock";
+import WindowsLayer from "./components/shell/WindowsLayer";
+
+export default function App() {
   // Accent
   const [accent, setAccent] = useState("emerald");
+  useAccentVar(accent);
 
   // wallpaper theme (background)
   const [theme, setTheme] = useState("light");
@@ -78,102 +72,16 @@ export default function App() {
     return () => clearTimeout(t);
   }, []);
 
-  // -----------------------------
-  // ✅ Adaptive glass contrast (Option 4)
-  // -----------------------------
+  // active wallpaper
   const activeWallpaper = wallpaperUrl ?? (theme === "light" ? bgLight : bgDark);
 
-  const [glassContrast, setGlassContrast] = useState("light"); // "light" => white text, "dark" => black text
+  // ✅ adaptive glass contrast
+  const { glassContrast, baseTextClass } = useGlassContrast({ uiTheme, activeWallpaper });
 
-  function computeImageLuminance(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
+  // ✅ clock
+  const currentTime = useClock({ timeZone: "Europe/Stockholm", intervalMs: 30_000 });
 
-      // For local imports this is fine. For remote images it helps avoid canvas issues.
-      img.crossOrigin = "anonymous";
-
-      img.onload = () => {
-        try {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d", { willReadFrequently: true });
-          if (!ctx) return reject(new Error("No canvas context"));
-
-          // Downscale = fast + stable
-          const w = 80;
-          const h = 80;
-          canvas.width = w;
-          canvas.height = h;
-
-          ctx.drawImage(img, 0, 0, w, h);
-
-          const { data } = ctx.getImageData(0, 0, w, h);
-
-          let sum = 0;
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i] / 255;
-            const g = data[i + 1] / 255;
-            const b = data[i + 2] / 255;
-
-            // relative luminance (sRGB)
-            const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-            sum += lum;
-          }
-
-          const avg = sum / (data.length / 4);
-          resolve(avg);
-        } catch (e) {
-          reject(e);
-        }
-      };
-
-      img.onerror = () => reject(new Error("Wallpaper image failed to load"));
-      img.src = src;
-    });
-  }
-
-  useEffect(() => {
-    let cancelled = false;
-
-    // Only needed for glass mode
-    if (uiTheme !== "glass") return;
-
-    (async () => {
-      try {
-        const lum = await computeImageLuminance(activeWallpaper);
-
-        // Tune this threshold if you want: higher = more likely to use white text
-        // lum: 0 = very dark, 1 = very bright
-        const next = lum > 0.62 ? "dark" : "light";
-
-        if (!cancelled) setGlassContrast(next);
-      } catch {
-        // fallback: white text
-        if (!cancelled) setGlassContrast("light");
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [activeWallpaper, uiTheme]);
-
-  // ✅ base text class for glass mode (only affects root text defaults)
-  const baseTextClass = uiTheme === "glass" && glassContrast === "dark" ? "text-black" : "text-white";
-
-  // ✅ Write accent into CSS var so all components can use it
-  useEffect(() => {
-    const ACCENTS = {
-      emerald: "158 64% 42%",
-      sky: "199 89% 48%",
-      violet: "262 83% 58%",
-      rose: "346 77% 50%",
-      amber: "38 92% 50%",
-    };
-
-    const v = ACCENTS[accent] ?? ACCENTS.emerald;
-    document.documentElement.style.setProperty("--accent", v);
-  }, [accent]);
-
+  // ✅ window manager
   const {
     openWindows,
     activeWindow,
@@ -185,22 +93,32 @@ export default function App() {
     toggleMaximize,
   } = useWindowManager();
 
-  // ✅ clock updates
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(id);
-  }, []);
+  // ✅ notifications
+  const notif = useNotifications();
 
-  const currentTime = now.toLocaleString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "Europe/Stockholm",
+  // ✅ achievements
+  const ach = useAchievements({
+    openWindows,
+    maxMap,
+    unlockAchievement: notif.unlockAchievement,
+    notifyOnce: notif.notifyOnce,
   });
+
+  // -----------------------------
+  // First-time tips (only once)
+  // -----------------------------
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      notif.notifyOnce("tip_30sec", {
+        title: "Tip",
+        message: "Want the quick version? Open ⚡ 30-Seconds Mode on the left.",
+        toast: true,
+      });
+    }, 900);
+
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Dock icons by UI theme
   const icons = useMemo(() => {
@@ -233,560 +151,116 @@ export default function App() {
   // Resume icon by UI theme
   const docIcon = uiTheme === "macos" ? docIconMac : docIconGlass;
 
-  // -----------------------------
-  // Notifications (toasts + center)
-  // -----------------------------
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [toasts, setToasts] = useState([]);
+  const dockItems = useMemo(
+    () => [
+      { label: "About me", icon: icons.about, windowId: "about" },
+      { label: "AI assistant", icon: icons.ai, windowId: null },
+      { label: "Extras & Fun", icon: icons.fun, windowId: "fun" },
+    ],
+    [icons]
+  );
 
-  function makeTimeLabel(d = new Date()) {
-    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  }
+  const leftRailItems = useMemo(
+    () => [
+      { icon: desktopIcons.timer, label: "30-Seconds Mode", windowId: "timer" },
+      { icon: desktopIcons.projects, label: "Projects", windowId: "projects" },
+      { icon: desktopIcons.videos, label: "Videos", windowId: "videos" },
+    ],
+    [desktopIcons]
+  );
 
-  function notify({ title, message = "", toast = true } = {}) {
-    const id = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    const item = {
-      id,
-      title: title || "Notification",
-      message,
-      createdAt: Date.now(),
-      timeLabel: makeTimeLabel(),
-      read: false,
-    };
-
-    setNotifications((prev) => [item, ...prev]);
-
-    if (toast) {
-      setToasts((prev) => [item, ...prev]);
-      window.setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, 3200);
-    }
-
-    return id;
-  }
-
-  // ✅ only-once helper (persists across reloads)
-  function notifyOnce(key, payload) {
-    const storageKey = `notif_once:${key}`;
-    if (localStorage.getItem(storageKey)) return;
-    notify(payload);
-    localStorage.setItem(storageKey, "1");
-  }
-
-  // ✅ achievements (also only-once)
-  function unlockAchievement(key, title, message = "") {
-    const storageKey = `ach:${key}`;
-    if (localStorage.getItem(storageKey)) return;
-
-    notify({
-      title: title || "Achievement unlocked",
-      message,
-      toast: true,
-    });
-
-    localStorage.setItem(storageKey, "1");
-  }
-
-  const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
-
-  function dismissToast(id) {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }
-
-  function clearAllNotifications() {
-    setNotifications([]);
-    setToasts([]);
-  }
-
-  function markAllRead() {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
-
-  function removeOneNotification(id) {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }
-
-  // -----------------------------
-  // Window definitions
-  // -----------------------------
-  const WINDOW_DEFS = useMemo(
+  // ✅ One prop-bundle for all windows (same features, less prop churn)
+  const appApi = useMemo(
     () => ({
-      settings: {
-        title: "Settings",
-        Component: SettingsWindow,
-        width: 880,
-        height: 560,
-        initialPos: { x: 220, y: 90 },
-      },
-      about: {
-        title: "About me",
-        Component: AboutWindow,
-        width: 760,
-        height: 520,
-        initialPos: { x: 260, y: 120 },
-      },
-      projects: {
-        title: "Projects",
-        Component: ProjectsWindow,
-        width: 920,
-        height: 600,
-        initialPos: { x: 200, y: 110 },
-      },
-
-      secretProjects: {
-        title: "Secret Projects",
-        Component: SecretProjectsWindow,
-        width: 920,
-        height: 600,
-        initialPos: { x: 210, y: 120 },
-      },
-
-      behindTheButton: {
-        title: "Behind the Button — WIP",
-        Component: BehindTheButtonWindow,
-        width: 1180,
-        height: 760,
-        initialPos: { x: 140, y: 80 },
-      },
-
-      videos: {
-        title: "Videos",
-        Component: VideosWindow,
-        width: 860,
-        height: 520,
-        initialPos: { x: 240, y: 130 },
-      },
-      fun: {
-        title: "Extras & Fun",
-        Component: FunWindow,
-        width: 920,
-        height: 600,
-        initialPos: { x: 240, y: 120 },
-      },
-      music: {
-        title: "Music",
-        Component: MusicWindow,
-        width: 760,
-        height: 520,
-        initialPos: { x: 260, y: 130 },
-      },
-      map: {
-        title: "Interactive Map",
-        Component: MapWindow,
-        width: 920,
-        height: 600,
-        initialPos: { x: 220, y: 110 },
-      },
-      terminal: {
-        title: "Terminal",
-        Component: TerminalWindow,
-        width: 860,
-        height: 560,
-        initialPos: { x: 240, y: 120 },
-      },
-      employerBrandingCaseStudy: {
-        title: "Employer Branding — Case Study",
-        Component: EmployerBrandingCaseStudyWindow,
-        width: 1180,
-        height: 760,
-        initialPos: { x: 140, y: 80 },
-      },
-      stardewNotionCaseStudy: {
-        title: "Gamified Notion Template — Case Study",
-        Component: StardewNotionCaseStudyWindow,
-        width: 1180,
-        height: 760,
-        initialPos: { x: 140, y: 80 },
-      },
+      uiTheme,
+      glassContrast,
+      setUiTheme,
+      wallpaperUrl,
+      setWallpaperUrl,
+      fontScale,
+      setFontScale,
+      accent,
+      setAccent,
+      onOpenWindow: openWindow,
+      notify: notif.notify,
+      notifyOnce: notif.notifyOnce,
+      unlockAchievement: notif.unlockAchievement,
+      trackTerminalCommand: ach.trackTerminalCommand,
+      trackGameLaunch: ach.trackGameLaunch,
     }),
-    []
+    [
+      uiTheme,
+      glassContrast,
+      wallpaperUrl,
+      fontScale,
+      accent,
+      openWindow,
+      notif.notify,
+      notif.notifyOnce,
+      notif.unlockAchievement,
+      ach.trackTerminalCommand,
+      ach.trackGameLaunch,
+    ]
   );
 
-  // -----------------------------
-  // First-time tips (only once)
-  // -----------------------------
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      notifyOnce("tip_30sec", {
-        title: "Tip",
-        message: "Want the quick version? Open ⚡ 30-Seconds Mode on the left.",
-        toast: true,
-      });
-    }, 900);
-
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // -----------------------------
-  // Achievements (only-once)
-  // -----------------------------
-  const openedOnceRef = useRef(new Set());
-
-  // session-only counters (reset on refresh)
-  const sessionRef = useRef({
-    distinctWindowsOpened: new Set(),
-    commandsRun: 0,
-    gamesLaunched: 0,
-    usedMaximize: false,
-  });
-
-  function trackWindowOpened(id) {
-    sessionRef.current.distinctWindowsOpened.add(id);
-    const distinctCount = sessionRef.current.distinctWindowsOpened.size;
-
-    if (distinctCount >= 3) {
-      unlockAchievement(
-        "portfolio_explorer",
-        "🏆 Achievement unlocked: Portfolio Explorer",
-        "You explored 3 apps. Nice 👀"
-      );
-    }
-
-    if (openWindows.length >= 4) {
-      unlockAchievement(
-        "multitasker",
-        "🏆 Achievement unlocked: Multitasker",
-        "Okayyy mission control energy ✨"
-      );
-    }
-
-    if (id === "terminal") {
-      unlockAchievement(
-        "terminal_explorer",
-        "🏆 Achievement unlocked: Terminal Explorer",
-        "Try typing “help” for commands."
-      );
-
-      notifyOnce("tip_terminal", {
-        title: "Tip",
-        message: "Terminal: Tab autocomplete • ↑/↓ history • Esc clears input.",
-        toast: true,
-      });
-    }
-
-    if (id === "timer") {
-      unlockAchievement(
-        "speedrunner",
-        "🏆 Achievement unlocked: Speedrunner",
-        "30-Seconds Mode is recruiter-friendly ⚡"
-      );
-    }
-
-    if (id === "secretProjects") {
-      unlockAchievement("secret_finder", "Secret Finder", "You unlocked the vault 👀");
-    }
-
-    if (id === "employerBrandingCaseStudy" || id === "stardewNotionCaseStudy") {
-      unlockAchievement(
-        "deep_diver",
-        "🏆 Achievement unlocked: Deep Diver",
-        "You opened a case study 🧠"
-      );
-
-      const opened = sessionRef.current.distinctWindowsOpened;
-      if (opened.has("employerBrandingCaseStudy") && opened.has("stardewNotionCaseStudy")) {
-        unlockAchievement(
-          "case_study_collector",
-          "🏆 Achievement unlocked: Case Study Collector",
-          "Two case studies opened. Respect."
-        );
-      }
-    }
-  }
-
-  useEffect(() => {
-    openWindows.forEach((id) => {
-      if (openedOnceRef.current.has(id)) return;
-      openedOnceRef.current.add(id);
-      trackWindowOpened(id);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openWindows]);
-
-  useEffect(() => {
-    const anyMax = Object.values(maxMap ?? {}).some(Boolean);
-    if (anyMax && !sessionRef.current.usedMaximize) {
-      sessionRef.current.usedMaximize = true;
-      unlockAchievement(
-        "window_whisperer",
-        "Achievement unlocked: Window Whisperer",
-        "You discovered maximize."
-      );
-    }
-  }, [maxMap]);
-
-  function trackTerminalCommand() {
-    sessionRef.current.commandsRun += 1;
-    if (sessionRef.current.commandsRun >= 5) {
-      unlockAchievement(
-        "command_runner",
-        "Achievement unlocked: Command Runner",
-        "5 commands executed. Respect."
-      );
-    }
-  }
-
-  function trackGameLaunch() {
-    sessionRef.current.gamesLaunched += 1;
-    if (sessionRef.current.gamesLaunched >= 1) {
-      unlockAchievement("gamer", "Achievement unlocked: Gamer", "You launched a terminal game 🎮");
-    }
-  }
-
-  const dockItems = [
-    { label: "About me", icon: icons.about, windowId: "about" },
-    { label: "AI assistant", icon: icons.ai, windowId: null },
-    { label: "Extras & Fun", icon: icons.fun, windowId: "fun" },
-  ];
-
-  const leftRailItems = [
-    { icon: desktopIcons.timer, label: "30-Seconds Mode", windowId: "timer" },
-    { icon: desktopIcons.projects, label: "Projects", windowId: "projects" },
-    { icon: desktopIcons.videos, label: "Videos", windowId: "videos" },
-  ];
-
   return (
-    <div style={{ fontSize: `${(fontScale ?? 1) * 16}px` }}>
-      <motion.div
-        className={`min-h-screen bg-cover bg-center font-sans ${baseTextClass} relative`}
-        style={{
-          backgroundImage: `url(${activeWallpaper})`,
-        }}
-        initial={{ opacity: 0, filter: "blur(10px)" }}
-        animate={loaded ? { opacity: 1, filter: "blur(0px)" } : {}}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {/* Toasts */}
-        <ToastStack uiTheme={uiTheme} toasts={toasts} onDismiss={dismissToast} />
-
-        {/* Notification Center */}
-        <NotificationCenter
-          uiTheme={uiTheme}
-          isOpen={notifOpen}
-          onClose={() => setNotifOpen(false)}
-          items={notifications}
-          onClearAll={clearAllNotifications}
-          onMarkAllRead={markAllRead}
-          onRemoveOne={removeOneNotification}
-        />
-
-        {/* Top Menu Bar */}
-        <motion.div
-          className="fixed top-0 left-0 right-0 z-50 h-10 bg-white/10 backdrop-blur-md flex items-center justify-end px-6 text-sm text-white shadow-sm"
-          initial={{ opacity: 0, y: -12 }}
-          animate={loaded ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.15, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
-              title="Toggle wallpaper theme"
-            >
-              <img src={moonIcon} alt="Toggle wallpaper" className="w-4 h-4" />
-            </div>
-
-            <div
-              onClick={() => openWindow("settings")}
-              className="w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
-              title="Settings"
-            >
-              <img src={gearIcon} alt="Settings" className="w-4 h-4" />
-            </div>
-
-            <div
-              onClick={() => setNotifOpen((v) => !v)}
-              className="relative w-7 h-7 flex items-center justify-center rounded-[8px] transition-all duration-150 hover:bg-white/20 hover:scale-105 cursor-pointer"
-              title="Notifications"
-            >
-              <img src={notificationIcon} alt="Notifications" className="w-4 h-4" />
-              {!!unreadCount && (
-                <div
-                  className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full text-[10px] flex items-center justify-center"
-                  style={{ backgroundColor: "hsl(var(--accent))", color: "white" }}
-                >
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </div>
-              )}
-            </div>
-
-            <span>{currentTime}</span>
-          </div>
-        </motion.div>
-
-        {/* Left rail icons */}
-        <motion.div
-          className="fixed top-12 left-4 z-40 flex flex-col gap-6 text-white text-xs font-medium"
-          initial={{ opacity: 0, x: -18 }}
-          animate={loaded ? { opacity: 1, x: 0 } : {}}
-          transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {leftRailItems.map(({ icon, label, windowId }, idx) => (
-            <motion.div
-              key={label}
-              className="flex flex-col items-start gap-1 cursor-pointer hover:scale-105 transition-transform duration-150 origin-top-left"
-              onClick={() => {
-                if (windowId && WINDOW_DEFS[windowId]) openWindow(windowId);
-              }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={loaded ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                delay: 0.32 + idx * 0.08,
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <img src={icon} alt={label} className="w-15 h-15 object-contain" />
-              <div className="bg-white/20 px-2 py-[3px] rounded-[6px] backdrop-blur-sm text-white text-[13px] whitespace-nowrap shadow-sm">
-                {label}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Right-side resume.pdf */}
-        <motion.div
-          className="fixed top-12 right-4 z-40 flex flex-col items-start gap-1 text-white text-xs font-medium cursor-pointer hover:scale-105 transition-transform duration-150 origin-top-right"
-          initial={{ opacity: 0, x: 18 }}
-          animate={loaded ? { opacity: 1, x: 0 } : {}}
-          transition={{ delay: 0.28, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          onClick={() => {
-            const a = document.createElement("a");
-            a.href = "/resume.pdf";
-            a.download = "Marta_Lendinez_Resume.pdf";
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-
-            unlockAchievement("prepared_recruiter", "Achievement unlocked: Prepared Recruiter", "Resume downloaded ✅");
-          }}
-        >
-          <img src={docIcon} alt="Resume" className="w-15 h-15 object-contain" />
-          <div className="bg-white/20 px-2 py-[3px] rounded-[6px] backdrop-blur-sm text-white text-[13px] whitespace-nowrap shadow-sm">
-            resume.pdf
-          </div>
-        </motion.div>
-
-        {/* WINDOWS LAYER */}
-        <AnimatePresence>
-          {openWindows.map((id) => {
-            const def = WINDOW_DEFS[id];
-            if (!def) return null;
-            const WindowComponent = def.Component;
-
-            return (
-              <MacWindow
-                key={id}
-                id={id}
-                title={def.title}
-                width={def.width}
-                height={def.height}
-                initialPos={def.initialPos}
-                isActive={activeWindow === id}
-                zIndex={zMap[id] ?? 999}
-                onFocus={focusWindow}
-                onClose={closeWindow}
-                uiTheme={uiTheme}
-                isMaximized={!!maxMap?.[id]}
-                onToggleMaximize={toggleMaximize}
-              >
-                <WindowComponent
-                  uiTheme={uiTheme}
-                  glassContrast={glassContrast} // ✅ IMPORTANT: pass to windows
-                  setUiTheme={setUiTheme}
-                  wallpaperUrl={wallpaperUrl}
-                  setWallpaperUrl={setWallpaperUrl}
-                  fontScale={fontScale}
-                  setFontScale={setFontScale}
-                  accent={accent}
-                  setAccent={setAccent}
-                  onOpenWindow={openWindow}
-                  notify={notify}
-                  notifyOnce={notifyOnce}
-                  unlockAchievement={unlockAchievement}
-                  trackTerminalCommand={trackTerminalCommand}
-                  trackGameLaunch={trackGameLaunch}
-                />
-              </MacWindow>
-            );
-          })}
-        </AnimatePresence>
-
-        {/* Bottom Dock */}
-        <motion.div
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl shadow-lg flex gap-6 z-50"
-          onMouseMove={(e) => setMouseX(e.clientX)}
-          onMouseLeave={() => setMouseX(null)}
-          initial={{ opacity: 0, y: 14 }}
-          animate={loaded ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {dockItems.map((item, index) => (
-            <DockItem
-              key={item.label}
-              item={item}
-              index={index}
-              mouseX={mouseX}
-              total={dockItems.length}
-              loaded={loaded}
-              onOpenWindow={openWindow}
-            />
-          ))}
-        </motion.div>
-      </motion.div>
-    </div>
-  );
-}
-
-function DockItem({ item, index, mouseX, total, loaded, onOpenWindow }) {
-  const distanceFactor = 180;
-
-  const getCenter = (i) => {
-    const itemWidth = 60;
-    const dockLeft = window.innerWidth / 2 - (total * itemWidth) / 2;
-    return dockLeft + i * itemWidth + itemWidth / 2;
-  };
-
-  const scale = mouseX
-    ? Math.min(1.35, 1 + Math.max(0, 1 - Math.abs(mouseX - getCenter(index)) / distanceFactor))
-    : 1;
-
-  const handleClick = () => {
-    if (item.windowId) onOpenWindow(item.windowId);
-  };
-
-  return (
-    <motion.div
-      className="group relative flex flex-col items-center cursor-pointer"
-      onClick={handleClick}
-      initial={{ opacity: 0, y: 10 }}
-      animate={loaded ? { opacity: 1, y: 0 } : {}}
-      transition={{
-        delay: 0.45 + index * 0.08,
-        duration: 0.45,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+    <Shell
+      fontScale={fontScale}
+      baseTextClass={baseTextClass}
+      wallpaperUrl={activeWallpaper}
+      loaded={loaded}
     >
-      <motion.div
-        animate={{ scale, y: scale > 1 ? -10 : 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="flex flex-col items-center"
-      >
-        <div className="w-15 h-15 flex items-center justify-center rounded-[8px] transition-all duration-150">
-          <img src={item.icon} alt={item.label} className="w-15 h-15 object-contain" />
-        </div>
-      </motion.div>
+      {/* Toasts */}
+      <ToastStack uiTheme={uiTheme} toasts={notif.toasts} onDismiss={notif.dismissToast} />
 
-      <div
-        className="absolute -top-16 left-1/2 -translate-x-1/2 bg-white text-black text-[15px] px-3 py-[4px] rounded-[6px] shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap tracking-tight"
-        style={{ fontFamily: "Lustria" }}
-      >
-        {item.label}
-      </div>
-    </motion.div>
+      {/* Notification Center */}
+      <NotificationCenter
+        uiTheme={uiTheme}
+        isOpen={notif.notifOpen}
+        onClose={() => notif.setNotifOpen(false)}
+        items={notif.notifications}
+        onClearAll={notif.clearAllNotifications}
+        onMarkAllRead={notif.markAllRead}
+        onRemoveOne={notif.removeOneNotification}
+      />
+
+      {/* Top Menu Bar */}
+      <TopBar
+        loaded={loaded}
+        theme={theme}
+        setTheme={setTheme}
+        onOpenSettings={() => openWindow("settings")}
+        notifOpen={notif.notifOpen}
+        setNotifOpen={notif.setNotifOpen}
+        unreadCount={notif.unreadCount}
+        currentTime={currentTime}
+        moonIcon={moonIcon}
+        gearIcon={gearIcon}
+        notificationIcon={notificationIcon}
+      />
+
+      {/* Left rail */}
+      <LeftRail loaded={loaded} items={leftRailItems} onOpenWindow={openWindow} />
+
+      {/* Resume icon */}
+      <ResumeIcon loaded={loaded} iconSrc={docIcon} unlockAchievement={notif.unlockAchievement} />
+
+      {/* Windows */}
+      <WindowsLayer
+        openWindows={openWindows}
+        activeWindow={activeWindow}
+        zMap={zMap}
+        maxMap={maxMap}
+        focusWindow={focusWindow}
+        closeWindow={closeWindow}
+        toggleMaximize={toggleMaximize}
+        uiTheme={uiTheme}
+        windowDefs={WINDOW_DEFS}
+        appApi={appApi}
+      />
+
+      {/* Dock */}
+      <Dock loaded={loaded} items={dockItems} onOpenWindow={openWindow} />
+    </Shell>
   );
 }
