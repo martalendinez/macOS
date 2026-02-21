@@ -27,8 +27,8 @@ function WallpaperGrid({ title, wallpapers, theme, isSelected, onPick }) {
               className={[
                 "rounded-2xl overflow-hidden border transition",
                 selected
-                  ? "ring-2 ring-emerald-400/70 border-emerald-400/40"
-                  : "border-black/10",
+                  ? "ring-2 ring-[hsl(var(--accent)/0.35)] border-[hsl(var(--accent)/0.45)]"
+                  : "border-black/10 hover:border-[hsl(var(--accent)/0.35)]",
                 "bg-white",
               ].join(" ")}
               title="Set wallpaper"
@@ -50,7 +50,6 @@ function WallpaperGrid({ title, wallpapers, theme, isSelected, onPick }) {
 export default function WallpaperSection({
   styles,
   theme = "light",
-  onUpload,
   onReset,
   macWallpapers = [],
   glassWallpapers = [],
@@ -64,11 +63,8 @@ export default function WallpaperSection({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button className={btnBase} onClick={onUpload} type="button">
-          Upload image
-        </button>
         <button className={btnBase} onClick={onReset} type="button">
-          Reset
+          Reset to default
         </button>
       </div>
 
