@@ -24,6 +24,9 @@ export default function SettingsWindow({
   setAccent,
   onOpenWindow,
   notify,
+
+  // ✅ NEW: reset all windows (comes from appApi)
+  resetLayout,
 }) {
   const isMac = uiTheme === "macos";
   const isDark = theme === "dark";
@@ -164,6 +167,7 @@ export default function SettingsWindow({
             onOpenWindow={onOpenWindow}
             onToggleTheme={() => setTheme?.(theme === "dark" ? "light" : "dark")}
             notify={notify}
+            onResetLayout={resetLayout} // ✅ NEW
           />
         </Section>
       </div>

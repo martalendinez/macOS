@@ -30,6 +30,7 @@ export default function useWindowManager() {
       delete copy[id];
       return copy;
     });
+
     // ✅ cleanup maximize state too
     setMaxMap((prev) => {
       const copy = { ...prev };
@@ -46,6 +47,15 @@ export default function useWindowManager() {
     focusWindow(id);
   };
 
+  // ✅ NEW: reset window layout
+  const resetLayout = () => {
+    setOpenWindows([]); // close all
+    setActiveWindow(null); // remove focus
+    setZMap({}); // reset z-order
+    setMaxMap({}); // reset maximize states
+    setZTop(200); // reset stacking baseline
+  };
+
   return {
     openWindows,
     activeWindow,
@@ -55,5 +65,6 @@ export default function useWindowManager() {
     closeWindow,
     focusWindow,
     toggleMaximize, // ✅
+    resetLayout, // ✅ NEW
   };
 }

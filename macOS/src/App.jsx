@@ -141,6 +141,7 @@ export default function App() {
     closeWindow,
     focusWindow,
     toggleMaximize,
+    resetLayout, // ✅ NEW
   } = useWindowManager();
 
   // notifications
@@ -277,6 +278,10 @@ export default function App() {
       accent,
       setAccent,
       onOpenWindow: openWindow,
+
+      // ✅ NEW: used by Settings quick action
+      resetLayout,
+
       notify: notif.notify,
       notifyOnce: notif.notifyOnce,
       unlockAchievement: notif.unlockAchievement,
@@ -292,6 +297,7 @@ export default function App() {
       fontScale,
       accent,
       openWindow,
+      resetLayout, // ✅ NEW
       notif.notify,
       notif.notifyOnce,
       notif.unlockAchievement,
