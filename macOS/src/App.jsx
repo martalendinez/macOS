@@ -87,6 +87,16 @@ function getHourInTimeZone(timeZone) {
 }
 
 export default function App() {
+  // ✅ Remove the static boot splash (index.html) once React is mounted
+  useEffect(() => {
+    const el = document.getElementById("boot-splash");
+    if (!el) return;
+
+    el.classList.add("boot-hide");
+    const t = window.setTimeout(() => el.remove(), 220);
+    return () => window.clearTimeout(t);
+  }, []);
+
   // Accent
   const [accent, setAccent] = useState("emerald");
   useAccentVar(accent);
