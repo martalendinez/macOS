@@ -21,7 +21,12 @@ export default function ContactTab({ styles }) {
 
         <div className="mt-5 space-y-2 text-sm">
           <LinkRow styles={styles} icon="✉️" label="Email" value="casandra.lendinez@outlook.com" />
-          <LinkRow styles={styles} icon="🔗" label="LinkedIn" value="www.linkedin.com/in/marta-casandra-lendínez-ibáñez-959259200" />
+          <LinkRow
+            styles={styles}
+            icon="🔗"
+            label="LinkedIn"
+            value="www.linkedin.com/in/marta-casandra-lendínez-ibáñez-959259200"
+          />
           <LinkRow styles={styles} icon="🐙" label="GitHub" value="https://github.com/martalendinez" />
           <LinkRow styles={styles} icon="📄" label="Resume" value="resume.pdf" />
           <LinkRow styles={styles} icon="🖼️" label="Portfolio" value="marta.lendinez.portfolio.com" />
@@ -35,8 +40,21 @@ export default function ContactTab({ styles }) {
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <QuickBtn styles={styles} label="Send email" />
-          <QuickBtn styles={styles} label="View code" />
+          <QuickBtn
+            styles={styles}
+            label="Send email"
+            onClick={() => {
+              window.location.href = "mailto:casandra.lendinez@outlook.com";
+            }}
+          />
+
+          <QuickBtn
+            styles={styles}
+            label="View code"
+            onClick={() => {
+              window.open("https://github.com/martalendinez/macOS", "_blank", "noopener,noreferrer");
+            }}
+          />
         </div>
 
         <div className={`mt-5 rounded-xl ${styles.cardBgSoft} border ${styles.cardBorder} p-4`}>

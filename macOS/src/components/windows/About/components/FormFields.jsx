@@ -24,9 +24,18 @@ export function Textarea({ styles, label, placeholder }) {
   );
 }
 
-export function QuickBtn({ styles, label }) {
+// ✅ FIX: forward onClick (and a couple nice extras)
+export function QuickBtn({ styles, label, onClick, type = "button", disabled = false }) {
   return (
-    <button type="button" className={`rounded-xl px-3 py-2 text-sm transition ${styles.btn}`}>
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      className={[
+        `rounded-xl px-3 py-2 text-sm transition ${styles.btn}`,
+        disabled ? "opacity-60 cursor-not-allowed" : "",
+      ].join(" ")}
+    >
       {label}
     </button>
   );
