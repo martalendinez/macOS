@@ -10,7 +10,7 @@ import glassMusic from "../../../../imgs/icons/glass/MediaGlass.png";
 // -----------------------------
 // MAC icons
 // -----------------------------
-import macTerminal from "../../../../imgs/icons/mac/terminalMac.png";
+import macTerminal from "../../../../imgs/icons/mac/terminalMac.webp";
 import macMaps from "../../../../imgs/icons/mac/mapsMac.png";
 import macMusic from "../../../../imgs/icons/mac/musicMap.svg";
 
