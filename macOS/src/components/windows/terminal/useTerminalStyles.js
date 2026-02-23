@@ -1,31 +1,27 @@
 // src/components/windows/terminal/useTerminalStyles.js
-export default function useTerminalStyles(isMac) {
-  // “Real macOS Terminal basic” look:
-  // - black text on light background
-  // - accent used for prompt + highlights
+export default function useTerminalStyles(isMac, theme = "light") {
+  const isDark = theme === "dark";
+
+  // macOS Terminal is usually light background with black text,
+  // but your portfolio wants dark-mode too — we’ll adapt cleanly.
+  if (isMac) {
+    return {
+      bg: isDark ? "bg-[#0b0b0c]" : "bg-[#fafafa]",
+      chip: isDark ? "bg-[#0f0f10]" : "bg-white",
+      border: isDark ? "border-white/10" : "border-black/10",
+      text: isDark ? "text-white/85" : "text-black/85",
+      textDim: isDark ? "text-white/50" : "text-black/50",
+      accent: "text-[hsl(var(--accent))]",
+    };
+  }
+
+  // Glass terminal (dark + light)
   return {
-    // base text
-    text: "text-black",
-    dim: "text-black/55",
-    faint: "text-black/40",
-
-    // semantic colors
+    bg: isDark ? "bg-black/35 backdrop-blur-xl" : "bg-white/8 backdrop-blur-xl",
+    chip: isDark ? "bg-white/5" : "bg-white/10",
+    border: isDark ? "border-white/10" : "border-white/12",
+    text: isDark ? "text-white/90" : "text-white/90",
+    textDim: isDark ? "text-white/60" : "text-white/60",
     accent: "text-[hsl(var(--accent))]",
-    warn: "text-amber-700",
-    error: "text-red-700",
-    ok: "text-emerald-700",
-
-    // spacing
-    line: "whitespace-pre-wrap break-words",
-
-    // links / command-ish
-    link: "underline underline-offset-2 text-blue-700 hover:text-blue-800",
-    cmd: "text-blue-700",
-
-    // borders if used anywhere
-    border: isMac ? "border-black/10" : "border-black/10",
-    bg: "bg-[#fbfbfb]",
-    chip: "", // ← important: remove “card” vibes
-    textDim: "text-black/55",
   };
 }
