@@ -18,7 +18,7 @@ import SecretProjectsWindow from "../components/windows/Projects/SecretProjectsW
 // ✅ individual secret project window(s)
 import BehindTheButtonWindow from "../components/windows/Projects/BehindTheButtonWindow";
 
-// ✅ NEW: About this portfolio window (lives inside Settings/components, as requested)
+// ✅ NEW: About this portfolio window
 import PortfolioInfoWindow from "../components/windows/Settings/components/PortfolioInfoWindow";
 
 export const WINDOW_DEFS = {
@@ -37,7 +37,6 @@ export const WINDOW_DEFS = {
     initialPos: { x: 260, y: 120 },
   },
 
-  // ✅ NEW WINDOW DEF
   portfolioInfo: {
     title: "About this portfolio",
     Component: PortfolioInfoWindow,
@@ -81,13 +80,16 @@ export const WINDOW_DEFS = {
     height: 600,
     initialPos: { x: 240, y: 120 },
   },
+
+  // ✅ ONLY CHANGE IS HERE (Music is wider now)
   music: {
     title: "Music",
     Component: MusicWindow,
-    width: 760,
-    height: 520,
-    initialPos: { x: 260, y: 130 },
+    width: 900, // ✅ was 760
+    height: 580, // ✅ was 520 (optional but nicer)
+    initialPos: { x: 180, y: 110 },
   },
+
   map: {
     title: "Interactive Map",
     Component: MapWindow,

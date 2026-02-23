@@ -11,7 +11,7 @@ export default function WindowsLayer({
   closeWindow,
   toggleMaximize,
   uiTheme,
-  theme = "light", // ✅ NEW
+  theme = "light",
   windowDefs = {},
   appApi,
 }) {
@@ -20,6 +20,7 @@ export default function WindowsLayer({
       {openWindows.map((id) => {
         const def = windowDefs[id];
         if (!def) return null;
+
         const WindowComponent = def.Component;
 
         return (
@@ -35,7 +36,7 @@ export default function WindowsLayer({
             onFocus={focusWindow}
             onClose={closeWindow}
             uiTheme={uiTheme}
-            theme={theme} // ✅ NEW
+            theme={theme}
             isMaximized={!!maxMap?.[id]}
             onToggleMaximize={toggleMaximize}
           >
