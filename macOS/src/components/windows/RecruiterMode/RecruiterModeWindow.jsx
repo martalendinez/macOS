@@ -178,7 +178,7 @@ export default function RecruiterModeWindow({
           </div>
 
           <div className={`${styles.textMain} text-lg leading-snug`}>
-            UX Engineer. I merge research depth with React execution to build products that scale without losing design quality.
+             UX Engineer specializing in research‑driven UI, React development, and scalable design systems. Comfortable across the full stack and fluent in modern AI tools.
           </div>
 
           <div className="flex flex-wrap gap-2 pt-1">
