@@ -1,39 +1,11 @@
 ﻿// src/App.jsx
-import { useEffect, useMemo, useState } from "react";
-
-import moonIcon from "./imgs/icons/moon.png";
-import gearIcon from "./imgs/icons/gear.png";
-import notificationIcon from "./imgs/icons/notification.png";
-
-// glass icon set
-import aboutIconGlass from "./imgs/icons/glass/me.png";
-import aiIconGlass from "./imgs/icons/glass/bot.png";
-import funIconGlass from "./imgs/icons/glass/games.png";
-
-import projectsIconGlass from "./imgs/icons/glass/FolderGlass.png";
-import videosIconGlass from "./imgs/icons/glass/MediaGlass.png";
-import timerIconGlass from "./imgs/icons/glass/ProfileGlass.png";
-import docIconGlass from "./imgs/icons/glass/MailGlass.png";
-
-// macos icon set
-import aboutIconMac from "./imgs/icons/mac/aboutMac.png";
-import aiIconMac from "./imgs/icons/mac/aiMac.png";
-import funIconMac from "./imgs/icons/mac/gamesMac.png";
-
-import projectsIconMac from "./imgs/icons/mac/foldersMac.png";
-import videosIconMac from "./imgs/icons/mac/videosMac.png";
-import timerIconMac from "./imgs/icons/mac/timerMac.png";
-import docIconMac from "./imgs/icons/mac/docMac.png";
-
-// ✅ default wallpaper pair (glass2 light <-> glass2 dark)
-import bgLight from "./imgs/wallpapers/glass/glass2.jpeg";
-import bgDark from "./imgs/wallpapers/glass/glass2dark.jpeg";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 
 import useWindowManager from "./components/windows/useWindowManager";
 
-// ✅ Notifications UI
-import NotificationCenter from "./components/notifications/NotificationCenter";
-import ToastStack from "./components/notifications/ToastStack";
+// ✅ Notifications UI (lazy)
+const NotificationCenter = lazy(() => import("./components/notifications/NotificationCenter"));
+const ToastStack = lazy(() => import("./components/notifications/ToastStack"));
 
 // ✅ new config + hooks
 import { WINDOW_DEFS } from "./config/windowDefs";
@@ -50,9 +22,17 @@ import LeftRail from "./components/shell/LeftRail";
 import ResumeIcon from "./components/shell/ResumeIcon";
 import Dock from "./components/shell/Dock";
 import WindowsLayer from "./components/shell/WindowsLayer";
+import Loader from "./ui/Loader";
 
 // ✅ import wallpaper pairs from Settings so every wallpaper swaps correctly
 import { ALL_WALLPAPER_PAIRS } from "./components/windows/Settings/constants";
+
+// default wallpaper paths
+const bgLight = "/wallpapers/glass/glass2.jpeg";
+const bgDark = "/wallpapers/glass/glass2dark.jpeg";
+
+const bgLightPreview = "/wallpapers/glass/glass2-preview.webp";
+const bgDarkPreview = "/wallpapers/glass/glass2dark-preview.webp";
 
 /**
  * Wallpaper pairing:
@@ -62,14 +42,15 @@ import { ALL_WALLPAPER_PAIRS } from "./components/windows/Settings/constants";
 const WALLPAPER_PAIRS = [{ light: bgLight, dark: bgDark }, ...(ALL_WALLPAPER_PAIRS || [])];
 
 function swapToThemeWallpaper(current, nextTheme) {
-  if (!current) return null; // null => use default activeWallpaper based on theme
+  if (!current) return null;
+
   for (const pair of WALLPAPER_PAIRS) {
     if (!pair?.light || !pair?.dark) continue;
     if (current === pair.light || current === pair.dark) {
       return nextTheme === "dark" ? pair.dark : pair.light;
     }
   }
-  // Unknown/custom wallpaper => do not change
+
   return current;
 }
 
@@ -79,12 +60,12 @@ function getHourInTimeZone(timeZone) {
     hour: "2-digit",
     hour12: false,
   }).formatToParts(new Date());
+
   const hourStr = parts.find((p) => p.type === "hour")?.value ?? "12";
   return Number(hourStr);
 }
 
 export default function App() {
-  // ✅ Remove the static boot splash (index.html) once React is mounted
   useEffect(() => {
     const el = document.getElementById("boot-splash");
     if (!el) return;
@@ -94,41 +75,36 @@ export default function App() {
     return () => window.clearTimeout(t);
   }, []);
 
-  // Accent
   const [accent, setAccent] = useState("sky");
   useAccentVar(accent);
 
-  // ✅ default: glass icons + macos windows + glass2 wallpaper
-  const [theme, setTheme] = useState("light"); // light | dark
-  const [wallpaperUrl, setWallpaperUrl] = useState(null); // null => default pair
+  const [theme, setTheme] = useState("light");
+  const [wallpaperUrl, setWallpaperUrl] = useState(null);
 
-  // ✅ uiTheme = WINDOW STYLE only
   const [uiTheme, setUiTheme] = useState("macos");
-
-  // ✅ iconTheme = ICON PACK only
   const [iconTheme, setIconTheme] = useState("glass");
 
-  // Font scale
   const [fontScale, setFontScale] = useState(1);
 
-  // Page load animation trigger
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 40);
-    return () => clearTimeout(t);
+    const t = window.setTimeout(() => setLoaded(true), 40);
+    return () => window.clearTimeout(t);
   }, []);
 
-  // active wallpaper (default: glass2 light/dark pair)
   const activeWallpaper = wallpaperUrl ?? (theme === "light" ? bgLight : bgDark);
 
-  // adaptive glass contrast (based on WINDOW STYLE)
-  const { glassContrast, baseTextClass } = useGlassContrast({ uiTheme, activeWallpaper });
+  const activeWallpaperPreview =
+    theme === "light" ? bgLightPreview : bgDarkPreview;
 
-  // clock
+  const { glassContrast, baseTextClass } = useGlassContrast({
+    uiTheme,
+    activeWallpaper,
+  });
+
   const timeZone = "Europe/Stockholm";
   const currentTime = useClock({ timeZone, intervalMs: 30_000 });
 
-  // window manager
   const {
     openWindows,
     activeWindow,
@@ -138,13 +114,11 @@ export default function App() {
     closeWindow,
     focusWindow,
     toggleMaximize,
-    resetLayout, // ✅ NEW
+    resetLayout,
   } = useWindowManager();
 
-  // notifications
   const notif = useNotifications();
 
-  // achievements
   const ach = useAchievements({
     openWindows,
     maxMap,
@@ -152,7 +126,6 @@ export default function App() {
     notifyOnce: notif.notifyOnce,
   });
 
-  // First-time tips
   useEffect(() => {
     const t = window.setTimeout(() => {
       notif.notifyOnce("tip_30sec", {
@@ -166,7 +139,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 🌙 Theme toggle (moon icon)
   function setThemeAndSyncWallpaper(nextTheme) {
     setTheme(nextTheme);
     setWallpaperUrl((curr) => swapToThemeWallpaper(curr, nextTheme));
@@ -180,7 +152,6 @@ export default function App() {
     });
   }
 
-  // 🌅 Auto dark mode by hour
   useEffect(() => {
     const AUTO_DARK_START_HOUR = 18;
     const AUTO_LIGHT_START_HOUR = 6;
@@ -207,32 +178,40 @@ export default function App() {
   const icons = useMemo(() => {
     if (iconTheme === "macos") {
       return {
-        about: aboutIconMac || aboutIconGlass,
-        ai: aiIconMac || aiIconGlass,
-        fun: funIconMac || funIconGlass,
+        about: "/icons/mac/aboutMac.png",
+        ai: "/icons/mac/aiMac.png",
+        fun: "/icons/mac/gamesMac.png",
       };
     }
-    return { about: aboutIconGlass, ai: aiIconGlass, fun: funIconGlass };
+
+    return {
+      about: "/icons/glass/me-512.png",
+      ai: "/icons/glass/bot-512.png",
+      fun: "/icons/glass/games-512.png",
+    };
   }, [iconTheme]);
 
   // Desktop icons by ICON THEME
   const desktopIcons = useMemo(() => {
     if (iconTheme === "macos") {
       return {
-        timer: timerIconMac,
-        projects: projectsIconMac,
-        videos: videosIconMac,
+        timer: "/icons/mac/timerMac.png",
+        projects: "/icons/mac/foldersMac.png",
+        videos: "/icons/mac/videosMac.png",
       };
     }
+
     return {
-      timer: timerIconGlass,
-      projects: projectsIconGlass,
-      videos: videosIconGlass,
+      timer: "/icons/glass/ProfileGlass.png",
+      projects: "/icons/glass/FolderGlass.png",
+      videos: "/icons/glass/MediaGlass.png",
     };
   }, [iconTheme]);
 
-  // Resume icon by ICON THEME
-  const docIcon = iconTheme === "macos" ? docIconMac : docIconGlass;
+  const docIcon =
+    iconTheme === "macos"
+      ? "/icons/mac/docMac.png"
+      : "/icons/glass/MailGlass.png";
 
   const dockItems = useMemo(
     () => [
@@ -243,7 +222,6 @@ export default function App() {
     [icons]
   );
 
-  // ✅ FIX: Recruiter Mode must open windowId "recruiter"
   const leftRailItems = useMemo(
     () => [
       { icon: desktopIcons.timer, label: "Recruiter Mode", windowId: "recruiter" },
@@ -253,19 +231,15 @@ export default function App() {
     [desktopIcons]
   );
 
-  // One prop-bundle for all windows
   const appApi = useMemo(
     () => ({
-      // window style
       uiTheme,
       setUiTheme,
       glassContrast,
 
-      // icon style
       iconTheme,
       setIconTheme,
 
-      // light/dark mode
       theme,
       setTheme: setThemeAndSyncWallpaper,
 
@@ -277,7 +251,6 @@ export default function App() {
       setAccent,
       onOpenWindow: openWindow,
 
-      // ✅ NEW: used by Settings quick action
       resetLayout,
 
       notify: notif.notify,
@@ -305,19 +278,33 @@ export default function App() {
   );
 
   return (
-    <Shell fontScale={fontScale} baseTextClass={baseTextClass} wallpaperUrl={activeWallpaper} loaded={loaded}>
-      <ToastStack uiTheme={uiTheme} toasts={notif.toasts} onDismiss={notif.dismissToast} />
+    <Shell
+      fontScale={fontScale}
+      baseTextClass={baseTextClass}
+      wallpaperUrl={activeWallpaper}
+      previewWallpaperUrl={activeWallpaperPreview}
+      loaded={loaded}
+    >
+      <Suspense fallback={null}>
+        <ToastStack
+          uiTheme={uiTheme}
+          toasts={notif.toasts}
+          onDismiss={notif.dismissToast}
+        />
+      </Suspense>
 
-      <NotificationCenter
-        uiTheme={uiTheme}
-        theme={theme}
-        isOpen={notif.notifOpen}
-        onClose={() => notif.setNotifOpen(false)}
-        items={notif.notifications}
-        onClearAll={notif.clearAllNotifications}
-        onMarkAllRead={notif.markAllRead}
-        onRemoveOne={notif.removeOneNotification}
-      />
+      <Suspense fallback={<Loader size={16} fullHeight={false} glass={false} />}>
+        <NotificationCenter
+          uiTheme={uiTheme}
+          theme={theme}
+          isOpen={notif.notifOpen}
+          onClose={() => notif.setNotifOpen(false)}
+          items={notif.notifications}
+          onClearAll={notif.clearAllNotifications}
+          onMarkAllRead={notif.markAllRead}
+          onRemoveOne={notif.removeOneNotification}
+        />
+      </Suspense>
 
       <TopBar
         loaded={loaded}
@@ -329,14 +316,18 @@ export default function App() {
         setNotifOpen={notif.setNotifOpen}
         unreadCount={notif.unreadCount}
         currentTime={currentTime}
-        moonIcon={moonIcon}
-        gearIcon={gearIcon}
-        notificationIcon={notificationIcon}
+        moonIcon="/icons/ui/moon.png"
+        gearIcon="/icons/ui/gear.png"
+        notificationIcon="/icons/ui/notification.png"
       />
 
       <LeftRail loaded={loaded} items={leftRailItems} onOpenWindow={openWindow} />
 
-      <ResumeIcon loaded={loaded} iconSrc={docIcon} unlockAchievement={notif.unlockAchievement} />
+      <ResumeIcon
+        loaded={loaded}
+        iconSrc={docIcon}
+        unlockAchievement={notif.unlockAchievement}
+      />
 
       <WindowsLayer
         openWindows={openWindows}

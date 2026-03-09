@@ -2,6 +2,7 @@
 import { Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import MacWindow from "../windows/MacWindow";
+import Loader from "../../ui/Loader";
 
 export default function WindowsLayer({
   openWindows = [],
@@ -43,8 +44,8 @@ export default function WindowsLayer({
           >
             <Suspense
               fallback={
-                <div className="w-full h-full flex items-center justify-center text-sm opacity-70">
-                  Loading window...
+                <div className="w-full h-full flex items-center justify-center">
+                  <Loader size={20} />
                 </div>
               }
             >

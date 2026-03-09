@@ -3,16 +3,16 @@
 // -----------------------------
 // GLASS icons
 // -----------------------------
-import glassTerminal from "../../../../imgs/icons/glass/terminalGlass.png";
-import glassMaps from "../../../../imgs/icons/glass/mapsGlass.png";
-import glassMusic from "../../../../imgs/icons/glass/MediaGlass.png";
+import glassTerminal from "/icons/glass/terminalGlass.png";
+import glassMaps from "/icons/glass/mapsGlass.png";
+import glassMusic from "/icons/glass/MediaGlass.png";
 
 // -----------------------------
 // MAC icons
 // -----------------------------
-import macTerminal from "../../../../imgs/icons/mac/terminalMac.webp";
-import macMaps from "../../../../imgs/icons/mac/mapsMac.png";
-import macMusic from "../../../../imgs/icons/mac/musicMap.svg";
+import macTerminal from "/icons/mac/terminalMac.webp";
+import macMaps from "/icons/mac/mapsMac.png";
+import macMusic from "/icons/mac/musicMap.svg";
 
 const ICONS = {
   glass: {

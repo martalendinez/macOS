@@ -1,24 +1,24 @@
 // src/components/windows/Settings/constants.js
 
 // ---------- MACOS WALLPAPERS ----------
-import mac1Light from "../../../imgs/wallpapers/macos/mac1.jpeg";
-import mac1Dark from "../../../imgs/wallpapers/macos/mac1dark.jpeg";
+import mac1Light from "/wallpapers/macos/mac1.jpeg";
+import mac1Dark from "/wallpapers/macos/mac1dark.jpeg";
 
-import mac2Light from "../../../imgs/wallpapers/macos/mac2.jpg";
-import mac2Dark from "../../../imgs/wallpapers/macos/mac2dark.jpg";
+import mac2Light from "/wallpapers/macos/mac2.jpg";
+import mac2Dark from "/wallpapers/macos/mac2dark.jpg";
 
-import mac3Light from "../../../imgs/wallpapers/macos/mac3.jpg";
-import mac3Dark from "../../../imgs/wallpapers/macos/mac3dark.jpg";
+import mac3Light from "/wallpapers/macos/mac3.jpg";
+import mac3Dark from "/wallpapers/macos/mac3dark.jpg";
 
 // ---------- GLASS WALLPAPERS ----------
-import glass1Light from "../../../imgs/wallpapers/glass/glass1.jpg";
-import glass1Dark from "../../../imgs/wallpapers/glass/glass1-dark.png";
+import glass1Light from "/wallpapers/glass/glass1.jpg";
+import glass1Dark from "/wallpapers/glass/glass1-dark.png";
 
-import glass2Light from "../../../imgs/wallpapers/glass/glass2.jpeg";
-import glass2Dark from "../../../imgs/wallpapers/glass/glass2dark.jpeg";
+import glass2Light from "/wallpapers/glass/glass2.jpeg";
+import glass2Dark from "/wallpapers/glass/glass2dark.jpeg";
 
-import glass3Light from "../../../imgs/wallpapers/glass/glass3.jpg";
-import glass3Dark from "../../../imgs/wallpapers/glass/glass3dark.jpg";
+import glass3Light from "/wallpapers/glass/glass3.jpg";
+import glass3Dark from "/wallpapers/glass/glass3dark.jpg";
 
 
 // ------------------- SECTIONS -------------------
