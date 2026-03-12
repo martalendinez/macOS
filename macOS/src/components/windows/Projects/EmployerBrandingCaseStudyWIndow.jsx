@@ -149,9 +149,14 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
 >
   View on GitHub
 </a>
-              <a href="#" target="_blank" rel="noreferrer" className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${theme.buttonClass}`}>
-                Download PDF
-              </a>
+              <a
+  href="/pdfs/Case-Study-Kallos.pdf"
+  target="_blank"
+  rel="noreferrer"
+  className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${theme.buttonClass}`}
+>
+  Read Full Case Study
+</a>
             </div>
 
             {/* Overview */}
