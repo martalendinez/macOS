@@ -18,6 +18,7 @@ import empathyMapImg from "../../../imgs/case-study/kallos/Empathy_Map1.jpg";
 import designSystem1Img from "../../../imgs/case-study/kallos/DesignSystem1.png";
 import designSystem2Img from "../../../imgs/case-study/kallos/DesignSystem2.png";
 import lofiImg from "../../../imgs/case-study/kallos/Lofi.png";
+import testingImg from "../../../imgs/case-study/kallos/Testing.png";
 
 export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
@@ -38,7 +39,7 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
       empathyMap: empathyMapImg,
       dashboard: null,
       recommendations: null,
-      testing: null,
+      testing: testingImg,
       iterations: null,
       finalScreens: null,
     }),
@@ -488,13 +489,41 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
               />
             </CaseStudySection>
 
-            <CaseStudySection id="testing" title="Testing & iterations" subtitle="What changed after testing with HR professionals" theme={theme}>
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                Seven HR professionals tested the prototype.
-              </div>
+           <CaseStudySection
+  id="testing"
+  title="Testing & iterations"
+  subtitle="What changed after testing with HR professionals"
+  theme={theme}
+>
+  <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
+    <span className={`font-semibold ${theme.textMain}`}>Seven HR professionals</span> tested the prototype, focusing primarily on the{" "}
+    <span className={`font-semibold ${theme.textMain}`}>HR metrics flow</span> as well as the overall interface experience.
+    Their feedback highlighted:
+    <ul className="list-disc ml-5 mt-2">
+      <li><span className={`font-semibold ${theme.textMain}`}>Strong clarity</span> in how metrics were presented and interpreted</li>
+      <li><span className={`font-semibold ${theme.textMain}`}>Smooth navigation</span> across core screens</li>
+      <li><span className={`font-semibold ${theme.textMain}`}>Minor friction</span> in understanding recommendation levels</li>
+      <li>Need for <span className={`font-semibold ${theme.textMain}`}>clearer explanations</span> in certain insight sections</li>
+    </ul>
+
+    <div className="mt-4">
+      Based on their feedback, several iterations were implemented:
+      <ul className="list-disc ml-5 mt-2">
+        <li>Added new employer‑branding questions (budget, growth opportunities, recruitment channels)</li>
+        <li>Rephrased the diversity question for clarity and inclusivity</li>
+        <li>Limited competitor inputs to <span className={`font-semibold ${theme.textMain}`}>3–5</span> for more accurate benchmarking</li>
+        <li>Introduced manual KPI input for companies lacking certain surveys</li>
+        <li>Added short descriptions explaining the purpose of each survey</li>
+        <li>Renamed the question & survey section to a more intuitive label</li>
+        <li>Included clearer guidance on how to edit surveys and question banks</li>
+      </ul>
+    </div>
+  </div>
+
+
 
               <Gallery2
-                a={<CaseStudyImageTile src={IMAGES.testing} alt="Testing" caption="Testing setup / tasks / notes." aspect="4/3" theme={theme} onOpen={openLightbox} />}
+                a={<CaseStudyImageTile src={IMAGES.testing} alt="Testing" caption="Testing HR metrics" aspect="4/3" theme={theme} onOpen={openLightbox} />}
                 b={<CaseStudyImageTile src={IMAGES.iterations} alt="Iterations" caption="Before/after changes and iterations." aspect="4/3" theme={theme} onOpen={openLightbox} />}
               />
             </CaseStudySection>
