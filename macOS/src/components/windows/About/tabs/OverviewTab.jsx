@@ -51,18 +51,13 @@ export default function OverviewTab({ styles, onOpenWindow }) {
 
       <div className="flex gap-3">
         <ActionButton
-          styles={styles}
-          icon="⬇️"
-          label="Download Resume"
-          onClick={() => {
-            const a = document.createElement("a");
-            a.href = "/resume.pdf";
-            a.download = "Marta_Lendinez_Resume.pdf";
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }}
-        />
+  styles={styles}
+  icon="⬇️"
+  label="View Resume"
+  onClick={() => {
+    window.open("/resume.pdf", "_blank", "noopener,noreferrer");
+  }}
+/>
         <ActionButton styles={styles} icon="🗂️" label="View Projects" onClick={() => onOpenWindow?.("projects")} />
       </div>
     </div>

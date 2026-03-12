@@ -9,17 +9,12 @@ export default function ResumeIcon({ loaded, iconSrc, unlockAchievement }) {
       animate={loaded ? { opacity: 1, x: 0 } : {}}
       transition={{ delay: 0.28, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => {
-        const a = document.createElement("a");
-        a.href = "/resume.pdf";
-        a.download = "Marta_Lendinez_Resume.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        window.open("/resume.pdf", "_blank", "noopener,noreferrer");
 
         unlockAchievement?.(
           "prepared_recruiter",
           "Achievement unlocked: Prepared Recruiter",
-          "Resume downloaded ✅"
+          "Resume viewed ✅"
         );
       }}
     >
