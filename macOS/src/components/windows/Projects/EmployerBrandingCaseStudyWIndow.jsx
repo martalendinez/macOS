@@ -13,6 +13,11 @@ import competitorImg from "../../../imgs/case-study/kallos/competitor_analysis.p
 import architectureIMG from "../../../imgs/case-study/kallos/Architecture.png";
 import securityImg from "../../../imgs/case-study/kallos/Security_Model.png";
 import IAImg from "../../../imgs/case-study/kallos/IA.png";
+import personaImg from "../../../imgs/case-study/kallos/Persona.png";
+import empathyMapImg from "../../../imgs/case-study/kallos/Empathy_Map1.jpg";
+import designSystem1Img from "../../../imgs/case-study/kallos/DesignSystem1.png";
+import designSystem2Img from "../../../imgs/case-study/kallos/DesignSystem2.png";
+import lofiImg from "../../../imgs/case-study/kallos/Lofi.png";
 
 export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
@@ -23,12 +28,14 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
       hero: null,
       competitors: competitorImg,
       interviews: interviewImg,
-      designSystem: null,
-      lofi: null,
-      hifi: null,
+      designSystem: designSystem1Img,
+      designSystem2: designSystem2Img,
+      lofi: lofiImg,
       architecture: architectureIMG,
       security: securityImg,
       iaFlow: IAImg,
+      persona: personaImg,
+      empathyMap: empathyMapImg,
       dashboard: null,
       recommendations: null,
       testing: null,
@@ -392,30 +399,69 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
               />
             </CaseStudySection>
 
-            <CaseStudySection id="concept" title="Concept" subtitle="From options → chosen direction → scoped feature set" theme={theme}>
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                Using the Six Thinking Hats method, I explored four concepts. The chosen concept was{" "}
-                <span className={`font-semibold ${theme.textMain}`}>Holistic Employer Branding</span>.
-              </div>
-            </CaseStudySection>
+            <CaseStudySection
+  id="concept"
+  title="Concept"
+  subtitle="From options → chosen direction → scoped feature set"
+  theme={theme}
+>
+  <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
+    The chosen concept,{" "}
+    <span className={`font-semibold ${theme.textMain}`}>
+      Holistic Employer Branding
+    </span>
+    , focuses on giving companies a complete, end‑to‑end understanding of their
+    employer brand. Instead of analyzing isolated metrics, this approach brings
+    together survey data, web insights, sentiment analysis, and benchmarking to
+    form a unified picture of strengths, weaknesses, and opportunities. 
+  </div>
+</CaseStudySection>
 
-            <CaseStudySection id="uxia" title="Users & Information Architecture" subtitle="Personas, journeys, content inventory, flowchart" theme={theme}>
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                I designed personas, empathy maps, user journeys, a content inventory, and a full design flowchart.
-              </div>
 
-              <div className="mt-6">
-                <CaseStudyImageTile
-                  src={IMAGES.iaFlow}
-                  alt="Information architecture / user flow"
-                  caption="IA and user flow."
-                  aspect="16/9"
-                  fit="contain"
-                  theme={theme}
-                  onOpen={openLightbox}
-                />
-              </div>
-            </CaseStudySection>
+            <CaseStudySection
+  id="uxia"
+  title="Users & Information Architecture"
+  subtitle="Personas, journeys, content inventory, flowchart"
+  theme={theme}
+>
+  <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
+    I designed personas, empathy maps, user journeys, a content inventory, and a full design flowchart.
+  </div>
+
+  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <CaseStudyImageTile
+      src={IMAGES.persona}
+      alt="Persona"
+      caption="Persona used to define user needs, goals, and pain points."
+      aspect="16/10"
+      fit="cover"
+      theme={theme}
+      onOpen={openLightbox}
+    />
+
+    <CaseStudyImageTile
+      src={IMAGES.empathyMap}
+      alt="Empathy map"
+      caption="Empathy map used to understand user thoughts, feelings, and behaviors."
+      aspect="16/10"
+      fit="cover"
+      theme={theme}
+      onOpen={openLightbox}
+    />
+  </div>
+
+  <div className="mt-6">
+    <CaseStudyImageTile
+      src={IMAGES.iaFlow}
+      alt="Information architecture / user flow"
+      caption="IA and user flow."
+      aspect="4/3"
+      fit="contain"
+      theme={theme}
+      onOpen={openLightbox}
+    />
+  </div>
+</CaseStudySection>
 
             <CaseStudySection id="ui" title="UI design" subtitle="Design system + low-fi → high-fi" theme={theme}>
               <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
@@ -423,10 +469,10 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
               </div>
 
               <Gallery3
-                a={<CaseStudyImageTile src={IMAGES.designSystem} alt="Design system" caption="Tokens, components, typography, spacing." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.lofi} alt="Low-fi" caption="Low-fi key screens." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                c={<CaseStudyImageTile src={IMAGES.hifi} alt="High-fi" caption="High-fi key screens." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-              />
+  a={<CaseStudyImageTile src={IMAGES.designSystem} alt="Design system" caption="Color schema." aspect="16/10" fit="contain" theme={theme} onOpen={openLightbox} />}
+  b={<CaseStudyImageTile src={IMAGES.designSystem2} alt="Design system" caption="Typography, CTA/Buttons." aspect="16/10" fit="contain" theme={theme} onOpen={openLightbox} />}
+  c={<CaseStudyImageTile src={IMAGES.lofi} alt="Low-fi" caption="Low-fi key screens." aspect="16/10" theme={theme} onOpen={openLightbox} />}
+/>
             </CaseStudySection>
 
             <CaseStudySection id="development" title="Development" subtitle="How the build supported UX quality, security, and reliability" theme={theme}>
