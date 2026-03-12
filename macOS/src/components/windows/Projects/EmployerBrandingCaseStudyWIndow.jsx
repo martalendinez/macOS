@@ -10,6 +10,9 @@ import CaseStudyImageTile from "./caseStudy/CaseStudyImageTile";
 import CaseStudyLightbox from "./caseStudy/CaseStudyLightbox";
 import interviewImg from "../../../imgs/case-study/kallos/Interview.png";
 import competitorImg from "../../../imgs/case-study/kallos/competitor_analysis.png";
+import architectureIMG from "../../../imgs/case-study/kallos/Architecture.png";
+import securityImg from "../../../imgs/case-study/kallos/Security_Model.png";
+import IAImg from "../../../imgs/case-study/kallos/IA.png";
 
 export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
@@ -23,8 +26,9 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
       designSystem: null,
       lofi: null,
       hifi: null,
-      architecture: null,
-      security: null,
+      architecture: architectureIMG,
+      security: securityImg,
+      iaFlow: IAImg,
       dashboard: null,
       recommendations: null,
       testing: null,
@@ -369,6 +373,7 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
                     alt="Security / GDPR"
                     caption="Security model / GDPR considerations."
                     aspect="16/9"
+                    fit="contain"
                     theme={theme}
                     onOpen={openLightbox}
                   />
@@ -377,8 +382,9 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
                   <CaseStudyImageTile
                     src={IMAGES.architecture}
                     alt="Architecture"
-                    caption="System architecture at a glance."
+                    caption="System architecture."
                     aspect="16/9"
+                    fit= "contain"
                     theme={theme}
                     onOpen={openLightbox}
                   />
@@ -402,7 +408,7 @@ export default function EmployerBrandingCaseStudyWindow({ uiTheme = "glass", gla
                 <CaseStudyImageTile
                   src={IMAGES.iaFlow}
                   alt="Information architecture / user flow"
-                  caption="IA and user flow (add your flowchart screenshot here)."
+                  caption="IA and user flow."
                   aspect="16/9"
                   fit="contain"
                   theme={theme}
