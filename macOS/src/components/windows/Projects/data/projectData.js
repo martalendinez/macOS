@@ -44,10 +44,10 @@ export const PROJECTS = [
     thumbnail: restaurantThumb,
     tags: ["UX", "UI", "Frontend", "Product"],
     bullets: [
-      "Designed a restaurant recommendation system for both individual discovery and group decision-making",
-      "Developed a group-booking flow that collects preferences and availability from all participants to suggest optimal restaurants",
-      "Implemented the UX, UI, and frontend for a seamless end-to-end booking experience",
-      "Focused on reducing coordination friction and making group dining decisions fast, fair, and transparent",
+      "Designed a website‑first group dining platform with a responsive mobile experience for on‑the‑go coordination",
+      "Designed a smart recommendation flow that matches restaurants to group availability, dietary needs, and preferences",
+      "Created a collaborative booking process where each member contributes inputs to reach a fair, transparent decision",
+      "Implemented the full UX, UI, and frontend for a seamless end‑to‑end reservation journey",
     ],
 
     // ⭐ NEW: Sällskap case study link

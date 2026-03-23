@@ -15,8 +15,8 @@ import competitorImg from "../../../imgs/case-study/sallskap/Competitor_Analysis
 import architectureIMG from "../../../imgs/case-study/sallskap/Sakura_Architecture.png";
 import securityImg from "../../../imgs/case-study/sallskap/Flowchart_Sakura_Data.png";
 import IAImg from "../../../imgs/case-study/kallos/IA.png";
-import personaImg from "../../../imgs/case-study/kallos/Persona.png";
-import empathyMapImg from "../../../imgs/case-study/kallos/Empathy_Map1.jpg";
+import personaImg from "../../../imgs/case-study/sallskap/Elina_Persona.png";
+import empathyMapImg from "../../../imgs/case-study/sallskap/Elina_Empathy_Map.png";
 import designSystem1Img from "../../../imgs/case-study/kallos/DesignSystem1.png";
 import designSystem2Img from "../../../imgs/case-study/kallos/DesignSystem2.png";
 import lofiImg from "../../../imgs/case-study/kallos/Lofi.png";
@@ -488,7 +488,7 @@ export default function GroupDiningCaseStudyWindow({ uiTheme = "glass", glassCon
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <CaseStudyImageTile
                   src={IMAGES.persona}
-                  alt="Persona (placeholder)"
+                  alt="Persona"
                   caption="Organizer persona: social, responsible, time‑poor."
                   aspect="16/10"
                   fit="cover"
@@ -498,7 +498,7 @@ export default function GroupDiningCaseStudyWindow({ uiTheme = "glass", glassCon
 
                 <CaseStudyImageTile
                   src={IMAGES.empathyMap}
-                  alt="Empathy map (placeholder)"
+                  alt="Empathy map"
                   caption="Mapping organizer frustrations and motivations."
                   aspect="16/10"
                   fit="cover"
