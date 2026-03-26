@@ -23,7 +23,7 @@ import lofiImg2 from "../../../imgs/case-study/sallskap/Dining_System4.png";
 import testingImg from "../../../imgs/case-study/sallskap/Dining_Reviews.png";
 import iterationsImg from "../../../imgs/case-study/sallskap/Dining_Dark.png";
 import recommendationsImg from "../../../imgs/case-study/sallskap/Dining_Restaurant.png";
-import dashboardImg from "../../../imgs/case-study/sallskap/Dining_Group.png";
+import dashboardImg from "../../../imgs/case-study/sallskap/Dining_Restrictions.png";
 import mockupImg from "../../../imgs/case-study/sallskap/Dining_Overall.png";
 import finalImg from "../../../imgs/case-study/sallskap/Dining_Mockup.png";
 
@@ -330,7 +330,7 @@ function scrollToSection(id) {
       <CaseStudyImageTile
         src={IMAGES.dashboard}
         alt="Flow highlight"
-        caption="Core coordination flow."
+        caption="Private dietary restrictions."
         aspect="16/9"
         theme={theme}
         onOpen={openLightbox}
@@ -660,12 +660,26 @@ is approachable, and the components feel airy and modern.
   subtitle="Where groups get value"
   theme={theme}
 >
+  <p>
+    <strong>Private dietary input.</strong> Each group member privately submits their dietary needs, 
+    removing social pressure and ensuring the system can generate accurate, inclusive recommendations.
+  </p>
+
+  <p>
+    <strong>Structured availability collection.</strong> A visual selector replaces chaotic chat threads, 
+    allowing the system to automatically compute overlapping availability windows for the group.
+  </p>
+
+  <p>
+    <strong>Smart restaurant matching.</strong> The recommendation engine merges availability, dietary 
+    needs, and preferences into a curated shortlist with compatibility tags and per‑person breakdowns.
+  </p>
   <Gallery2
     a={
       <CaseStudyImageTile
         src={IMAGES.dashboard}
         alt="Flow screen"
-        caption="Overview of a group’s coordination status."
+        caption="Private dietary restrictions."
         aspect="16/9"
         theme={theme}
         onOpen={openLightbox}
@@ -683,6 +697,7 @@ is approachable, and the components feel airy and modern.
     }
   />
 </CaseStudySection>
+
 
 {/* Testing & iterations */}
 <CaseStudySection
