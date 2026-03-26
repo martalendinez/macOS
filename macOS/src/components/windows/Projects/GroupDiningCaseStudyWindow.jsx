@@ -13,12 +13,13 @@ import interviewImg from "../../../imgs/case-study/sallskap/Sakura_Interview.png
 import competitorImg from "../../../imgs/case-study/sallskap/Competitor_Analysis_Sakura.png";
 import architectureIMG from "../../../imgs/case-study/sallskap/Sakura_Architecture.png";
 import securityImg from "../../../imgs/case-study/sallskap/Flowchart_Sakura_Data.png";
-import IAImg from "../../../imgs/case-study/kallos/IA.png";
+import IAImg from "../../../imgs/case-study/sallskap/Dining_Flowchart.png";
 import personaImg from "../../../imgs/case-study/sallskap/Elina_Persona.png";
 import empathyMapImg from "../../../imgs/case-study/sallskap/Elina_Empathy_Map.png";
-import designSystem1Img from "../../../imgs/case-study/kallos/DesignSystem1.png";
-import designSystem2Img from "../../../imgs/case-study/kallos/DesignSystem2.png";
-import lofiImg from "../../../imgs/case-study/kallos/Lofi.png";
+import designSystem1Img from "../../../imgs/case-study/sallskap/Dining_System1.png";
+import designSystem2Img from "../../../imgs/case-study/sallskap/Dining_System2.png";
+import lofiImg from "../../../imgs/case-study/sallskap/Dining_System3.png";
+import lofiImg2 from "../../../imgs/case-study/sallskap/Dining_System4.png";
 import testingImg from "../../../imgs/case-study/sallskap/Dining_Reviews.png";
 import iterationsImg from "../../../imgs/case-study/sallskap/Dining_Dark.png";
 import recommendationsImg from "../../../imgs/case-study/sallskap/Dining_Restaurant.png";
@@ -40,6 +41,7 @@ export default function GroupDiningCaseStudyWindow({
       designSystem: designSystem1Img,
       designSystem2: designSystem2Img,
       lofi: lofiImg,
+      lofi2: lofiImg2,
       architecture: architectureIMG,
       security: securityImg,
       iaFlow: IAImg,
@@ -565,7 +567,7 @@ function scrollToSection(id) {
       src={IMAGES.iaFlow}
       alt="Information architecture / user flow"
       caption="High‑level flow from group creation to confirmation."
-      aspect="4/3"
+      aspect="2/1"
       fit="contain"
       theme={theme}
       onOpen={openLightbox}
@@ -585,42 +587,49 @@ function scrollToSection(id) {
 geometry, and a calm green accent that carries the brand. The spacing is generous, the typography
 is approachable, and the components feel airy and modern.
 
-  </div>
 
-  <Gallery3
-    a={
-      <CaseStudyImageTile
-        src={IMAGES.designSystem}
-        alt="Design system"
-        caption="Color system and base components."
-        aspect="16/10"
-        fit="contain"
-        theme={theme}
-        onOpen={openLightbox}
-      />
-    }
-    b={
-      <CaseStudyImageTile
-        src={IMAGES.designSystem2}
-        alt="Design system 2"
-        caption="Typography, buttons, and interaction states."
-        aspect="16/10"
-        fit="contain"
-        theme={theme}
-        onOpen={openLightbox}
-      />
-    }
-    c={
-      <CaseStudyImageTile
-        src={IMAGES.lofi}
-        alt="Low-fi sketches"
-        caption="Low‑fi sketches of the core flow."
-        aspect="16/10"
-        theme={theme}
-        onOpen={openLightbox}
-      />
-    }
+<div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <CaseStudyImageTile
+    src={IMAGES.designSystem}
+    alt="Design system"
+    caption="Design system: typography."
+    aspect="2/1"
+    fit="cover"
+    theme={theme}
+    onOpen={openLightbox}
   />
+
+  <CaseStudyImageTile
+    src={IMAGES.designSystem2}
+    alt="Design system 2"
+    caption="Design system: colors."
+    aspect="18/9"
+    fit="cover"
+    theme={theme}
+    onOpen={openLightbox}
+  />
+
+  <CaseStudyImageTile
+    src={IMAGES.lofi}
+    alt="Low‑fi sketches"
+    caption="Design system: icons."
+    aspect="18/9"
+    theme={theme}
+    onOpen={openLightbox}
+  />
+
+  <CaseStudyImageTile
+    src={IMAGES.lofi2}
+    alt="Low‑fi sketches 2"
+    caption="Design system: grids & layout."
+    aspect="18/9"
+    theme={theme}
+    onOpen={openLightbox}
+  />
+</div>
+
+</div>
+
 </CaseStudySection>
 {/* Development */}
 <CaseStudySection
