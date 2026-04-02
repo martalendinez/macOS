@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
 import { getTokens } from "../../../ui/themeTokens";
 import WindowFrame from "./components/WindowFrame";
-import Hero from "../../../imgs/avatar/profile.jpeg";
+import Hero from "../../../imgs/avatar/model1.jpeg";
+import PhotoLocation from "../About/components/PhotoLocation";
+
 
 const EMAIL = "casandra.lendinez@outlook.com";
 const HERO_IMG = Hero;
 
 /* ---------------------- */
-/* Accent Chip (ONLY place using accent) */
+/* Accent Chip */
 /* ---------------------- */
 function Chip({ children }) {
   return (
@@ -45,7 +47,7 @@ function ProjectCard({ styles, title, subtitle, bullets = [], badge, onOpen }) {
         styles.softCard,
       ].join(" ")}
     >
-      <div className="grid grid-cols-[1fr_auto] gap-4 items-start min-h-[140px]">
+      <div className="grid grid-cols-[1fr_auto] gap-4 items-start min-h-[120px]">
         <div className="min-w-0">
           <div className={`${styles.textMain} font-semibold leading-snug`}>
             {title}
@@ -166,94 +168,71 @@ export default function RecruiterModeWindow({
 
   return (
     <WindowFrame styles={styles}>
-      {/* ---------------- TOP SECTION ---------------- */}
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] items-start">
-        <div className="space-y-3">
-          <div className={`${styles.textSub} text-[11px] tracking-wide uppercase`}>
-            UX Engineer • Stockholm • KTH
+      {/* ---------------- TWO-COLUMN LAYOUT ---------------- */}
+      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
+        
+        {/* LEFT COLUMN (VERTICAL CONTENT) */}
+        <div className="flex flex-col gap-8">
+          
+          {/* TEXT BLOCK */}
+          <div className="space-y-3">
+            <div className={`${styles.textSub} text-[11px] tracking-wide uppercase`}>
+              UX Engineer • Stockholm • KTH
+            </div>
+
+            <div className={`${styles.textMain} text-4xl font-semibold leading-tight`}>
+              Marta Lendínez
+            </div>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Chip>UX Engineer</Chip>
+              <Chip>Research → UI</Chip>
+              <Chip>React</Chip>
+              <Chip>Design Systems</Chip>
+            </div>
           </div>
 
-          <div className={`${styles.textMain} text-4xl font-semibold leading-tight`}>
-            Marta Lendínez
-          </div>
+          {/* PROJECTS (VERTICAL STACK) */}
+          <div className="space-y-3">
+            <SectionTitle styles={styles}>Highlighted work</SectionTitle>
 
-          <div className={`${styles.textMain} text-lg leading-snug`}>
-             UX Engineer specializing in research‑driven UI, React development, and scalable design systems. Comfortable across the full stack and fluent in modern AI tools.
-          </div>
+            {/* SHORTENED PROJECT CARD 1 */}
+            <ProjectCard
+              styles={styles}
+              badge="Master Thesis"
+              title="AI plugin for designers (control‑first)"
+              subtitle="A Figma AI plugin that gives designers deterministic, controllable model outputs."
+              onOpen={() => openWindowSafe("projects")}
+            />
 
-          <div className="flex flex-wrap gap-2 pt-1">
-            <Chip>UX Engineer</Chip>
-            <Chip>Research → UI</Chip>
-            <Chip>React</Chip>
-            <Chip>Design Systems</Chip>
-          </div>
-        </div>
-
-        {/* ✅ Avatar WITHOUT border */}
-        <div className="flex lg:justify-end">
-          <div className="w-full max-w-[360px] rounded-2xl overflow-hidden">
-            <img
-              src={HERO_IMG}
-              alt="Portrait"
-              className="w-full h-[260px] object-cover"
+            {/* SHORTENED PROJECT CARD 2 */}
+            <ProjectCard
+              styles={styles}
+              badge="Graduation Internship"
+              title="AI platform for employer‑branding analysis"
+              subtitle="Turned manual branding audits into a scalable, automated analysis platform."
+              onOpen={() => openWindowSafe("employerBrandingCaseStudy")}
             />
           </div>
-        </div>
-      </div>
 
-      {/* ---------------- PROJECTS ---------------- */}
-      <div className="mt-8 space-y-3">
-        <SectionTitle styles={styles}>Highlighted work</SectionTitle>
 
-        <div className="grid gap-3 lg:grid-cols-2 items-stretch">
-          <ProjectCard
-            styles={styles}
-            badge="Master Thesis"
-            title="AI plugin for designers (control-first)"
-            subtitle="Most AI tools override the designer’s intent. I built a plugin that keeps humans in the loop and makes AI predictable, transparent, and aligned with real design workflows."
-            bullets={[
-              "Human-in-the-loop: designer stays in control.",
-              "Transparent and predictable AI assistance.",
-              "Built for real workflow integration.",
-            ]}
-            onOpen={() => openWindowSafe("projects")}
-          />
-
-          <ProjectCard
-            styles={styles}
-            badge="Graduation Internship"
-            title="AI platform for employer branding analysis"
-            subtitle="Employer branding made measurable via a platform — not only expensive in-person analysis."
-            bullets={[
-              "Identified gap: branding is typically assessed manually.",
-              "Designed UX for scalable analysis beyond consulting.",
-              "Implemented polished UI with clean React structure.",
-            ]}
-            onOpen={() => openWindowSafe("employerBrandingCaseStudy")}
-          />
-        </div>
-      </div>
-
-      {/* ---------------- CTA ---------------- */}
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className={`${styles.textMain} text-sm font-semibold`}>Contact</div>
-          <div className={`${styles.textSub} text-sm mt-1`}>{EMAIL}</div>
+       
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <SmallButton
-            styles={styles}
-            variant="primary"
-            label={copied ? "Copied ✓" : "Copy Email"}
-            onClick={copyEmail}
-          />
-          <SmallButton
-            styles={styles}
-            label="Open Projects"
-            onClick={() => openWindowSafe("projects")}
-          />
-        </div>
+   {/* RIGHT COLUMN — IMAGE */}
+<div className="flex justify-end">
+  <div className="group relative w-full max-w-[420px] rounded-2xl overflow-hidden">
+    <img
+      src={HERO_IMG}
+      alt="Portrait"
+      className="w-full h-[520px] object-cover"
+    />
+
+    {/* White hover tag with arrow — same as OverviewTab */}
+    <PhotoLocation styles={styles} text="Valencia, ES" />
+  </div>
+</div>
+
       </div>
     </WindowFrame>
   );
