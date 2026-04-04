@@ -18,7 +18,6 @@ const StardewNotionCaseStudyWindow = lazy(() =>
   import("../components/windows/Projects/StardewNotionCaseStudyWindow")
 );
 
-// ⭐ NEW: Sällskap case study window
 const GroupDiningCaseStudyWindow = lazy(() =>
   import("../components/windows/Projects/GroupDiningCaseStudyWindow")
 );
@@ -32,6 +31,11 @@ const PortfolioInfoWindow = lazy(() =>
 
 const RecruiterModeWindow = lazy(() =>
   import("../components/windows/RecruiterMode/RecruiterModeWindow")
+);
+
+// ⭐ NEW AI ASSISTANT
+const AiAssistantWindow = lazy(() =>
+  import("../components/windows/AiAssistant/AiAssistantWindow")
 );
 
 export const WINDOW_DEFS = {
@@ -147,12 +151,20 @@ export const WINDOW_DEFS = {
     initialPos: { x: 140, y: 80 },
   },
 
-  // ⭐ NEW: Sällskap case study window entry
   groupDiningCaseStudy: {
     title: "Sällskap — Group Dining Coordination",
     Component: GroupDiningCaseStudyWindow,
     width: 1180,
     height: 760,
     initialPos: { x: 140, y: 80 },
+  },
+
+  // ⭐ NEW AI ASSISTANT WINDOW
+  aiAssistant: {
+    title: "AI Assistant",
+    Component: AiAssistantWindow,
+    width: 820,
+    height: 560,
+    initialPos: { x: 260, y: 120 },
   },
 };

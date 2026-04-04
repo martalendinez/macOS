@@ -213,20 +213,22 @@ export default function App() {
       ? "/icons/mac/docMac.png"
       : "/icons/glass/MailGlass.png";
 
+  // ⭐ UPDATED: AI assistant now opens aiAssistant window
   const dockItems = useMemo(
     () => [
       { label: "About me", icon: icons.about, windowId: "about" },
-      { label: "AI assistant", icon: icons.ai, windowId: null },
+      { label: "AI assistant", icon: icons.ai, windowId: "aiAssistant" },
       { label: "Extras & Fun", icon: icons.fun, windowId: "fun" },
     ],
     [icons]
   );
 
+  // ⭐ UPDATED: Videos removed
   const leftRailItems = useMemo(
     () => [
       { icon: desktopIcons.timer, label: "Recruiter Mode", windowId: "recruiter" },
       { icon: desktopIcons.projects, label: "Projects", windowId: "projects" },
-      { icon: desktopIcons.videos, label: "Videos", windowId: "videos" },
+      // { icon: desktopIcons.videos, label: "Videos", windowId: "videos" },
     ],
     [desktopIcons]
   );

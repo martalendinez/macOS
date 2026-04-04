@@ -1,0 +1,98 @@
+/* Main container */
+.ai-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(8px);
+}
+
+/* White bubble at the top */
+.ai-chat-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.bubble.ai {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #333;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* BIG EMPTY SPACE */
+.ai-spacer {
+  flex: 1;
+}
+
+/* Bottom section: tags + input + footer */
+.bottom-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Accent-colored tags */
+.suggested-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+
+  background: hsl(var(--accent) / 0.12);
+  border: 1px solid hsl(var(--accent) / 0.35);
+  color: hsl(var(--accent));
+
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.tag:hover {
+  background: hsl(var(--accent) / 0.22);
+}
+
+/* Input bar */
+.ai-input {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-input input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.ai-input button {
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: hsl(var(--accent));
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+
+.ai-input button:hover {
+  background: hsl(var(--accent) / 0.85);
+}
+
+/* Footer */
+.ai-footer {
+  font-size: 12px;
+  opacity: 0.6;
+  text-align: center;
+}
