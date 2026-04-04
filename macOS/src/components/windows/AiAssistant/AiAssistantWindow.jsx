@@ -13,10 +13,10 @@ export default function AiAssistantWindow() {
         </div>
       </div>
 
-      {/* Spacer to push tags + input to the bottom */}
+      {/* Big empty space */}
       <div className="ai-spacer" />
 
-      {/* Tags + input bar together at the bottom */}
+      {/* Bottom section: tags + input + footer */}
       <div className="bottom-section">
 
         <div className="suggested-tags">

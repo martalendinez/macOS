@@ -1,4 +1,7 @@
-/* Main container */
+/* -------------------------------------------------- */
+/* BASE (LIGHT MODE)                                  */
+/* -------------------------------------------------- */
+
 .ai-window {
   display: flex;
   flex-direction: column;
@@ -25,12 +28,12 @@
   line-height: 1.45;
 }
 
-/* BIG EMPTY SPACE */
+/* Big empty space */
 .ai-spacer {
   flex: 1;
 }
 
-/* Bottom section: tags + input + footer */
+/* Bottom section */
 .bottom-section {
   display: flex;
   flex-direction: column;
@@ -95,4 +98,58 @@
   font-size: 12px;
   opacity: 0.6;
   text-align: center;
+}
+
+
+/* -------------------------------------------------- */
+/* 🌙 DARK MODE OVERRIDES                             */
+/* -------------------------------------------------- */
+
+.darkwin .ai-window {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+/* Bubble becomes translucent but still WHITE-ish */
+.darkwin .bubble.ai {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Tags keep accent but with better contrast */
+.darkwin .tag {
+  background: hsl(var(--accent) / 0.18);
+  border: 1px solid hsl(var(--accent) / 0.45);
+  color: hsl(var(--accent) / 1.2);
+}
+
+.darkwin .tag:hover {
+  background: hsl(var(--accent) / 0.28);
+}
+
+/* Input bar */
+.darkwin .ai-input input {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+.darkwin .ai-input input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Send button stays accent */
+.darkwin .ai-input button {
+  background: hsl(var(--accent));
+  color: white;
+}
+
+.darkwin .ai-input button:hover {
+  background: hsl(var(--accent) / 0.85);
+}
+
+/* Footer */
+.darkwin .ai-footer {
+  color: rgba(255, 255, 255, 0.6);
 }
