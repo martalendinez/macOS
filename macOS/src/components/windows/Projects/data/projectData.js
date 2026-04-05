@@ -5,23 +5,23 @@ import loyaltyThumb from "../../../../imgs/case-study/kallos/Thumbnail_Kallos.av
 import stardewThumb from "../../../../imgs/case-study/kallos/Thumbnail_Kallos.avif";
 
 export const PROJECTS = [
-  {
-    id: "thesis",
-    title: "Human–AI Collaboration in UX Design (Master Thesis)",
-    subtitle: "Designing AI as a thinking partner for UX workflows",
-    thumbnail: thesisThumb,
-    tags: ["Research", "AI", "UX"],
-    bullets: [
-      "Investigates how designers collaborate with AI during early-stage ideation and wireframing",
-      "Combines literature review, interviews, and comparative analysis of AI-assisted design tools",
-      "Explores collaboration models: automation, augmentation, and true partnership",
-      "Proposes a concept for an AI-supported UX tool that enhances designer cognition",
-    ],
-    links: [
-      { label: "Case Study", href: "#" },
-      { label: "PDF", href: "#" },
-    ],
-  },
+ {
+  id: "thesis",
+  title: "Human–AI Collaboration in UX Design (Master Thesis)",
+  subtitle: "Designing AI as a thinking partner for UX workflows",
+  thumbnail: thesisThumb,
+  tags: ["Research", "AI", "UX"],
+  bullets: [
+    "Investigates how designers collaborate with AI during early-stage ideation and wireframing",
+    "Combines literature review, interviews, and comparative analysis of AI-assisted design tools",
+    "Explores collaboration models: automation, augmentation, and true partnership",
+    "Proposes a concept for an AI-supported UX tool that enhances designer cognition",
+  ],
+  links: [
+    { label: "Case Study", action: "openThesisCaseStudy" }, // ✅ THIS
+    { label: "PDF", href: "#" },
+  ],
+},
 
   {
     id: "employerBranding",

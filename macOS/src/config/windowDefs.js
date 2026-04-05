@@ -22,6 +22,10 @@ const GroupDiningCaseStudyWindow = lazy(() =>
   import("../components/windows/Projects/GroupDiningCaseStudyWindow")
 );
 
+const ThesisCaseStudyWindow = lazy(() =>
+  import("../components/windows/Projects/ThesisCaseStudyWindow")
+);
+
 const SecretProjectsWindow = lazy(() => import("../components/windows/Projects/SecretProjectsWindow"));
 const BehindTheButtonWindow = lazy(() => import("../components/windows/Projects/BehindTheButtonWindow"));
 
@@ -94,6 +98,14 @@ export const WINDOW_DEFS = {
     height: 760,
     initialPos: { x: 140, y: 80 },
   },
+
+  thesisCaseStudy: {
+  title: "Master Thesis — Human–AI Collaboration",
+  Component: ThesisCaseStudyWindow,
+  width: 1180,
+  height: 760,
+  initialPos: { x: 140, y: 80 },
+},
 
   videos: {
     title: "Videos",
