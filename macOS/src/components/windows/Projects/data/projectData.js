@@ -1,11 +1,11 @@
-import thesisThumb from "../../../../imgs/case-study/kallos/Thumbnail_Kallos.avif";
+import thesisThumb from "../../../../imgs/case-study/trace/Cover.png";
 import employerThumb from "../../../../imgs/case-study/kallos/Kallos_Mockup.png";
 import restaurantThumb from "../../../../imgs/case-study/sallskap/Dining_Overall.png";
 import loyaltyThumb from "../../../../imgs/case-study/kallos/Thumbnail_Kallos.avif";
 import stardewThumb from "../../../../imgs/case-study/kallos/Thumbnail_Kallos.avif";
 
 export const PROJECTS = [
- /*{
+ {
   id: "thesis",
   title: "Human–AI Collaboration in UX Design (Master Thesis)",
   subtitle: "Designing AI as a thinking partner for UX workflows",
@@ -19,9 +19,8 @@ export const PROJECTS = [
   ],
   links: [
     { label: "Case Study", action: "openThesisCaseStudy" }, // ✅ THIS
-    { label: "PDF", href: "#" },
   ],
-},*/
+},
 
   {
     id: "employerBranding",
