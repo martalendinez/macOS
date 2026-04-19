@@ -15,27 +15,16 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
   const IMAGES = useMemo(
     () => ({
       hero: null,
-      welcome: null,
-      farmOverview: null,
-      cozyCorner: null,
-      workshop: null,
-
-      calendar: null,
-      sunriseQuests: null,
-      weeklyFields: null,
-      questsDatabases: null,
-      harvestedMemories: null,
-
-      goldPouch: null,
-      shop: null,
-      inventory: null,
-
-      skillTree: null,
-      characterProfile: null,
-      dailyFortune: null,
-      letters: null,
-      mealPlanner: null,
-
+      onboarding: null,
+      login: null,
+      categories: null,
+      difficulty: null,
+      gameScreen: null,
+      results: null,
+      leaderboard: null,
+      profile: null,
+      designSystem: null,
+      wireframes: null,
       uiDetails: null,
       finalScreens: null,
     }),
@@ -53,11 +42,9 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
       { id: "role", label: "My role" },
       { id: "goals", label: "Goals" },
       { id: "ia", label: "Information architecture" },
-      { id: "farm", label: "The Farm" },
-      { id: "cozy", label: "Cozy Corner" },
-      { id: "workshopSection", label: "Workshop" },
-      { id: "mechanics", label: "Gamification mechanics" },
-      { id: "design", label: "Design decisions" },
+      { id: "designProcess", label: "Design process" },
+      { id: "frontend", label: "Frontend implementation" },
+      { id: "testing", label: "Usability testing" },
       { id: "outcome", label: "Final outcome" },
     ],
     []
@@ -77,7 +64,6 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
           onClick={() => openLightbox(IMAGES.hero, "Cover image")}
           className="w-full text-left"
           disabled={!IMAGES.hero}
-          title={IMAGES.hero ? "Click to zoom" : "Hero placeholder — set IMAGES.hero"}
         >
           {IMAGES.hero ? (
             <img src={IMAGES.hero} alt="Cover" className="w-full h-auto object-cover" />
@@ -86,9 +72,9 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
               <div className="text-center px-6">
                 <div className={`text-sm font-semibold ${theme.textMain}`}>Cover image (hero)</div>
                 <div className={`mt-2 text-xs ${theme.textSub}`}>
-                  Add a wide screenshot of your <span className="font-semibold">Welcome</span> page / dashboard.
+                  Add a wide screenshot of your Trivia App home or onboarding.
                   <br />
-                  Set it as <span className="font-semibold">IMAGES.hero</span>.
+                  Set it as IMAGES.hero.
                 </div>
               </div>
             </div>
@@ -98,13 +84,13 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
     );
   }
 
-  const metaPills = ["Personal project", "Notion template", "UX + UI", "Gamification", "Systems design"];
+  const metaPills = ["University project", "UX Engineering", "Mobile app", "React Native", "Firebase"];
 
   const facts = [
-    { k: "What it is", v: "A Stardew Valley–inspired productivity template built in Notion" },
-    { k: "Core promise", v: "Make planning feel cozy + motivating (not punishing)" },
-    { k: "Structure", v: "Three “locations”: The Farm · Cozy Corner · Workshop" },
-    { k: "Mechanics", v: "Coins, inventory, shop, skills, badges, daily fortune" },
+    { k: "Project type", v: "KTH university group project (App Development course)" },
+    { k: "Team", v: "4 people — 2 UI/Frontend, 2 Backend" },
+    { k: "What it is", v: "A mobile trivia game with dynamic questions and global leaderboard" },
+    { k: "Tech stack", v: "React Native · Redux · Firebase Auth · Firestore · OpenTDB API" },
   ];
 
   return (
@@ -117,6 +103,8 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
           className={`mx-auto w-full max-w-[1150px] rounded-[28px] ${theme.pageCard}`}
         >
           <div className="px-6 md:px-10 pt-8 md:pt-10 pb-10">
+
+            {/* Meta pills */}
             <div className="flex flex-wrap gap-2">
               {metaPills.map((p) => (
                 <CaseStudyPill key={p} theme={theme}>
@@ -125,40 +113,40 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
               ))}
             </div>
 
+            {/* Title */}
             <div className={`mt-5 text-4xl md:text-5xl font-semibold tracking-tight ${theme.textMain}`}>
-              Gamified Productivity System — Stardew Valley Notion Template
+              Trivia App — A Mobile Game for Knowledge Exploration
             </div>
+
+            {/* Subtitle */}
             <div className={`mt-3 text-base md:text-lg ${theme.textSub}`}>
-              “Welcome to your farm!” A cozy, narrative-driven system that turns everyday tasks into quests, rewards
-              consistency with coins, and makes your Notion workspace feel like a tiny valley.
+              A mobile trivia experience where players explore categories, difficulty levels, and two game modes — with
+              scoring, history, and a global leaderboard for logged‑in users.
             </div>
 
             {/* CTA row */}
             <div className="mt-6 flex flex-wrap gap-2">
-              <a href="#" target="_blank" rel="noreferrer" className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${theme.buttonClass}`}>
-                View this in Notion
+              <a href="#" className={`px-4 py-2.5 rounded-2xl text-sm border ${theme.buttonClass}`}>
+                View GitHub
               </a>
-              <a href="#" target="_blank" rel="noreferrer" className={`px-4 py-2.5 rounded-2xl text-sm transition-all border ${theme.buttonClass}`}>
-                Download the PDF
+              <a href="#" className={`px-4 py-2.5 rounded-2xl text-sm border ${theme.buttonClass}`}>
+                View full case study
               </a>
             </div>
 
+            {/* Overview */}
             <div id="overview" className="mt-8 grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-8 scroll-mt-6">
               <div>
                 <div className={`text-lg font-semibold ${theme.textMain}`}>Overview</div>
                 <div className={`mt-3 text-[15px] leading-7 ${theme.textBody}`}>
-                  Traditional productivity tools can feel like judgment: when you fall behind, the system becomes a list
-                  of failures. This template reframes planning as a cozy game world — with locations, characters, and
-                  progression mechanics that turn “to-dos” into small adventures.
-                  <br />
-                  <br />
-                  The valley is organized into three spaces:
-                  <span className={`font-semibold ${theme.textMain}`}> The Farm</span> (work + planning),
-                  <span className={`font-semibold ${theme.textMain}`}> Your Cozy Corner</span> (stats + vibes),
-                  and <span className={`font-semibold ${theme.textMain}`}> the Workshop</span> (gamification hub).
+                  This trivia app was developed as a group project at KTH. Players can log in with Google or play as
+                  guests, choose categories and difficulty levels, and play in either Leisure or Challenge mode.
+                  Logged‑in users have their scores saved to Firestore, powering both a personal game history and a
+                  global leaderboard.
                 </div>
               </div>
 
+              {/* Quick facts */}
               <div>
                 <div className={`text-lg font-semibold ${theme.textMain}`}>Quick facts</div>
 
@@ -173,7 +161,7 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {["UX", "UI", "Notion", "Quests", "Rewards", "Systems"].map((t) => (
+                    {["UX", "UI", "React Native", "Firebase", "Mobile"].map((t) => (
                       <CaseStudyPill key={t} theme={theme}>
                         {t}
                       </CaseStudyPill>
@@ -192,9 +180,10 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
               <div className="mt-3 flex flex-wrap gap-2">
                 {sections.map((s) => {
                   const isActive = active === s.id;
-                  const activeClass = theme.isMac || theme.isGlassDarkText
-                    ? `${theme.accentSoftBg} ${theme.accentBorder} ${theme.accentText}`
-                    : "bg-white/20 border-white/15 text-white";
+                  const activeClass =
+                    theme.isMac || theme.isGlassDarkText
+                      ? `${theme.accentSoftBg} ${theme.accentBorder} ${theme.accentText}`
+                      : "bg-white/20 border-white/15 text-white";
 
                   return (
                     <button
@@ -212,260 +201,361 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
               </div>
             </div>
 
-            <CaseStudySection id="summary" title="Summary" subtitle="Problem → Solution → What makes it work" theme={theme}>
+            {/* Summary */}
+            <CaseStudySection
+              id="summary"
+              title="Summary"
+              subtitle="Problem → Solution → Why it works"
+              theme={theme}
+            >
               <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
                 <div className={`text-sm font-semibold ${theme.textMain}`}>Problem</div>
                 <div className="mt-2">
-                  Planning tools often don’t create emotional momentum. When motivation is low, systems that feel strict
-                  are the first to be abandoned.
+                  Many trivia apps feel cluttered, generic, or overwhelming. Players struggle to find the right
+                  difficulty, understand scoring, or feel motivated to return.
                 </div>
 
                 <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Solution</div>
                 <div className="mt-2">
-                  A narrative Notion template that maps productivity to a cozy game world: tasks become quests, progress
-                  becomes “harvest,” and consistency rewards you with coins you can spend in a shop.
+                  A mobile trivia game with two modes (Leisure + Challenge), dynamic questions from OpenTDB,
+                  difficulty‑based scoring, and persistent history + leaderboard for logged‑in users.
                 </div>
 
                 <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Why it works</div>
                 <CaseStudyBulletList
                   items={[
-                    "Clear, location-based navigation (you always know where to go)",
-                    "Progress is visible and celebratory (harvested memories, coins, badges)",
-                    "Gamification is optional + supportive (designed to reduce guilt, not increase pressure)",
+                    "Clear separation between casual and competitive play.",
+                    "Guided flow from onboarding → category → difficulty → game.",
+                    "Persistent scoring and history create long‑term engagement.",
                   ]}
                 />
               </div>
 
               <Gallery2
-                a={<CaseStudyImageTile src={IMAGES.welcome} alt="Welcome page" caption="Optional: Welcome to your farm page." aspect="16/9" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.farmOverview} alt="The Farm overview" caption="Optional: The Farm overview page." aspect="16/9" theme={theme} onOpen={openLightbox} />}
+                a={
+                  <CaseStudyImageTile
+                    src={IMAGES.onboarding}
+                    alt="Onboarding"
+                    caption="Onboarding: play as guest or log in with Google."
+                    aspect="16/9"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
+                b={
+                  <CaseStudyImageTile
+                    src={IMAGES.categories}
+                    alt="Category selection"
+                    caption="Category and difficulty selection."
+                    aspect="16/9"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
               />
             </CaseStudySection>
-
-            <CaseStudySection id="role" title="My role" subtitle="I designed the system, structure, and experience" theme={theme}>
+            {/* My role */}
+            <CaseStudySection
+              id="role"
+              title="My role"
+              subtitle="UX Engineer across design and frontend"
+              theme={theme}
+            >
               <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
                 <CaseStudyBulletList
                   items={[
-                    "Designed the information architecture (three main locations + sub-pages and flows)",
-                    "Defined the database model conceptually (tasks, subtasks, projects, habits, events, memories)",
-                    "Created the gamification layer (coins, shop, inventory, skill tree, badges, pets)",
-                    "Wrote the narrative microcopy to make interactions feel like a world (quests, harvest, valley vibes)",
+                    "Co‑defined the product vision and core flows with the team.",
+                    "Designed the information architecture and user flows.",
+                    "Created the design system in Figma (colors, typography, components).",
+                    "Designed lo‑fi and hi‑fi screens for onboarding, game, results, profile, and leaderboard.",
+                    "Implemented the UI in React Native using reusable components.",
+                    "Collaborated with backend teammates on API integration, Firestore structure, and authentication flows.",
                   ]}
                 />
               </div>
             </CaseStudySection>
 
-            <CaseStudySection id="goals" title="Goals" subtitle="Experience goals + system goals" theme={theme}>
+            {/* Goals */}
+            <CaseStudySection
+              id="goals"
+              title="Goals"
+              subtitle="Experience goals + system goals"
+              theme={theme}
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
                   <div className={`text-sm font-semibold ${theme.textMain}`}>Experience goals</div>
-                  <CaseStudyBulletList items={["Make planning feel cozy and inviting", "Turn tasks into meaningful “quests” with story flavor", "Support low-energy days (no shame spiral)"]} />
+                  <CaseStudyBulletList
+                    items={[
+                      "Make trivia feel modern, intuitive, and enjoyable.",
+                      "Support both casual and competitive players.",
+                      "Enable fast game starts with minimal friction.",
+                    ]}
+                  />
                 </div>
 
                 <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
                   <div className={`text-sm font-semibold ${theme.textMain}`}>System goals</div>
-                  <CaseStudyBulletList items={["Fast daily usage (minimal friction)", "Clear separation between planning, reflection, and rewards", "Scales across tasks, subtasks, projects, habits, and events"]} />
+                  <CaseStudyBulletList
+                    items={[
+                      "Fetch questions dynamically from OpenTDB.",
+                      "Persist scores and profiles in Firestore.",
+                      "Use Redux for predictable global state across the app.",
+                    ]}
+                  />
                 </div>
               </div>
             </CaseStudySection>
 
-            <CaseStudySection id="ia" title="Information architecture" subtitle="The valley is organized as three locations with clear sub-areas" theme={theme}>
+            {/* Information architecture */}
+            <CaseStudySection
+              id="ia"
+              title="Information architecture"
+              subtitle="Structuring the app around clear, focused flows"
+              theme={theme}
+            >
               <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>Top-level map</div>
                 <CaseStudyBulletList
                   items={[
-                    "Welcome to your farm (entry point + navigation hub)",
-                    "🥕✨ The Farm — productivity fields (tasks, habits, planning, calendar, memories)",
-                    "🕯️✨ Cozy Corner — your farmhouse (stats, mood/energy, skill tree, letters, fortune, meal planning)",
-                    "🛠️✨ Workshop — gamification hub (gold pouch, shop, inventory)",
-                  ]}
-                />
-                <div className={`mt-3 text-sm ${theme.textSub}`}>
-                  The goal is to make navigation feel like a world map: you “go” somewhere depending on what you need
-                  (plan, do, reflect, or reward).
-                </div>
-              </div>
-
-              <Gallery3
-                a={<CaseStudyImageTile src={IMAGES.cozyCorner} alt="Cozy Corner" caption="Optional: Cozy Corner page." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.workshop} alt="Workshop" caption="Optional: Workshop hub page." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                c={<CaseStudyImageTile src={IMAGES.farmOverview} alt="Farm hub" caption="Optional: Farm hub page." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-              />
-            </CaseStudySection>
-
-            <CaseStudySection id="farm" title="🥕✨ The Farm" subtitle="Where all planning + execution lives (quests, fields, calendar)" theme={theme}>
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>Core areas</div>
-                <CaseStudyBulletList
-                  items={[
-                    "📅 The Town Calendar — tasks, events, festivals, seasonal milestones",
-                    "🌅🌾 Sunrise Quests — daily tasks, subtasks, habits in one place (start the day with purpose)",
-                    "🪴📅 Weekly and Daily Fields — Trello-style board + calendar views for planning and tracking",
-                    "🧙‍♂️🏰 Main Quests & Side Adventures — big goals broken down into Tasks + Subtasks, grouped by Projects",
-                    "🌾🕰️ Harvested Memories — archive of completed quests and achievements to reflect on progress",
-                  ]}
-                />
-              </div>
-
-              <Gallery2
-                a={<CaseStudyImageTile src={IMAGES.calendar} alt="Town Calendar" caption="Optional: calendar view." aspect="16/9" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.sunriseQuests} alt="Sunrise Quests" caption="Optional: daily quests hub." aspect="16/9" theme={theme} onOpen={openLightbox} />}
-              />
-
-              <Gallery2
-                a={<CaseStudyImageTile src={IMAGES.weeklyFields} alt="Weekly & Daily Fields" caption="Optional: Trello board / weekly plan." aspect="16/9" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.harvestedMemories} alt="Harvested Memories" caption="Optional: completed archive view." aspect="16/9" theme={theme} onOpen={openLightbox} />}
-              />
-
-              <div className={`mt-6 rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>Quest taxonomy (how work is modeled)</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Tasks — the main storyline steps (bigger actions that move life forward)",
-                    "Subtasks — small supporting steps (lightweight actions that keep momentum)",
-                    "Projects — long-term sagas (themes that group tasks + subtasks)",
-                    "Habits — daily rituals (streak-friendly routines that keep the farm alive)",
-                    "Events — time-based items (appointments, deadlines, festivals)",
-                  ]}
-                />
-              </div>
-
-              <div className="mt-6">
-                <CaseStudyImageTile
-                  src={IMAGES.questsDatabases}
-                  alt="Tasks / Subtasks / Projects / Habits"
-                  caption="Optional: collage showing the four databases and key views."
-                  aspect="16/9"
-                  fit="contain"
-                  theme={theme}
-                  onOpen={openLightbox}
-                />
-              </div>
-            </CaseStudySection>
-
-            <CaseStudySection id="cozy" title="🕯️✨ Your Cozy Corner of the Valley" subtitle="Your farmhouse: personal stats, vibes, reflection, and life maintenance" theme={theme}>
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>What lives here</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Character Profile — name/bio, coins, health, badges, current mood",
-                    "Skill Tree — attach skills to tasks/subtasks/projects/habits to show growth over time",
-                    "Daily Fortune — a motivational quote / tip (soft nudge, not pressure)",
-                    "Letters — narrative messages from “NPCs” (fun, cozy, sometimes hints/quests)",
-                    "Kitchen — meal planning to support energy and routines",
-                    "Pets & badges — collectibles that make progress feel tangible",
+                    "Onboarding — guest or Google login.",
+                    "Home — category, difficulty, and mode selection.",
+                    "Game flow — question screen, feedback, progress.",
+                    "Me page — profile, history, settings.",
+                    "Leaderboard — global ranking of top players.",
                   ]}
                 />
               </div>
 
               <Gallery3
-                a={<CaseStudyImageTile src={IMAGES.characterProfile} alt="Character profile" caption="Optional: character profile." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.skillTree} alt="Skill tree" caption="Optional: skill tree page." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                c={<CaseStudyImageTile src={IMAGES.dailyFortune} alt="Daily fortune" caption="Optional: daily fortune view." aspect="4/3" theme={theme} onOpen={openLightbox} />}
+                a={
+                  <CaseStudyImageTile
+                    src={IMAGES.gameScreen}
+                    alt="Game screen"
+                    caption="Question layout with clear answer options and feedback."
+                    aspect="4/3"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
+                b={
+                  <CaseStudyImageTile
+                    src={IMAGES.leaderboard}
+                    alt="Leaderboard"
+                    caption="Global leaderboard for Challenge mode scores."
+                    aspect="4/3"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
+                c={
+                  <CaseStudyImageTile
+                    src={IMAGES.profile}
+                    alt="Profile page"
+                    caption="Profile page with history and account settings."
+                    aspect="4/3"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
               />
+            </CaseStudySection>
+
+            {/* Design process */}
+            <CaseStudySection
+              id="designProcess"
+              title="Design process"
+              subtitle="From research → IA → wireframes → hi‑fi"
+              theme={theme}
+            >
+              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
+                <CaseStudyBulletList
+                  items={[
+                    "Competitive scan of trivia apps (onboarding, game flows, scoring, visual style).",
+                    "Quick interviews with students to understand what makes trivia fun vs frustrating.",
+                    "Lo‑fi wireframes to validate navigation, game flow, and mode selection.",
+                    "Design system creation for colors, typography, spacing, and components.",
+                    "Hi‑fi screens for all core flows, ready to be implemented in React Native.",
+                  ]}
+                />
+              </div>
 
               <Gallery2
-                a={<CaseStudyImageTile src={IMAGES.letters} alt="Letters" caption="Optional: letters page." aspect="16/9" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.mealPlanner} alt="Kitchen / meal planner" caption="Optional: kitchen & meal planning." aspect="16/9" theme={theme} onOpen={openLightbox} />}
+                a={
+                  <CaseStudyImageTile
+                    src={IMAGES.wireframes}
+                    alt="Wireframes"
+                    caption="Early lo‑fi wireframes exploring navigation and game flow."
+                    aspect="16/9"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
+                b={
+                  <CaseStudyImageTile
+                    src={IMAGES.designSystem}
+                    alt="Design system"
+                    caption="Color palette, typography, spacing, and reusable components."
+                    aspect="16/9"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
               />
             </CaseStudySection>
-
-            <CaseStudySection id="workshopSection" title="🛠️✨ Workshop" subtitle="The gamification center: gold pouch, shop, and inventory" theme={theme}>
+            {/* Frontend implementation */}
+            <CaseStudySection
+              id="frontend"
+              title="Frontend implementation"
+              subtitle="Bringing the UI to life in React Native"
+              theme={theme}
+            >
               <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>Workshop spaces</div>
-                <CaseStudyBulletList items={["💰 Gold Pouch — track hard-earned coins and plan purchases", "🎁 Shop — spend coins on cosmetics, upgrades, boosts, and rewards", "🍯 Inventory — what you own (pets, badges, decorations, boosts, etc.)"]} />
-                <div className={`mt-3 text-sm ${theme.textSub}`}>
-                  The workshop turns productivity into a gentle economy: effort becomes coins, and coins become rewards
-                  that reinforce consistency.
-                </div>
-              </div>
-
-              <Gallery3
-                a={<CaseStudyImageTile src={IMAGES.goldPouch} alt="Gold Pouch" caption="Optional: gold pouch view." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                b={<CaseStudyImageTile src={IMAGES.inventory} alt="Inventory" caption="Optional: inventory view." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-                c={<CaseStudyImageTile src={IMAGES.shop} alt="Shop" caption="Optional: shop view." aspect="4/3" theme={theme} onOpen={openLightbox} />}
-              />
-            </CaseStudySection>
-
-            <CaseStudySection id="mechanics" title="Gamification mechanics" subtitle="How rewards, feedback, and motivation are designed" theme={theme}>
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>Progress signals</div>
                 <CaseStudyBulletList
                   items={[
-                    "Coins (gold) earned from completing quests and habits",
-                    "Badges and pets as collectible milestones",
-                    "Skill growth via Skill Tree (skills attached to work items)",
-                    "Harvested Memories as an archive of wins (reflection + identity reinforcement)",
-                  ]}
-                />
-
-                <div className={`mt-6 text-sm font-semibold ${theme.textMain}`}>Reward loop</div>
-                <div className="mt-2">
-                  Complete quests → earn coins → spend in the shop → items appear in inventory → your valley feels more
-                  “yours” → motivation stays warm and personal.
-                </div>
-
-                <div className={`mt-6 text-sm font-semibold ${theme.textMain}`}>Tone & motivation strategy</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Cozy language reduces anxiety (quests instead of chores)",
-                    "Narrative cues make the system feel alive (morning on the farm, NPC letters)",
-                    "Encouragement over pressure (fortune as gentle nudge, not demand)",
+                    "Implemented navigation (stack + tabs) for core flows.",
+                    "Built reusable components (buttons, cards, headers, list items).",
+                    "Implemented category and difficulty selection screens with dynamic options.",
+                    "Built the game screen with dynamic question rendering from OpenTDB.",
+                    "Created the results screen with difficulty‑based scoring logic.",
+                    "Integrated Redux for global state across auth, game, and settings.",
                   ]}
                 />
               </div>
+
+              <Gallery2
+                a={
+                  <CaseStudyImageTile
+                    src={IMAGES.finalScreens}
+                    alt="Final screens"
+                    caption="Final React Native screens implemented from hi‑fi designs."
+                    aspect="16/9"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
+                b={
+                  <CaseStudyImageTile
+                    src={IMAGES.uiDetails}
+                    alt="UI details"
+                    caption="Component details and interaction patterns."
+                    aspect="16/9"
+                    theme={theme}
+                    onOpen={openLightbox}
+                  />
+                }
+              />
             </CaseStudySection>
 
-            <CaseStudySection id="design" title="Design decisions" subtitle="What I intentionally optimized for" theme={theme}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                  <div className={`text-sm font-semibold ${theme.textMain}`}>Clarity & scanning</div>
-                  <CaseStudyBulletList items={["Location-based structure to reduce navigation confusion", "Daily entry points (Sunrise Quests) to start fast", "Boards + calendar views for flexible planning styles"]} />
-                </div>
-
-                <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                  <div className={`text-sm font-semibold ${theme.textMain}`}>Sustainable use</div>
-                  <CaseStudyBulletList items={["Gamification is supportive, not mandatory", "Reflection is built-in (Harvested Memories)", "Personal life support included (mood/energy, meals, letters, fortune)"]} />
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <CaseStudyImageTile
-                  src={IMAGES.uiDetails}
-                  alt="UI details"
-                  caption="Optional: collage of key UI patterns (cards, headings, icons, spacing)."
-                  aspect="16/9"
-                  theme={theme}
-                  onOpen={openLightbox}
-                />
-              </div>
-            </CaseStudySection>
-
-            <CaseStudySection id="outcome" title="Final outcome" subtitle="A cozy, complete system you can actually stick to" theme={theme}>
+            {/* Usability testing */}
+            <CaseStudySection
+              id="testing"
+              title="Usability testing"
+              subtitle="Planned testing with 5–7 students"
+              theme={theme}
+            >
               <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                A fully navigable Notion “valley” that blends practical planning with cozy-game motivation: you can plan
-                your week, manage big goals, track habits, reflect on progress, and reward yourself — all inside a world
-                that feels warm.
-              </div>
+                <div className={`text-sm font-semibold ${theme.textMain}`}>What we will test</div>
+                <CaseStudyBulletList
+                  items={[
+                    "Clarity of onboarding (guest vs login).",
+                    "Ease of selecting categories and difficulty.",
+                    "Understanding of Leisure vs Challenge modes.",
+                    "Readability of questions and answer options.",
+                    "Clarity of feedback after answering.",
+                    "Discoverability of history and leaderboard.",
+                  ]}
+                />
 
-              <div className="mt-6">
-                <CaseStudyImageTile
-                  src={IMAGES.finalScreens}
-                  alt="Final screens"
-                  caption="Optional: collage of best final screens (Welcome + Farm + Cozy Corner + Workshop)."
-                  aspect="16/9"
-                  theme={theme}
-                  onOpen={openLightbox}
+                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Methods</div>
+                <CaseStudyBulletList
+                  items={[
+                    "Think‑aloud usability sessions with students.",
+                    "Task‑based scenarios (start a game, change difficulty, view history).",
+                    "Short post‑test survey for perceived difficulty and enjoyment.",
+                  ]}
+                />
+
+                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Expected improvements</div>
+                <CaseStudyBulletList
+                  items={[
+                    "Refining copy and hierarchy in the mode selection screen.",
+                    "Improving feedback timing and animations after answering.",
+                    "Tweaking leaderboard layout for clarity and motivation.",
+                  ]}
                 />
               </div>
             </CaseStudySection>
 
-            <div className="mt-10" />
+            {/* Final outcome */}
+            <CaseStudySection
+              id="outcome"
+              title="Final outcome & learnings"
+              subtitle="What this project taught me as a UX Engineer"
+              theme={theme}
+            >
+              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
+                <div className={`text-sm font-semibold ${theme.textMain}`}>Outcome</div>
+                <div className="mt-2 text-sm">
+                  The project resulted in a functional React Native trivia app integrated with OpenTDB and Firebase.
+                  The app supports guest and logged‑in play, two game modes, difficulty‑based scoring, and a global
+                  leaderboard. Final usability testing and visual polish will be added to this case study as the
+                  project concludes.
+                </div>
+
+                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Key learnings</div>
+                <CaseStudyBulletList
+                  items={[
+                    "Designing for mobile requires ruthless prioritization of flows and content.",
+                    "A solid design system speeds up React Native implementation and ensures consistency.",
+                    "API‑driven products need flexible UI that handles unpredictable data gracefully.",
+                    "Close collaboration between design and backend is essential for aligning UX with technical constraints.",
+                    "UX engineering bridges the gap between concept and code, ensuring the final product matches the design intent.",
+                  ]}
+                />
+
+                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Next steps</div>
+                <CaseStudyBulletList
+                  items={[
+                    "Run and document usability tests with real users.",
+                    "Polish microinteractions and animations in key flows.",
+                    "Improve accessibility (contrast, tap targets, dynamic type).",
+                    "Explore social features like friend challenges or shared rooms.",
+                  ]}
+                />
+              </div>
+
+              {/* Final hi‑fi placeholders */}
+              <div className="mt-8">
+                <Gallery2
+                  a={
+                    <CaseStudyImageTile
+                      src={IMAGES.finalScreens}
+                      alt="Hi‑fi screens"
+                      caption="Final hi‑fi screens — placeholder until project completion."
+                      aspect="16/9"
+                      theme={theme}
+                      onOpen={openLightbox}
+                    />
+                  }
+                  b={
+                    <CaseStudyImageTile
+                      src={IMAGES.finalScreens}
+                      alt="Hi‑fi screens"
+                      caption="Additional hi‑fi screens — placeholder."
+                      aspect="16/9"
+                      theme={theme}
+                      onOpen={openLightbox}
+                    />
+                  }
+                />
+              </div>
+            </CaseStudySection>
+
           </div>
         </motion.div>
-
-        <CaseStudyLightbox open={lightbox.open} src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} theme={theme} />
       </div>
+
+      <CaseStudyLightbox {...lightbox} onClose={closeLightbox} />
     </div>
   );
 }

@@ -195,6 +195,14 @@ export default function RecruiterModeWindow({
           {/* PROJECTS (VERTICAL STACK) */}
           <div className="space-y-3">
             <SectionTitle styles={styles}>Highlighted work</SectionTitle>
+             {/* SHORTENED PROJECT CARD 1 */}
+            <ProjectCard
+              styles={styles}
+              badge="Master Thesis"
+              title="Human–AI Collaboration in UX Design"
+              subtitle="A designer‑first AI plugin exploring how AI can enhance cognitive workflows"
+              onOpen={() => openWindowSafe("thesisCaseStudy")}
+            />
 
             {/* SHORTENED PROJECT CARD 2 */}
             <ProjectCard
@@ -205,15 +213,7 @@ export default function RecruiterModeWindow({
               onOpen={() => openWindowSafe("employerBrandingCaseStudy")}
             />
 
-            {/* SHORTENED PROJECT CARD 1 */}
-            <ProjectCard
-              styles={styles}
-              badge="Personal Project"
-              title="Group Dining Coordination Platform)"
-              subtitle=" A web-based platform that helps groups coordinate restaurant outings by aligning
-              availability, dietary needs, and preferences."
-              onOpen={() => openWindowSafe("groupDiningCaseStudy")}
-            />
+           
 
             
           </div>
