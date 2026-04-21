@@ -9,6 +9,12 @@ import { Gallery2, Gallery3 } from "./caseStudy/CaseStudyGalleries";
 import CaseStudyImageTile from "./caseStudy/CaseStudyImageTile";
 import CaseStudyLightbox from "./caseStudy/CaseStudyLightbox";
 import heroImg from "../../../imgs/case-study/trivia/Trivia_Hero.png";
+import boardingImg from "../../../imgs/case-study/trivia/Onboarding.png";
+import categoriesImg from "../../../imgs/case-study/trivia/Categories.png";
+import gameImg from "../../../imgs/case-study/trivia/TriviaChallenge.png";
+import rankingImg from "../../../imgs/case-study/trivia/TriviaRanking.png";
+import profileImg from "../../../imgs/case-study/trivia/TriviaProfile.png";
+import lofiImg from "../../../imgs/case-study/trivia/Trivia_Lofi.png";
 
 export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
@@ -16,16 +22,16 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
   const IMAGES = useMemo(
     () => ({
       hero: heroImg,
-      onboarding: null,
+      onboarding: boardingImg,
       login: null,
-      categories: null,
+      categories: categoriesImg,
       difficulty: null,
-      gameScreen: null,
+      gameScreen: gameImg,
       results: null,
-      leaderboard: null,
-      profile: null,
+      leaderboard: rankingImg,
+      profile: profileImg,
       designSystem: null,
-      wireframes: null,
+      wireframes: lofiImg,
       uiDetails: null,
       finalScreens: null,
     }),
@@ -238,9 +244,9 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
                     src={IMAGES.onboarding}
                     alt="Onboarding"
                     caption="Onboarding: play as guest or log in with Google."
-                    aspect="16/9"
                     theme={theme}
                     onOpen={openLightbox}
+                    contain="fit"
                   />
                 }
                 b={
@@ -556,7 +562,13 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
         </motion.div>
       </div>
 
-      <CaseStudyLightbox {...lightbox} onClose={closeLightbox} />
+    <CaseStudyLightbox
+  open={lightbox.open}
+  src={lightbox.src}
+  alt={lightbox.alt}
+  onClose={closeLightbox}
+  theme={theme}
+/>
     </div>
   );
 }
