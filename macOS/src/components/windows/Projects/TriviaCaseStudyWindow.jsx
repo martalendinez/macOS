@@ -8,13 +8,14 @@ import CaseStudySection from "./caseStudy/CaseStudySection";
 import { Gallery2, Gallery3 } from "./caseStudy/CaseStudyGalleries";
 import CaseStudyImageTile from "./caseStudy/CaseStudyImageTile";
 import CaseStudyLightbox from "./caseStudy/CaseStudyLightbox";
+import heroImg from "../../../imgs/case-study/trivia/Trivia_Hero.png";
 
 export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
 
   const IMAGES = useMemo(
     () => ({
-      hero: null,
+      hero: heroImg,
       onboarding: null,
       login: null,
       categories: null,
