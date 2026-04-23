@@ -16,6 +16,7 @@ import rankingImg from "../../../imgs/case-study/trivia/TriviaRanking.png";
 import profileImg from "../../../imgs/case-study/trivia/TriviaProfile.png";
 import lofiImg from "../../../imgs/case-study/trivia/Trivia_Lofi.png";
 import finalImg from "../../../imgs/case-study/trivia/Trivia_Final.jpg";
+import uiImg from "../../../imgs/case-study/trivia/Chrome.png";
 
 export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
@@ -33,7 +34,7 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
       profile: profileImg,
       designSystem: null,
       wireframes: lofiImg,
-      uiDetails: null,
+      uiDetails: uiImg,
       finalScreens: finalImg,
     }),
     []
@@ -445,7 +446,7 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
                   <CaseStudyImageTile
                     src={IMAGES.uiDetails}
                     alt="UI details"
-                    caption="Component details and interaction patterns."
+                    caption="Chrome developer tools showing the React Native app."
                     aspect="16/9"
                     theme={theme}
                     onOpen={openLightbox}
