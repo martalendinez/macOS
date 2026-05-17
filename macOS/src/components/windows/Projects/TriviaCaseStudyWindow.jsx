@@ -17,7 +17,7 @@ import profileImg from "../../../imgs/case-study/trivia/TriviaProfile.png";
 import lofiImg from "../../../imgs/case-study/trivia/Trivia_Lofi.png";
 import finalImg from "../../../imgs/case-study/trivia/Trivia_Final.jpg";
 import uiImg from "../../../imgs/case-study/trivia/Chrome.png";
-import designImg from "../../../imgs/case-study/trivia/design.png";
+import designImg from "../../../imgs/case-study/trivia/designsystem.png";
 
 export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast = "light" }) {
   const theme = useCaseStudyTheme({ uiTheme, glassContrast });
@@ -136,12 +136,25 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
 
             {/* CTA row */}
             <div className="mt-6 flex flex-wrap gap-2">
-              <a href="#" className={`px-4 py-2.5 rounded-2xl text-sm border ${theme.buttonClass}`}>
-                View GitHub
-              </a>
-              <a href="#" className={`px-4 py-2.5 rounded-2xl text-sm border ${theme.buttonClass}`}>
-                View full case study
-              </a>
+              <a
+  href="https://gits-15.sys.kth.se/iprog-students/arnaupg-ejaco-jintongj-mcli2-vt26-project"
+  target="_blank"
+  rel="noopener noreferrer"
+  className={`px-4 py-2.5 rounded-2xl text-sm border ${theme.buttonClass}`}
+>
+  View GitHub
+</a>
+
+              <a
+  href="/pdfs/Trivia_Case_Study.pdf"
+  target="_blank"
+  rel="noopener noreferrer"
+  className={`px-4 py-2.5 rounded-2xl text-sm border ${theme.buttonClass}`}
+>
+  View full case study
+</a>
+
+              
             </div>
 
             {/* Overview */}
@@ -456,83 +469,72 @@ export default function TriviaCaseStudyWindow({ uiTheme = "glass", glassContrast
               />
             </CaseStudySection>
 
-            {/* Usability testing */}
-            <CaseStudySection
-              id="testing"
-              title="Usability testing"
-              subtitle="Planned testing with 5–7 students"
-              theme={theme}
-            >
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>What we will test</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Clarity of onboarding (guest vs login).",
-                    "Ease of selecting categories and difficulty.",
-                    "Understanding of Leisure vs Challenge modes.",
-                    "Readability of questions and answer options.",
-                    "Clarity of feedback after answering.",
-                    "Discoverability of history and leaderboard.",
-                  ]}
-                />
+          {/* Final usability testing */}
+<CaseStudySection
+  id="final-testing"
+  title="Final usability testing"
+  subtitle="Conducted with 3–4 participants using the functional prototype"
+  theme={theme}
+>
+  <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
 
-                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Methods</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Think‑aloud usability sessions with students.",
-                    "Task‑based scenarios (start a game, change difficulty, view history).",
-                    "Short post‑test survey for perceived difficulty and enjoyment.",
-                  ]}
-                />
+    {/* Testing procedure */}
+    <div className={`text-sm font-semibold ${theme.textMain}`}>Testing procedure</div>
+    <CaseStudyBulletList
+      items={[
+        "Think‑aloud sessions with 3–4 participants using the functional app.",
+        "Task‑based flows: onboarding, playing both modes, editing account, viewing history and leaderboard.",
+        "Observation of clarity, navigation, feedback, and overall gameplay experience.",
+      ]}
+    />
 
-                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Expected improvements</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Refining copy and hierarchy in the mode selection screen.",
-                    "Improving feedback timing and animations after answering.",
-                    "Tweaking leaderboard layout for clarity and motivation.",
-                  ]}
-                />
-              </div>
-            </CaseStudySection>
+    {/* Results */}
+    <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Results</div>
+    <CaseStudyBulletList
+      items={[
+        "All participants completed core tasks successfully.",
+        "Gameplay felt smooth, clear, and responsive.",
+        "Scoring system and difficulty‑based points were immediately understood.",
+        "Question of the Day was highly discoverable and engaging.",
+        "Account editing and navigation patterns felt intuitive.",
+      ]}
+    />
 
-            {/* Final outcome */}
-            <CaseStudySection
-              id="outcome"
-              title="Final outcome & learnings"
-              subtitle="What this project taught me as a UX Engineer"
-              theme={theme}
-            >
-              <div className={`rounded-2xl p-5 border ${theme.softCard}`}>
-                <div className={`text-sm font-semibold ${theme.textMain}`}>Outcome</div>
-                <div className="mt-2 text-sm">
-                  The project resulted in a functional React Native trivia app integrated with OpenTDB and Firebase.
-                  The app supports guest and logged‑in play, two game modes, difficulty‑based scoring, and a global
-                  leaderboard. Final usability testing and visual polish will be added to this case study as the
-                  project concludes.
-                </div>
+    {/* Iterations implemented */}
+    <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Iterations implemented</div>
+    <CaseStudyBulletList
+      items={[
+        "Added suspense/loading view to registration and login.",
+        "Enabled profile access via the avatar on the homepage.",
+        "Introduced a basic theme switcher.",
+        "Implemented a lives system (5 for easy, 3 for hard).",
+        "Added a progress indicator ('1 out of X questions').",
+      ]}
+    />
 
-                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Key learnings</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Designing for mobile requires ruthless prioritization of flows and content.",
-                    "A solid design system speeds up React Native implementation and ensures consistency.",
-                    "API‑driven products need flexible UI that handles unpredictable data gracefully.",
-                    "Close collaboration between design and backend is essential for aligning UX with technical constraints.",
-                    "UX engineering bridges the gap between concept and code, ensuring the final product matches the design intent.",
-                  ]}
-                />
+    {/* Future improvements */}
+    <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Future improvements</div>
+    <CaseStudyBulletList
+      items={[
+        "Add richer feedback and aggregated stats for Question of the Day.",
+        "Expand leaderboard with advanced filters (daily, weekly, friends, difficulty).",
+        "Enhance Challenge Mode with timers, streaks, and dynamic difficulty.",
+        "Introduce background music, full theme customization, and hints.",
+      ]}
+    />
 
-                <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Next steps</div>
-                <CaseStudyBulletList
-                  items={[
-                    "Run and document usability tests with real users.",
-                    "Polish microinteractions and animations in key flows.",
-                    "Improve accessibility (contrast, tap targets, dynamic type).",
-                    "Explore social features like friend challenges or shared rooms.",
-                  ]}
-                />
-              </div>
+    {/* Constraints */}
+    <div className={`mt-5 text-sm font-semibold ${theme.textMain}`}>Constraints</div>
+    <CaseStudyBulletList
+      items={[
+        "Small sample size limited diversity of player profiles.",
+        "Time constraints restricted testing of advanced features.",
+        "Technical limitations prevented dynamic filtering and real‑time statistics.",
+      ]}
+    />
+
+  </div>
+
 
               {/* Final hi‑fi placeholders */}
               {/* Final hi‑fi placeholder */}
